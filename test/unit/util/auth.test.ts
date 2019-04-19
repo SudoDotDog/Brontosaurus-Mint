@@ -11,7 +11,7 @@ import { createSalt, garblePassword } from '../../../src/util/auth';
 
 describe('Given [Auth] Helper Methods', (): void => {
 
-    const chance: Chance.Chance = new Chance('brontosaurus-server-util-auth');
+    const chance: Chance.Chance = new Chance('brontosaurus-mint-util-auth');
 
     it('should be able to create salt', (): void => {
 
