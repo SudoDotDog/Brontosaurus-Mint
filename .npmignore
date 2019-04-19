@@ -1,0 +1,24 @@
+# Builds
+makefile
+typescript
+tsconfig.json
+
+# sources
+src
+
+# docs
+docs
+
+# Tests
+test
+
+# Configs
+.vscode
+.travis.yml
+.gitignore
+package-lock.json
+yarn.lock
+
+# temp
+.nyc_output
+coverage

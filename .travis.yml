@@ -1,0 +1,27 @@
+language: 
+ - node_js
+
+services: 
+ - mongodb
+
+node_js:
+ - '8'
+ - '9'
+ - '10'
+
+cache: npm
+
+install:
+ - npm install
+ - npm install --only=dev
+ - npm install codecov nyc -g
+
+before_script:
+ - make build
+ - sleep 1
+
+script:
+ - nyc mocha
+
+after_success:
+ - codecov -f ./coverage/coverage-final.json
