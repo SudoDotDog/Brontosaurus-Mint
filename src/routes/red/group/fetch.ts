@@ -4,13 +4,11 @@
  * @description Fetch
  */
 
+import { GroupController, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
-import { getSelectedActiveGroupsByPage, getTotalActiveGroupPages } from "../../../controller/group";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
 import { basicHook } from "../../../handlers/hook";
-import { INTERNAL_USER_GROUP } from "../../../interface/group";
-import { IGroupModel } from "../../../model/group";
 import { ERROR_CODE } from "../../../util/error";
 import { BrontosaurusRoute } from "../../basic";
 
@@ -50,8 +48,8 @@ export class FetchGroupRoute extends BrontosaurusRoute {
 
             const limit: number = 10;
 
-            const pages: number = await getTotalActiveGroupPages(limit);
-            const groups: IGroupModel[] = await getSelectedActiveGroupsByPage(limit, Math.floor(page), keyword);
+            const pages: number = await GroupController.getTotalActiveGroupPages(limit);
+            const groups: IGroupModel[] = await GroupController.getSelectedActiveGroupsByPage(limit, Math.floor(page), keyword);
 
             const parsed = groups.map((group: IGroupModel) => ({
                 name: group.name,

@@ -4,11 +4,10 @@
  * @description Read
  */
 
+import { INTERNAL_USER_GROUP, PreferenceController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { getSinglePreference } from "../../../controller/preference";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
 import { basicHook } from "../../../handlers/hook";
-import { INTERNAL_USER_GROUP } from "../../../interface/group";
 import { BrontosaurusRoute } from "../../../routes/basic";
 
 export class ReadPreferenceRoute extends BrontosaurusRoute {
@@ -27,8 +26,8 @@ export class ReadPreferenceRoute extends BrontosaurusRoute {
 
         try {
 
-            const globalAvatar: string | null = await getSinglePreference('globalAvatar');
-            const backgroundImages: string[] | null = await getSinglePreference('backgroundImages');
+            const globalAvatar: string | null = await PreferenceController.getSinglePreference('globalAvatar');
+            const backgroundImages: string[] | null = await PreferenceController.getSinglePreference('backgroundImages');
 
             if (globalAvatar) {
                 res.agent.add('globalAvatar', globalAvatar);

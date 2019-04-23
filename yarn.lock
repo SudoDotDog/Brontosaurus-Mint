@@ -9,6 +9,15 @@
   dependencies:
     "@brontosaurus/definition" "^1.3.0"
 
+"@brontosaurus/db@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@brontosaurus/db/-/db-1.0.0.tgz#1b3db4ee8f77fbd878332d6672aedded9c679552"
+  integrity sha512-Nh/9ccykyJzsNrv8d9+dAARH9RecNC2vdtINZy+fPAKy4hEFHO9qkEcYqvB5LeMPdeUQ8K6H3TLq5mYNMs+r5g==
+  dependencies:
+    "@brontosaurus/definition" "^1.3.0"
+    "@sudoo/bark" "^2.5.1"
+    mongoose "^5.5.1"
+
 "@brontosaurus/definition@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@brontosaurus/definition/-/definition-1.3.0.tgz#7af9a03713313f09f7622b6b049bbdc967b478f6"

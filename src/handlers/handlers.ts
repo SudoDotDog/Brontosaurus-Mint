@@ -4,15 +4,11 @@
  * @description Authenticate
  */
 
+import { AccountController, ApplicationController, IAccountModel, IApplicationModel, INTERNAL_APPLICATION } from "@brontosaurus/db";
 import { IBrontosaurusBody } from "@brontosaurus/definition";
 import { SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeValue } from "@sudoo/extract";
 import Connor, { ErrorCreationFunction } from "connor";
-import { getAccountByUsername } from "../controller/account";
-import { getApplicationByKey } from "../controller/application";
-import { INTERNAL_APPLICATION } from "../interface/application";
-import { IAccountModel } from "../model/account";
-import { IApplicationModel } from "../model/application";
 import { compareGroups, getPrincipleFromToken, parseBearerAuthorization, Throwable_GetBody, Throwable_MapGroups, Throwable_ValidateToken } from "../util/auth";
 import { ERROR_CODE, MODULE_NAME } from "../util/error";
 
@@ -33,7 +29,7 @@ export const createAuthenticateHandler = (): SudooExpressHandler =>
         try {
 
             const token: string = Safe.value(req.info.token).safe();
-            const application: IApplicationModel = Safe.value(await getApplicationByKey(INTERNAL_APPLICATION.RED)).safe();
+            const application: IApplicationModel = Safe.value(await ApplicationController.getApplicationByKey(INTERNAL_APPLICATION.RED)).safe();
 
             Throwable_ValidateToken(application.secret, application.expire, token);
 
@@ -56,7 +52,7 @@ export const createGroupVerifyHandler = (groups: string[], error: ErrorCreationF
 
             const tokenBody: IBrontosaurusBody = Throwable_GetBody(token.safe());
 
-            const account: IAccountModel = Safe.value(await getAccountByUsername(
+            const account: IAccountModel = Safe.value(await AccountController.getAccountByUsername(
                 Safe.value(tokenBody.username, createError(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_INFORMATION, 'username')).safe()),
             ).safe();
             const accountGroups: string[] = await Throwable_MapGroups(account.groups);

@@ -4,14 +4,12 @@
  * @description Self Edit
  */
 
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
-import { getAccountByUsername } from "../../../controller/account";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
 import { basicHook } from "../../../handlers/hook";
-import { INTERNAL_USER_GROUP } from "../../../interface/group";
-import { IAccountModel } from "../../../model/account";
 import { BrontosaurusRoute } from "../../../routes/basic";
 import { ERROR_CODE } from "../../../util/error";
 import { parseInfo } from "../../../util/token";
@@ -45,7 +43,7 @@ export class AdminEditRoute extends BrontosaurusRoute {
 
             const username: string = body.directEnsure('username');
 
-            const account: IAccountModel | null = await getAccountByUsername(username);
+            const account: IAccountModel | null = await AccountController.getAccountByUsername(username);
 
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);

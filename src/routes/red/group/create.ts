@@ -4,13 +4,11 @@
  * @description Create
  */
 
+import { GroupController, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
-import { createUnsavedGroup, isGroupDuplicatedByName } from "../../../controller/group";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
 import { basicHook } from "../../../handlers/hook";
-import { INTERNAL_USER_GROUP } from "../../../interface/group";
-import { IGroupModel } from "../../../model/group";
 import { BrontosaurusRoute } from "../../../routes/basic";
 import { ERROR_CODE } from "../../../util/error";
 
@@ -39,13 +37,13 @@ export class CreateGroupRoute extends BrontosaurusRoute {
 
             const name: string = body.direct('name');
 
-            const isDuplicated: boolean = await isGroupDuplicatedByName(name);
+            const isDuplicated: boolean = await GroupController.isGroupDuplicatedByName(name);
 
             if (isDuplicated) {
                 throw this._error(ERROR_CODE.DUPLICATE_GROUP, name);
             }
 
-            const group: IGroupModel = createUnsavedGroup(name);
+            const group: IGroupModel = GroupController.createUnsavedGroup(name);
             await group.save();
 
             res.agent.add('group', group.name);

@@ -4,13 +4,11 @@
  * @description Single
  */
 
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
-import { getAccountByUsername } from "../../../controller/account";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
 import { basicHook } from "../../../handlers/hook";
-import { INTERNAL_USER_GROUP } from "../../../interface/group";
-import { IAccountModel } from "../../../model/account";
 import { Throwable_MapGroups } from "../../../util/auth";
 import { ERROR_CODE } from "../../../util/error";
 import { BrontosaurusRoute } from "../../basic";
@@ -43,7 +41,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'username', 'string', (username as any).toString());
             }
 
-            const account: IAccountModel | null = await getAccountByUsername(username);
+            const account: IAccountModel | null = await AccountController.getAccountByUsername(username);
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
             }

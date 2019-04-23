@@ -4,13 +4,12 @@
  * @description Global
  */
 
+import { INTERNAL_USER_GROUP, PreferenceController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { isArray } from "util";
-import { setSinglePreference } from "../../../controller/preference";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
 import { basicHook } from "../../../handlers/hook";
-import { INTERNAL_USER_GROUP } from "../../../interface/group";
 import { BrontosaurusRoute } from "../../../routes/basic";
 import { ERROR_CODE } from "../../../util/error";
 
@@ -45,8 +44,8 @@ export class GlobalPreferenceRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN);
             }
 
-            await setSinglePreference('globalAvatar', globalAvatar.toString());
-            await setSinglePreference('backgroundImages', backgroundImages.map((value: any) => value.toString()));
+            await PreferenceController.setSinglePreference('globalAvatar', globalAvatar.toString());
+            await PreferenceController.setSinglePreference('backgroundImages', backgroundImages.map((value: any) => value.toString()));
 
             res.agent.add('status', 'done');
         } catch (err) {

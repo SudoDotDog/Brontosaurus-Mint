@@ -4,13 +4,11 @@
  * @description Single
  */
 
+import { ApplicationController, IApplicationModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
-import { getApplicationByKey } from "../../../controller/application";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
 import { basicHook } from "../../../handlers/hook";
-import { INTERNAL_USER_GROUP } from "../../../interface/group";
-import { IApplicationModel } from "../../../model/application";
 import { Throwable_MapGroups } from "../../../util/auth";
 import { ERROR_CODE } from "../../../util/error";
 import { BrontosaurusRoute } from "../../basic";
@@ -43,7 +41,7 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'key', 'string', (key as any).toString());
             }
 
-            const application: IApplicationModel | null = await getApplicationByKey(key);
+            const application: IApplicationModel | null = await ApplicationController.getApplicationByKey(key);
             if (!application) {
                 throw this._error(ERROR_CODE.APPLICATION_KEY_NOT_FOUND, key);
             }

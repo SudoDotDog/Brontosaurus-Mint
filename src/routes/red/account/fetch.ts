@@ -4,13 +4,11 @@
  * @description Fetch
  */
 
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
-import { getSelectedActiveAccountsByPage, getTotalActiveAccountPages } from "../../../controller/account";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
 import { basicHook } from "../../../handlers/hook";
-import { INTERNAL_USER_GROUP } from "../../../interface/group";
-import { IAccountModel } from "../../../model/account";
 import { ERROR_CODE } from "../../../util/error";
 import { BrontosaurusRoute } from "../../basic";
 
@@ -50,8 +48,8 @@ export class FetchAccountRoute extends BrontosaurusRoute {
 
             const limit: number = 10;
 
-            const pages: number = await getTotalActiveAccountPages(limit);
-            const accounts: IAccountModel[] = await getSelectedActiveAccountsByPage(limit, Math.floor(page), keyword);
+            const pages: number = await AccountController.getTotalActiveAccountPages(limit);
+            const accounts: IAccountModel[] = await AccountController.getSelectedActiveAccountsByPage(limit, Math.floor(page), keyword);
 
             const parsed = accounts.map((account: IAccountModel) => ({
                 username: account.username,

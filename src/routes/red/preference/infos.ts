@@ -4,12 +4,10 @@
  * @description Infos
  */
 
+import { INTERNAL_USER_GROUP, PreferenceController, RegisterInfo } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { getMultiplePreference } from "../../../controller/preference";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
 import { basicHook } from "../../../handlers/hook";
-import { INTERNAL_USER_GROUP } from "../../../interface/group";
-import { RegisterInfo } from "../../../interface/preference";
 import { BrontosaurusRoute } from "../../../routes/basic";
 
 export class InfosPreferenceRoute extends BrontosaurusRoute {
@@ -28,7 +26,7 @@ export class InfosPreferenceRoute extends BrontosaurusRoute {
 
         try {
 
-            const registerInfos: RegisterInfo[] = await getMultiplePreference('registerInfo');
+            const registerInfos: RegisterInfo[] = await PreferenceController.getMultiplePreference('registerInfo');
 
             res.agent.add('registerInfos', registerInfos);
         } catch (err) {

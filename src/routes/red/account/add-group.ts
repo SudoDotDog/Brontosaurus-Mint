@@ -4,15 +4,11 @@
  * @description Add Group
  */
 
+import { AccountController, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
-import { getAccountByUsername } from "../../../controller/account";
-import { getGroupByName } from "../../../controller/group";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
 import { basicHook } from "../../../handlers/hook";
-import { INTERNAL_USER_GROUP } from "../../../interface/group";
-import { IAccountModel } from "../../../model/account";
-import { IGroupModel } from "../../../model/group";
 import { BrontosaurusRoute } from "../../../routes/basic";
 import { ERROR_CODE } from "../../../util/error";
 
@@ -43,8 +39,8 @@ export class AddGroupRoute extends BrontosaurusRoute {
             const username: string = body.directEnsure('username');
             const groupName: string = body.directEnsure('group');
 
-            const account: IAccountModel | null = await getAccountByUsername(username);
-            const group: IGroupModel | null = await getGroupByName(groupName);
+            const account: IAccountModel | null = await AccountController.getAccountByUsername(username);
+            const group: IGroupModel | null = await GroupController.getGroupByName(groupName);
 
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
