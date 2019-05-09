@@ -8,10 +8,10 @@ import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosa
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
-import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
-import { basicHook } from "../../../handlers/hook";
-import { BrontosaurusRoute } from "../../../routes/basic";
-import { ERROR_CODE } from "../../../util/error";
+import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
+import { basicHook } from "../../handlers/hook";
+import { BrontosaurusRoute } from "../../routes/basic";
+import { ERROR_CODE } from "../../util/error";
 
 export type RegisterRouteBody = {
 
@@ -52,7 +52,7 @@ export class RegisterRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
             }
 
-            const account: IAccountModel = AccountController.createUnsavedAccount(username, password, [], infos);
+            const account: IAccountModel = AccountController.createUnsavedAccount(username, password, undefined, [], infos);
             await account.save();
 
             res.agent.add('account', account.username);

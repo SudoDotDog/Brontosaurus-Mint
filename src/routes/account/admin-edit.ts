@@ -8,11 +8,11 @@ import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosa
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
-import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../../handlers/handlers";
-import { basicHook } from "../../../handlers/hook";
-import { BrontosaurusRoute } from "../../../routes/basic";
-import { ERROR_CODE } from "../../../util/error";
-import { parseInfo } from "../../../util/token";
+import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
+import { basicHook } from "../../handlers/hook";
+import { BrontosaurusRoute } from "../../routes/basic";
+import { ERROR_CODE } from "../../util/error";
+import { parseInfo } from "../../util/token";
 
 export type AdminEditBody = {
 
