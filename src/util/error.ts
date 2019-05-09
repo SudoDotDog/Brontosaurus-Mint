@@ -6,6 +6,8 @@
 
 import Connor from 'connor';
 
+export const MODULE_NAME = 'Brontosaurus-Mint';
+
 export enum ERROR_CODE {
 
     PASSWORD_DOES_NOT_MATCH = 4001,
@@ -40,7 +42,6 @@ export enum ERROR_CODE {
     PERMISSION_USER_DOES_NOT_MATCH = 7002,
 }
 
-export const MODULE_NAME = 'Brontosaurus-Mint';
 export const ERROR_LIST = {
 
     [ERROR_CODE.PASSWORD_DOES_NOT_MATCH]: 'Username and password not match',
