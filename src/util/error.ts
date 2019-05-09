@@ -18,6 +18,8 @@ export enum ERROR_CODE {
 
     ACCOUNT_MINT_NOT_VALID = 4130,
 
+    ACCOUNT_ORGANIZATION_NOT_FOUND  = 4135,
+
     TOKEN_DOES_NOT_CONTAIN_INFORMATION = 4150,
     TOKEN_DOES_NOT_CONTAIN_HEADER = 4151,
     TOKEN_DOES_NOT_CONTAIN_BODY = 4152,
@@ -31,6 +33,7 @@ export enum ERROR_CODE {
     APPLICATION_NOT_FOUND = 6200,
     GROUP_NOT_FOUND = 6201,
     ACCOUNT_NOT_FOUND = 6202,
+    ORGANIZATION_NOT_FOUND = 6203,
 
     DUPLICATE_ACCOUNT = 6250,
     DUPLICATE_APPLICATION = 6251,
@@ -42,7 +45,7 @@ export enum ERROR_CODE {
     PERMISSION_USER_DOES_NOT_MATCH = 7002,
 }
 
-export const ERROR_LIST = {
+export const ERROR_LIST: Record<ERROR_CODE, string> = {
 
     [ERROR_CODE.PASSWORD_DOES_NOT_MATCH]: 'Username and password not match',
     [ERROR_CODE.TOKEN_INVALID]: 'Token invalid',
@@ -51,6 +54,8 @@ export const ERROR_LIST = {
     [ERROR_CODE.APPLICATION_KEY_NOT_FOUND]: 'Application key not found',
 
     [ERROR_CODE.ACCOUNT_MINT_NOT_VALID]: 'Account mint not valid',
+
+    [ERROR_CODE.ACCOUNT_ORGANIZATION_NOT_FOUND]: 'Account organization not found',
 
     [ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_INFORMATION]: 'Token does not contain information: "{}"',
     [ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_HEADER]: 'Token does not contain header',
@@ -65,6 +70,7 @@ export const ERROR_LIST = {
     [ERROR_CODE.APPLICATION_NOT_FOUND]: 'Application: "{}" not found',
     [ERROR_CODE.GROUP_NOT_FOUND]: 'Group: "{}" not found',
     [ERROR_CODE.ACCOUNT_NOT_FOUND]: 'Account: "{}" not found',
+    [ERROR_CODE.ORGANIZATION_NOT_FOUND]: 'Organization: "{}" not found',
 
     [ERROR_CODE.DUPLICATE_ACCOUNT]: 'Account: "{}" already exist',
     [ERROR_CODE.DUPLICATE_APPLICATION]: 'Application: "{}" already exist',

@@ -17,11 +17,13 @@ import { SingleApplicationRoute } from './application/single';
 import { UpdateApplicationRoute } from './application/update';
 import { CreateGroupRoute } from './group/create';
 import { FetchGroupRoute } from './group/fetch';
+import { OrganizationRegisterRoute } from './organization/register';
 import { GlobalPreferenceRoute } from './preference/global';
 import { InfosPreferenceRoute } from './preference/infos';
 import { ReadPreferenceRoute } from './preference/read';
 
 export const MintRoutes = [
+
     // Application
     new CreateApplicationRoute(),
     new FetchApplicationRoute(),
@@ -45,4 +47,7 @@ export const MintRoutes = [
     new GlobalPreferenceRoute(),
     new ReadPreferenceRoute(),
     new InfosPreferenceRoute(),
+
+    // Organization
+    new OrganizationRegisterRoute(),
 ];
