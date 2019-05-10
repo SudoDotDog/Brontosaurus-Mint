@@ -12,6 +12,7 @@ import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler
 import { basicHook } from "../../handlers/hook";
 import { BrontosaurusRoute } from "../../routes/basic";
 import { ERROR_CODE } from "../../util/error";
+import { jsonifyBasicRecords } from "../../util/token";
 
 export type RegisterRouteBody = {
 
@@ -42,9 +43,9 @@ export class RegisterRoute extends BrontosaurusRoute {
             const password: string = body.directEnsure('password');
 
             const infoLine: Record<string, Basics> | string = body.direct('infos');
-            const infos: Record<string, Basics> = typeof infoLine === 'string'
-                ? JSON.parse(infoLine)
-                : infoLine;
+            const infos: Record<string, Basics> = jsonifyBasicRecords(
+                infoLine,
+                this._error(ERROR_CODE.INFO_LINE_FORMAT_ERROR, infoLine.toString()));
 
             const isDuplicated: boolean = await AccountController.isAccountDuplicatedByUsername(username);
 

@@ -18,7 +18,7 @@ export enum ERROR_CODE {
 
     ACCOUNT_MINT_NOT_VALID = 4130,
 
-    ACCOUNT_ORGANIZATION_NOT_FOUND  = 4135,
+    ACCOUNT_ORGANIZATION_NOT_FOUND = 4135,
 
     TOKEN_DOES_NOT_CONTAIN_INFORMATION = 4150,
     TOKEN_DOES_NOT_CONTAIN_HEADER = 4151,
@@ -26,6 +26,8 @@ export enum ERROR_CODE {
 
     INSUFFICIENT_INFORMATION = 4500,
     INSUFFICIENT_SPECIFIC_INFORMATION = 4501,
+
+    INFO_LINE_FORMAT_ERROR = 4506,
 
     REQUEST_DOES_MATCH_PATTERN = 5005,
     REQUEST_FORMAT_ERROR = 5006,
@@ -63,6 +65,8 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
 
     [ERROR_CODE.INSUFFICIENT_INFORMATION]: 'Insufficient information',
     [ERROR_CODE.INSUFFICIENT_SPECIFIC_INFORMATION]: 'Insufficient information, need: "{}"',
+
+    [ERROR_CODE.INFO_LINE_FORMAT_ERROR]: 'Info line: "{}" format error',
 
     [ERROR_CODE.REQUEST_DOES_MATCH_PATTERN]: 'Request does not match pattern',
     [ERROR_CODE.REQUEST_FORMAT_ERROR]: 'Request format error: "{}", should be: "{}", but: "{}"',
