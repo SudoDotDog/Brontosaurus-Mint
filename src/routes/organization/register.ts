@@ -51,7 +51,7 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
             const username: string = body.directEnsure('username');
             const password: string = body.directEnsure('password');
 
-            const infoLine: any = body.direct('infos');
+            const infoLine: Record<string, Basics> | string = body.direct('infos');
             const infos: Record<string, Basics> = typeof infoLine === 'string'
                 ? JSON.parse(infoLine)
                 : infoLine;
