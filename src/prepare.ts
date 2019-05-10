@@ -6,7 +6,6 @@
 
 import { AccountController, ApplicationController, GroupController, INTERNAL_APPLICATION, INTERNAL_USER_GROUP, PreferenceController } from "@brontosaurus/db";
 import { LOG_LEVEL, SudooLog } from "@sudoo/log";
-import { ObjectId } from "bson";
 import * as Mongoose from "mongoose";
 import { BrontosaurusConfig, readConfigEnvironment } from './util/conf';
 

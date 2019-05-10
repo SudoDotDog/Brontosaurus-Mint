@@ -40,6 +40,7 @@ export enum ERROR_CODE {
     DUPLICATE_ACCOUNT = 6250,
     DUPLICATE_APPLICATION = 6251,
     DUPLICATE_GROUP = 6252,
+    DUPLICATE_ORGANIZATION = 6253,
 
     CANNOT_MODIFY_INTERNAL_GROUP = 6701,
 
@@ -79,6 +80,7 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
     [ERROR_CODE.DUPLICATE_ACCOUNT]: 'Account: "{}" already exist',
     [ERROR_CODE.DUPLICATE_APPLICATION]: 'Application: "{}" already exist',
     [ERROR_CODE.DUPLICATE_GROUP]: 'Group: "{}" already exist',
+    [ERROR_CODE.DUPLICATE_ORGANIZATION]: 'Organization: "{}" already exist',
 
     [ERROR_CODE.CANNOT_MODIFY_INTERNAL_GROUP]: 'Internal group cannot be modify',
 

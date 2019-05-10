@@ -1,6 +1,6 @@
 /**
  * @author WMXPY
- * @namespace Brontosaurus_Mint_Routes_Red_Account
+ * @namespace Brontosaurus_Mint_Routes_Red_Organization
  * @description Register
  */
 
@@ -30,10 +30,10 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/organization/register - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/register - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.ORGANIZATION_CONTROL], this._error), '/organization/register - GroupVerifyHandler'),
-        basicHook.wrap(this._registerHandler.bind(this), '/organization/register - Register', true),
+        basicHook.wrap(this._registerSubOrganizationAccountHandler.bind(this), '/organization/register - Register', true),
     ];
 
-    private async _registerHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _registerSubOrganizationAccountHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
         const body: SafeExtract<OrganizationRegisterRouteBody> = Safe.extract(req.body as OrganizationRegisterRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
 
