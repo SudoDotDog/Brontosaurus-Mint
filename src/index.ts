@@ -11,7 +11,6 @@ import * as Mongoose from "mongoose";
 import * as Path from 'path';
 import { MintRoutes } from './routes/import';
 import { BrontosaurusConfig, isDevelopment, readConfigEnvironment } from './util/conf';
-import { registerConnor } from './util/error';
 
 const setting: SudooExpressApplication = SudooExpressApplication.create('Brontosaurus-Mint', '1');
 
@@ -25,8 +24,6 @@ if (isDevelopment()) {
 const app: SudooExpress = SudooExpress.create(setting);
 
 const config: BrontosaurusConfig = readConfigEnvironment();
-
-registerConnor();
 
 const db: Mongoose.Connection = connect(config.database);
 

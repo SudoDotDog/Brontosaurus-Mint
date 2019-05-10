@@ -88,7 +88,6 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
     [ERROR_CODE.PERMISSION_USER_DOES_NOT_MATCH]: 'Permission user does not match between: "{}" and "{}"',
 };
 
-export const registerConnor = () => Connor.dictionary(MODULE_NAME, ERROR_LIST);
+export const panic: Panic<ERROR_CODE> = Panic.withDictionary(MODULE_NAME, ERROR_LIST);
 export const getErrorCreationFunction = () => Connor.getErrorCreator(MODULE_NAME);
 
-export const panic: Panic<ERROR_CODE> = Panic.fromModule(MODULE_NAME);
