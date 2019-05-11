@@ -23,6 +23,7 @@ export enum ERROR_CODE {
     TOKEN_DOES_NOT_CONTAIN_INFORMATION = 4150,
     TOKEN_DOES_NOT_CONTAIN_HEADER = 4151,
     TOKEN_DOES_NOT_CONTAIN_BODY = 4152,
+    TOKEN_DOES_NOT_CONTAIN_ORGANIZATION = 4153,
 
     INSUFFICIENT_INFORMATION = 4500,
     INSUFFICIENT_SPECIFIC_INFORMATION = 4501,
@@ -63,6 +64,7 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
     [ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_INFORMATION]: 'Token does not contain information: "{}"',
     [ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_HEADER]: 'Token does not contain header',
     [ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_BODY]: 'Token does not contain body',
+    [ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_ORGANIZATION]: 'Token does not contain organization',
 
     [ERROR_CODE.INSUFFICIENT_INFORMATION]: 'Insufficient information',
     [ERROR_CODE.INSUFFICIENT_SPECIFIC_INFORMATION]: 'Insufficient information, need: "{}"',

@@ -51,7 +51,9 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
             const pages: number = await OrganizationController.getTotalActiveOrganizationPages(limit);
             const organizations: IOrganizationModel[] = await OrganizationController.getSelectedActiveOrganizationsByPage(limit, Math.floor(page), keyword);
 
-            const parsed = organizations.map((organization: IOrganizationModel) => ({
+            const parsed: Array<{
+                name: string;
+            }> = organizations.map((organization: IOrganizationModel) => ({
                 name: organization.name,
             }));
 

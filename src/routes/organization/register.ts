@@ -40,7 +40,11 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
         try {
 
             const token: SafeToken = req.principal;
-            const organizationName: string = token.body.direct('organization', this._error(ERROR_CODE.ACCOUNT_ORGANIZATION_NOT_FOUND));
+            const organizationName: string | undefined = token.body.direct('organization', this._error(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_ORGANIZATION));
+
+            if (!organizationName) {
+                throw this._error(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_ORGANIZATION);
+            }
 
             const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(organizationName);
 
