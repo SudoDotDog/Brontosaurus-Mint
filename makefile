@@ -30,11 +30,6 @@ p-run: dev
 	@NODE_ENV=production \
 	node dist/index.js
 
-prepare: dev
-	@NODE_ENV=development \
-	BRONTOSAURUS_DB=$(DB) \
-	node dist/prepare.js
-	
 tests:
 	@echo "[INFO] Testing with Mocha"
 	@NODE_ENV=test $(mocha)
