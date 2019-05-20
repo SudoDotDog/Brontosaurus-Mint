@@ -3,11 +3,6 @@ build := typescript/tsconfig.build.json
 dev := typescript/tsconfig.dev.json
 
 # NPX functions
-ifeq ($(OS), Windows_NT)
-	dbPath := F:/db/
-else
-	dbPath := ~/Desktop/db/
-endif
 tsc := node_modules/.bin/tsc
 mocha := node_modules/.bin/mocha
 
@@ -38,9 +33,6 @@ cov:
 	@echo "[INFO] Testing with Nyc and Mocha"
 	@NODE_ENV=test \
 	nyc $(mocha)
-
-host:
-	@mongod --dbpath $(dbPath)
 
 install:
 	@echo "[INFO] Installing dev Dependencies"
