@@ -9,6 +9,7 @@ import { SudooExpress, SudooExpressApplication } from '@sudoo/express';
 import { LOG_LEVEL, SudooLog } from '@sudoo/log';
 import * as Mongoose from "mongoose";
 import * as Path from 'path';
+import { createReplacementHandler } from './handlers/public';
 import { MintRoutes } from './routes/import';
 import { BrontosaurusConfig, isDevelopment, readConfigEnvironment } from './util/conf';
 
@@ -30,6 +31,7 @@ const db: Mongoose.Connection = connect(config.database);
 db.on('error', console.log.bind(console, 'connection error:'));
 
 // Static
+app.express.get(['/', '/index.html'], createReplacementHandler());
 app.static(Path.join(__dirname, '..', 'public', 'red'));
 
 // Health
