@@ -31,7 +31,7 @@ const db: Mongoose.Connection = connect(config.database);
 db.on('error', console.log.bind(console, 'connection error:'));
 
 // Static
-app.express.get(['/', '/index.html'], createReplacementHandler());
+app.express.get(['/', '/index.html'], createReplacementHandler('<!-- Insertion Point -->', 'to'));
 app.static(Path.join(__dirname, '..', 'public', 'red'));
 
 // Health

@@ -59,6 +59,14 @@
   resolved "https://registry.yarnpkg.com/@sudoo/extract/-/extract-1.2.0.tgz#42c0753c1b76bc964180a54ca31668a9ac6576ae"
   integrity sha512-3/F3HuTnX2tAvkSS1KA2A6DPwZQDVhlRT2xfDmHhXp0p2aENvfdvBaiUU+xCqvHfS/Koi4pBUoWryGkTWdn4IA==
 
+"@sudoo/io@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@sudoo/io/-/io-1.6.0.tgz#efc631a04d55419ba1001a467b7151c7c070dfce"
+  integrity sha512-sHpHkuxq+N0Z9fBIda7JEHlK4UbxnAdiqyJ5yorKxtr0YTuCcMfG5QbVXGAE82/jNjaAi6MfIuaCQd15GQ9PpQ==
+  dependencies:
+    "@sudoo/bark" "^2.6.1"
+    connor "^2.4.0"
+
 "@sudoo/log@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@sudoo/log/-/log-1.2.2.tgz#936acb5017c957a10a17052f11a51485edb3ba54"
@@ -241,13 +249,6 @@ assertion-error@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
   integrity sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==
-
-async@2.6.2:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/async/-/async-2.6.2.tgz#18330ea7e6e313887f5d2f2a904bac6fe4dd5381"
-  integrity sha512-H1qVYh1MYhEEFLsP97cVKqCGo7KfCyTt6uEWqsTBr9SO84oK9Uwbyd/yCW+6rKJLHksBNUVWZDAjfS+Ccx0Bbg==
-  dependencies:
-    lodash "^4.17.11"
 
 async@2.6.2:
   version "2.6.2"
