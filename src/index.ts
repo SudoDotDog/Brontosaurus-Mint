@@ -11,7 +11,7 @@ import * as Mongoose from "mongoose";
 import * as Path from 'path';
 import { createReplacementHandler } from './handlers/public';
 import { MintRoutes } from './routes/import';
-import { BrontosaurusConfig, isDevelopment, readConfigEnvironment } from './util/conf';
+import { BrontosaurusConfig, getEnvGettingText, isDevelopment, readConfigEnvironment } from './util/conf';
 
 const setting: SudooExpressApplication = SudooExpressApplication.create('Brontosaurus-Mint', '1');
 
@@ -31,7 +31,7 @@ const db: Mongoose.Connection = connect(config.database);
 db.on('error', console.log.bind(console, 'connection error:'));
 
 // Static
-app.express.get(['/', '/index.html'], createReplacementHandler('<!-- Insertion Point -->', 'to'));
+app.express.get(['/', '/index.html'], createReplacementHandler('<!-- Insertion Point -->', getEnvGettingText()));
 app.static(Path.join(__dirname, '..', 'public', 'red'));
 
 // Health
