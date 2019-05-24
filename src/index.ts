@@ -32,6 +32,9 @@ db.on('error', console.log.bind(console, 'connection error:'));
 // Static
 app.static(Path.join(__dirname, '..', 'public', 'red'));
 
+// Health
+app.health('/health');
+
 // Mint
 app.routeList(MintRoutes);
 
