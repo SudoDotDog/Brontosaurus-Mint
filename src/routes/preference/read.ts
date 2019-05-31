@@ -27,15 +27,14 @@ export class ReadPreferenceRoute extends BrontosaurusRoute {
         try {
 
             const globalAvatar: string | null = await PreferenceController.getSinglePreference('globalAvatar');
-            const backgroundImages: string[] | null = await PreferenceController.getSinglePreference('backgroundImages');
+            const globalBackgroundImages: string[] | null = await PreferenceController.getSinglePreference('globalBackgroundImages');
+            const globalHelpLink: string | null = await PreferenceController.getSinglePreference('globalHelpLink');
+            const globalPrivacyPolicy: string | null = await PreferenceController.getSinglePreference('globalPrivacyPolicy');
 
-            if (globalAvatar) {
-                res.agent.add('globalAvatar', globalAvatar);
-            }
-
-            if (backgroundImages) {
-                res.agent.add('backgroundImages', backgroundImages);
-            }
+            res.agent.addIfExist('globalAvatar', globalAvatar)
+                .addIfExist('globalBackgroundImages', globalBackgroundImages)
+                .addIfExist('globalHelpLink', globalHelpLink)
+                .addIfExist('globalPrivacyPolicy', globalPrivacyPolicy);
         } catch (err) {
 
             res.agent.fail(400, err);

@@ -15,8 +15,10 @@ import { ERROR_CODE } from "../../util/error";
 
 export type GlobalPreferenceRouteBody = {
 
-    globalAvatar: string;
-    backgroundImages: string[];
+    readonly globalAvatar: string;
+    readonly globalBackgroundImages: string[];
+    readonly globalHelpLink: string;
+    readonly globalPrivacyPolicy: string;
 };
 
 export class GlobalPreferenceRoute extends BrontosaurusRoute {
@@ -38,14 +40,18 @@ export class GlobalPreferenceRoute extends BrontosaurusRoute {
         try {
 
             const globalAvatar: string = body.direct('globalAvatar');
-            const backgroundImages: string[] = body.direct('backgroundImages');
+            const globalBackgroundImages: string[] = body.direct('globalBackgroundImages');
+            const globalHelpLink: string = body.direct('globalHelpLink');
+            const globalPrivacyPolicy: string = body.direct('globalPrivacyPolicy');
 
-            if (!isArray(backgroundImages)) {
+            if (!isArray(globalBackgroundImages)) {
                 throw this._error(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN);
             }
 
             await PreferenceController.setSinglePreference('globalAvatar', globalAvatar.toString());
-            await PreferenceController.setSinglePreference('backgroundImages', backgroundImages.map((value: any) => value.toString()));
+            await PreferenceController.setSinglePreference('globalBackgroundImages', globalBackgroundImages.map((value: any) => value.toString()));
+            await PreferenceController.setSinglePreference('globalHelpLink', globalHelpLink.toString());
+            await PreferenceController.setSinglePreference('globalPrivacyPolicy', globalPrivacyPolicy.toString());
 
             res.agent.add('status', 'done');
         } catch (err) {
