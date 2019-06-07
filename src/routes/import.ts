@@ -9,6 +9,7 @@ import { AdminEditRoute } from './account/admin-edit';
 import { ChangePasswordRoute } from './account/change-password';
 import { FetchAccountRoute } from './account/fetch';
 import { RegisterRoute } from './account/register';
+import { RemoveGroupRoute } from './account/remove-group';
 import { SelfEditRoute } from './account/self-edit';
 import { SingleAccountRoute } from './account/single';
 import { CreateApplicationRoute } from './application/create';
@@ -38,6 +39,7 @@ export const MintRoutes = [
 
     // Account
     new AddGroupRoute(),
+    new RemoveGroupRoute(),
     new FetchAccountRoute(),
     new RegisterRoute(),
     new SelfEditRoute(),
