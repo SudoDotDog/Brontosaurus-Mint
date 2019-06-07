@@ -4,7 +4,7 @@
  * @description Register
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
@@ -19,6 +19,8 @@ export type RegisterRouteBody = {
     username: string;
     password: string;
     infos: Record<string, Basics>;
+
+    organization?: string;
 };
 
 export class RegisterRoute extends BrontosaurusRoute {
@@ -53,10 +55,25 @@ export class RegisterRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
             }
 
-            const account: IAccountModel = AccountController.createUnsavedAccount(username, password, undefined, [], infos);
-            await account.save();
+            if (req.body.organization) {
 
-            res.agent.add('account', account.username);
+                const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(req.body.name);
+                if (!organization) {
+
+                    throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, req.body.organization);
+                }
+
+                const account: IAccountModel = AccountController.createUnsavedAccount(username, password, organization._id, [], infos);
+                await account.save();
+
+                res.agent.add('account', account.username);
+            } else {
+
+                const account: IAccountModel = AccountController.createUnsavedAccount(username, password, undefined, [], infos);
+                await account.save();
+
+                res.agent.add('account', account.username);
+            }
         } catch (err) {
             res.agent.fail(400, err);
         } finally {
