@@ -44,6 +44,11 @@
   resolved "https://registry.yarnpkg.com/@sudoo/bark/-/bark-2.6.4.tgz#e2232edfa76dcfc362cd16da662a36a57b3bd1f2"
   integrity sha512-kfRGRwG+KiUm4yl+PiE1mJs9/QPKQ3yrtdPN6LPbzfi7mNJ80ry28YGB709Od2qijA12nPN9zWnOCxd7qr1JAQ==
 
+"@sudoo/bark@^2.7.1":
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/@sudoo/bark/-/bark-2.7.1.tgz#84b9db0be3aa7b4d6896ced81d9fa9aac96578ef"
+  integrity sha512-0zBFbIQAtu3XNJkFPszdljYXXIPXzR63qypfTwFRupmu3gxgfBMtdPShbQebGuGG0KQEmXasGMBQVi2O0jWbbQ==
+
 "@sudoo/express@^1.9.1":
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/@sudoo/express/-/express-1.9.1.tgz#0c06163dc7535a8241efe47cb535ccf151855bca"
@@ -378,6 +383,11 @@ connor@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/connor/-/connor-2.4.0.tgz#af25da66e2bc5d9861595b2992ccda2bb4316d73"
   integrity sha512-8Kwp8LEWxJyW/n5ApHAi34WvxblPzOODXMso3OZJE/gpWdK6vRl7MhVy4/ZSCrIjHvWNNOumhbvEM4GocQgdcA==
+
+connor@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/connor/-/connor-2.5.1.tgz#bf9ca2b77d363bc78b78fb23aaf143a3b5ce171b"
+  integrity sha512-t65hAFdl34SLOpjWKxAHuGpbjqXG9CdGunyF6M+J5uuaU9BILVVEwD3M4oqD1sChJK8unuIOzNHhqTDMVz1QqA==
 
 content-disposition@0.5.3:
   version "0.5.3"
@@ -741,10 +751,29 @@ mongoose-legacy-pluralize@1.0.2:
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
 
-mongoose@^5.5.11, mongoose@^5.5.14:
+mongoose@^5.5.11:
   version "5.5.14"
   resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.5.14.tgz#fe70fa3b803206bdd703afa94b84492f4d7e64a9"
   integrity sha512-BWrugOHZQLeiXlA9bA/xo9TvjZpV5O4T5vJJT7wsLmZyAi0heYkAPqzH206+NxgnPyAifqjrLR+M24vqXgugNQ==
+  dependencies:
+    async "2.6.2"
+    bson "~1.1.1"
+    kareem "2.3.0"
+    mongodb "3.2.7"
+    mongodb-core "3.2.7"
+    mongoose-legacy-pluralize "1.0.2"
+    mpath "0.6.0"
+    mquery "3.2.1"
+    ms "2.1.2"
+    regexp-clone "1.0.0"
+    safe-buffer "5.1.2"
+    sift "7.0.1"
+    sliced "1.0.1"
+
+mongoose@^5.5.15:
+  version "5.5.15"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.5.15.tgz#513c571313c8bbd9073aed5310fde5177522fc96"
+  integrity sha512-VRX3i3ptARSGT82b6H0k/oGxkaDXPPpIBstGyrQ3mDGjygPDPjlXvJaih6zyjfRXRVvdu1L2nVfQH5FixANO1w==
   dependencies:
     async "2.6.2"
     bson "~1.1.1"
