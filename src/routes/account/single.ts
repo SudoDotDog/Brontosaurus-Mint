@@ -4,13 +4,13 @@
  * @description Single
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
 import { Throwable_MapGroups } from "../../util/auth";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 import { BrontosaurusRoute } from "../basic";
 
 export type SingleAccountBody = {
@@ -48,12 +48,30 @@ export class SingleAccountRoute extends BrontosaurusRoute {
 
             const accountGroups: string[] = await Throwable_MapGroups(account.groups);
 
-            res.agent.add('account', {
-                username: account.username,
-                groups: accountGroups,
-                infos: account.getInfoRecords(),
-                beacons: account.getBeaconRecords(),
-            });
+            if (!account.organization) {
+
+                res.agent.add('account', {
+                    username: account.username,
+                    groups: accountGroups,
+                    infos: account.getInfoRecords(),
+                    beacons: account.getBeaconRecords(),
+                });
+            } else {
+
+                const organization: IOrganizationModel | null = await OrganizationController.getOrganizationById(account.organization);
+
+                if (!organization) {
+                    throw panic.code(ERROR_CODE.ORGANIZATION_NOT_FOUND, account.organization.toHexString());
+                }
+
+                res.agent.add('account', {
+                    username: account.username,
+                    groups: accountGroups,
+                    organization: organization.name,
+                    infos: account.getInfoRecords(),
+                    beacons: account.getBeaconRecords(),
+                });
+            }
         } catch (err) {
             res.agent.fail(400, err);
         } finally {
