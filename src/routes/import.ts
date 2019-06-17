@@ -20,6 +20,7 @@ import { CreateGroupRoute } from './group/create';
 import { FetchGroupRoute } from './group/fetch';
 import { OrganizationCreateRoute } from './organization/create';
 import { OrganizationFetchRoute } from './organization/fetch';
+import { OrganizationInplodeRoute } from './organization/inplode';
 import { OrganizationRegisterRoute } from './organization/register';
 import { GlobalPreferenceRoute } from './preference/global';
 import { InfosPreferenceRoute } from './preference/infos';
@@ -54,6 +55,7 @@ export const MintRoutes = [
 
     // Organization
     new OrganizationCreateRoute(),
+    new OrganizationInplodeRoute(),
     new OrganizationFetchRoute(),
     new OrganizationRegisterRoute(),
 ];
