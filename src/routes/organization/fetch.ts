@@ -47,7 +47,7 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const limit: number = 10;
+            const limit: number = 25;
 
             const pages: number = await OrganizationController.getTotalActiveOrganizationPages(limit);
             const organizations: IOrganizationModel[] = await OrganizationController.getSelectedActiveOrganizationsByPage(limit, Math.floor(page), keyword);

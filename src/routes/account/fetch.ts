@@ -46,7 +46,7 @@ export class FetchAccountRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const limit: number = 10;
+            const limit: number = 25;
 
             const pages: number = await AccountController.getTotalActiveAccountPages(limit);
             const accounts: IAccountModel[] = await AccountController.getSelectedActiveAccountsByPage(limit, Math.floor(page), keyword);
