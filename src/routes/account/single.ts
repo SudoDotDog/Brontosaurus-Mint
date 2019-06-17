@@ -4,7 +4,7 @@
  * @description Single
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, OrganizationDetail } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
@@ -58,7 +58,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                 });
             } else {
 
-                const organization: IOrganizationModel | null = await OrganizationController.getOrganizationById(account.organization);
+                const organization: OrganizationDetail | null = await OrganizationController.getOrganizationDetailsById(account.organization);
 
                 if (!organization) {
                     throw panic.code(ERROR_CODE.ORGANIZATION_NOT_FOUND, account.organization.toHexString());
@@ -67,7 +67,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                 res.agent.add('account', {
                     username: account.username,
                     groups: accountGroups,
-                    organization: organization.name,
+                    organization,
                     infos: account.getInfoRecords(),
                     beacons: account.getBeaconRecords(),
                 });

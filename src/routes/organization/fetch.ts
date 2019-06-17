@@ -4,7 +4,8 @@
  * @description Create
  */
 
-import { INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { _Mutate } from "@sudoo/bark/mutate";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
@@ -53,9 +54,20 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
 
             const parsed: Array<{
                 name: string;
-            }> = organizations.map((organization: IOrganizationModel) => ({
-                name: organization.name,
-            }));
+                owner: string;
+            }> = await _Mutate.asyncMap(organizations, async (organization: IOrganizationModel) => {
+
+                const ownerUser: IAccountModel | null = await AccountController.getAccountById(organization.owner);
+
+                if (!ownerUser) {
+                    throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, organization.owner.toHexString());
+                }
+
+                return {
+                    name: organization.name,
+                    owner: ownerUser.username,
+                };
+            });
 
             res.agent.add('organizations', parsed);
             res.agent.add('pages', Math.ceil(pages));
