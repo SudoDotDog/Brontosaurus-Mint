@@ -4,7 +4,7 @@
  * @description Self Edit
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IGroupModel, GroupController } from "@brontosaurus/db";
+import { AccountController, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';

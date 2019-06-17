@@ -57,7 +57,7 @@ export class RegisterRoute extends BrontosaurusRoute {
 
             if (req.body.organization) {
 
-                const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(req.body.name);
+                const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(req.body.organization);
                 if (!organization) {
 
                     throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, req.body.organization);

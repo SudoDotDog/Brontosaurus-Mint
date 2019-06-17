@@ -40,6 +40,7 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
         try {
 
             const token: SafeToken = req.principal;
+            const registeree: string = token.body.direct('username');
             const organizationName: string | undefined = token.body.direct('organization', this._error(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_ORGANIZATION));
 
             if (!organizationName) {
@@ -66,7 +67,9 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
             }
 
-            const account: IAccountModel = AccountController.createUnsavedAccount(username, password, organization._id, [], infos);
+            const account: IAccountModel = AccountController.createUnsavedAccount(username, password, organization._id, [], infos, {
+                registeredBy: registeree,
+            });
             await account.save();
 
             res.agent.add('account', account.username);
