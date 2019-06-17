@@ -8,7 +8,7 @@ import { AccountController, ApplicationController, IAccountModel, IApplicationMo
 import { IBrontosaurusBody } from "@brontosaurus/definition";
 import { SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeValue } from "@sudoo/extract";
-import Connor, { ErrorCreationFunction } from "connor";
+import { Connor, ErrorCreationFunction } from "connor";
 import { compareGroups, getPrincipleFromToken, parseBearerAuthorization, Throwable_GetBody, Throwable_MapGroups, Throwable_ValidateToken } from "../util/auth";
 import { ERROR_CODE, MODULE_NAME } from "../util/error";
 

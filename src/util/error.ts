@@ -4,7 +4,7 @@
  * @description Error
  */
 
-import Connor, { Panic } from 'connor';
+import { Connor, Panic } from 'connor';
 
 export const MODULE_NAME = 'Brontosaurus-Mint';
 
