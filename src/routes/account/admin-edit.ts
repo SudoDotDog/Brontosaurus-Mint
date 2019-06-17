@@ -4,7 +4,7 @@
  * @description Self Edit
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IGroupModel, GroupController } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
@@ -17,6 +17,7 @@ import { parseInfo } from "../../util/token";
 export type AdminEditBody = {
 
     username: string;
+    groups: string[];
     account: Partial<{
         infos: Record<string, Basics>;
         beacons: Record<string, Basics>;
@@ -69,6 +70,11 @@ export class AdminEditRoute extends BrontosaurusRoute {
                 };
                 account.infos = parseInfo(newInfos);
             }
+
+            const groups: string[] = body.direct('groups');
+            const parsedGroups: IGroupModel[] = await GroupController.getGroupByNames(groups);
+
+            account.groups = parsedGroups.map((group: IGroupModel) => group._id);
 
             await account.save();
 
