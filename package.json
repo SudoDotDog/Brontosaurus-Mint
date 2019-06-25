@@ -24,7 +24,7 @@
     "@sudoo/io": "^1.6.0",
     "@sudoo/log": "^1.2.2",
     "connor": "^2.5.1",
-    "mongoose": "^5.5.15"
+    "mongoose": "^5.6.1"
   },
   "devDependencies": {
     "@sudoo/mock": "^1.2.0",
