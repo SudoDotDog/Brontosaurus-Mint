@@ -7,6 +7,7 @@
 import { AddGroupRoute } from './account/add-group';
 import { AdminEditRoute } from './account/admin-edit';
 import { ChangePasswordRoute } from './account/change-password';
+import { AccountDeactivateRoute } from './account/deactivate';
 import { FetchAccountRoute } from './account/fetch';
 import { RegisterRoute } from './account/register';
 import { RemoveGroupRoute } from './account/remove-group';
@@ -19,6 +20,7 @@ import { UpdateApplicationRoute } from './application/update';
 import { CreateGroupRoute } from './group/create';
 import { FetchGroupRoute } from './group/fetch';
 import { OrganizationCreateRoute } from './organization/create';
+import { OrganizationDeactivateRoute } from './organization/deactivate';
 import { OrganizationFetchRoute } from './organization/fetch';
 import { OrganizationInplodeRoute } from './organization/inplode';
 import { OrganizationRegisterRoute } from './organization/register';
@@ -47,6 +49,7 @@ export const MintRoutes = [
     new ChangePasswordRoute(),
     new AdminEditRoute(),
     new SingleAccountRoute(),
+    new AccountDeactivateRoute(),
 
     // Preference
     new GlobalPreferenceRoute(),
@@ -58,4 +61,5 @@ export const MintRoutes = [
     new OrganizationInplodeRoute(),
     new OrganizationFetchRoute(),
     new OrganizationRegisterRoute(),
+    new OrganizationDeactivateRoute(),
 ];
