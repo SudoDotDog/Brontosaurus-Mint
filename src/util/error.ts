@@ -47,6 +47,8 @@ export enum ERROR_CODE {
 
     NOT_ENOUGH_PERMISSION = 7001,
     PERMISSION_USER_DOES_NOT_MATCH = 7002,
+
+    INTERNAL_ERROR = 8000,
 }
 
 export const ERROR_LIST: Record<ERROR_CODE, string> = {
@@ -88,6 +90,8 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
 
     [ERROR_CODE.NOT_ENOUGH_PERMISSION]: 'Permission insufficient, need "{}"',
     [ERROR_CODE.PERMISSION_USER_DOES_NOT_MATCH]: 'Permission user does not match between: "{}" and "{}"',
+
+    [ERROR_CODE.INTERNAL_ERROR]: 'Internal Error',
 };
 
 export const panic: Panic<ERROR_CODE> = Panic.withDictionary(MODULE_NAME, ERROR_LIST);

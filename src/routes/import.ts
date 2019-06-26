@@ -9,6 +9,7 @@ import { AdminEditRoute } from './account/admin-edit';
 import { ChangePasswordRoute } from './account/change-password';
 import { AccountDeactivateRoute } from './account/deactivate';
 import { FetchAccountRoute } from './account/fetch';
+import { AccountLimboRoute } from './account/limbo';
 import { RegisterRoute } from './account/register';
 import { RemoveGroupRoute } from './account/remove-group';
 import { SelfEditRoute } from './account/self-edit';
@@ -50,6 +51,7 @@ export const MintRoutes = [
     new AdminEditRoute(),
     new SingleAccountRoute(),
     new AccountDeactivateRoute(),
+    new AccountLimboRoute(),
 
     // Preference
     new GlobalPreferenceRoute(),
