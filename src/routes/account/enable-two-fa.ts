@@ -7,6 +7,7 @@
 import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
+import * as QRCode from "qrcode";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
@@ -52,10 +53,12 @@ export class EnableTwoFARoute extends BrontosaurusRoute {
             }
 
             const secretURL: string = account.generateAndSetTwoFA();
+            const qrcode: string = await QRCode.toDataURL(secretURL);
 
-            // await account.save();
+            await account.save();
 
             res.agent.add('secret', secretURL);
+            res.agent.add('qrcode', qrcode);
         } catch (err) {
             res.agent.fail(400, err);
         } finally {
