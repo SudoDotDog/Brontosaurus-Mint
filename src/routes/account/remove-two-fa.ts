@@ -9,8 +9,8 @@ import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpress
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
-import { BrontosaurusRoute } from "../../routes/basic";
 import { ERROR_CODE } from "../../util/error";
+import { BrontosaurusRoute } from "../basic";
 
 export type RemoveTwoFABody = {
 

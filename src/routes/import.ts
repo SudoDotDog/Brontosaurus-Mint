@@ -8,11 +8,12 @@ import { AddGroupRoute } from './account/add-group';
 import { AdminEditRoute } from './account/admin-edit';
 import { ChangePasswordRoute } from './account/change-password';
 import { AccountDeactivateRoute } from './account/deactivate';
+import { EnableTwoFARoute } from './account/enable-two-fa';
 import { FetchAccountRoute } from './account/fetch';
 import { AccountLimboRoute } from './account/limbo';
 import { RegisterRoute } from './account/register';
 import { RemoveGroupRoute } from './account/remove-group';
-import { RemoveTwoFARoute } from './account/removeTwoFA';
+import { RemoveTwoFARoute } from './account/remove-two-fa';
 import { SelfEditRoute } from './account/self-edit';
 import { SingleAccountRoute } from './account/single';
 import { CreateApplicationRoute } from './application/create';
@@ -48,6 +49,7 @@ export const MintRoutes = [
     new FetchAccountRoute(),
     new RegisterRoute(),
     new SelfEditRoute(),
+    new EnableTwoFARoute(),
     new ChangePasswordRoute(),
     new AdminEditRoute(),
     new SingleAccountRoute(),
