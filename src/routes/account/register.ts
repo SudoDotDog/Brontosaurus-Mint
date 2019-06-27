@@ -16,11 +16,11 @@ import { jsonifyBasicRecords } from "../../util/token";
 
 export type RegisterRouteBody = {
 
-    username: string;
-    password: string;
-    infos: Record<string, Basics>;
+    readonly username: string;
+    readonly password: string;
+    readonly infos: Record<string, Basics>;
 
-    organization?: string;
+    readonly organization?: string;
 };
 
 export class RegisterRoute extends BrontosaurusRoute {
