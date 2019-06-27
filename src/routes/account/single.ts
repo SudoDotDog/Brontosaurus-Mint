@@ -52,6 +52,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
 
                 res.agent.add('account', {
                     username: account.username,
+                    twoFA: Boolean(account.twoFA),
                     groups: accountGroups,
                     infos: account.getInfoRecords(),
                     beacons: account.getBeaconRecords(),
@@ -66,6 +67,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
 
                 res.agent.add('account', {
                     username: account.username,
+                    twoFA: Boolean(account.twoFA),
                     groups: accountGroups,
                     organization,
                     infos: account.getInfoRecords(),

@@ -12,6 +12,7 @@ import { FetchAccountRoute } from './account/fetch';
 import { AccountLimboRoute } from './account/limbo';
 import { RegisterRoute } from './account/register';
 import { RemoveGroupRoute } from './account/remove-group';
+import { RemoveTwoFARoute } from './account/removeTwoFA';
 import { SelfEditRoute } from './account/self-edit';
 import { SingleAccountRoute } from './account/single';
 import { CreateApplicationRoute } from './application/create';
@@ -52,6 +53,7 @@ export const MintRoutes = [
     new SingleAccountRoute(),
     new AccountDeactivateRoute(),
     new AccountLimboRoute(),
+    new RemoveTwoFARoute(),
 
     // Preference
     new GlobalPreferenceRoute(),
