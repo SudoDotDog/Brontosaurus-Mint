@@ -18,6 +18,8 @@ export type AdminEditBody = {
 
     username: string;
     groups: string[];
+    email?: string;
+    phone?: string;
     account: Partial<{
         infos: Record<string, Basics>;
         beacons: Record<string, Basics>;
@@ -74,6 +76,8 @@ export class AdminEditRoute extends BrontosaurusRoute {
             const groups: string[] = body.direct('groups');
             const parsedGroups: IGroupModel[] = await GroupController.getGroupByNames(groups);
 
+            account.email = req.body.email;
+            account.phone = req.body.phone;
             account.groups = parsedGroups.map((group: IGroupModel) => group._id);
 
             await account.save();

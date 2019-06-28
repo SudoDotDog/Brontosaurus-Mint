@@ -16,6 +16,9 @@ import { jsonifyBasicRecords } from "../../util/token";
 
 export type RegisterRouteBody = {
 
+    readonly email?: string;
+    readonly phone?: string;
+
     readonly username: string;
     readonly password: string;
     readonly infos: Record<string, Basics>;
@@ -63,13 +66,29 @@ export class RegisterRoute extends BrontosaurusRoute {
                     throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, req.body.organization);
                 }
 
-                const account: IAccountModel = AccountController.createUnsavedAccount(username, password, organization._id, [], infos);
+                const account: IAccountModel = AccountController.createUnsavedAccount(
+                    username,
+                    password,
+                    req.body.email,
+                    req.body.phone,
+                    organization._id,
+                    [],
+                    infos,
+                );
                 await account.save();
 
                 res.agent.add('account', account.username);
             } else {
 
-                const account: IAccountModel = AccountController.createUnsavedAccount(username, password, undefined, [], infos);
+                const account: IAccountModel = AccountController.createUnsavedAccount(
+                    username,
+                    password,
+                    req.body.email,
+                    req.body.phone,
+                    undefined,
+                    [],
+                    infos,
+                );
                 await account.save();
 
                 res.agent.add('account', account.username);

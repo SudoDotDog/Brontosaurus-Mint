@@ -17,6 +17,8 @@ import { parseInfo, SafeToken } from "../../util/token";
 export type SelfEditBody = {
 
     username: string;
+    email: string;
+    phone: string;
     account: Partial<{
         infos: Record<string, Basics>;
     }>;
@@ -68,6 +70,9 @@ export class SelfEditRoute extends BrontosaurusRoute {
 
                 account.infos = parseInfo(newInfos);
             }
+
+            account.email = req.body.email;
+            account.phone = req.body.phone;
 
             await account.save();
 
