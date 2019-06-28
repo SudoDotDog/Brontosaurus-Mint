@@ -19,6 +19,8 @@ export type OrganizationInplodeRouteBody = {
     name: string;
     username: string;
     password: string;
+    email: string;
+    phone: string;
     infos: Record<string, Basics>;
 };
 
@@ -61,7 +63,15 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ORGANIZATION, name);
             }
 
-            const account: IAccountModel = AccountController.createUnsavedAccount(username, password, undefined, [], infos);
+            const account: IAccountModel = AccountController.createUnsavedAccount(
+                username,
+                password,
+                req.body.email,
+                req.body.phone,
+                undefined,
+                [],
+                infos,
+            );
             const organization: IOrganizationModel = OrganizationController.createUnsavedOrganization(name, account._id);
 
             account.organization = organization._id;

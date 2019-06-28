@@ -53,6 +53,8 @@ export class FetchAccountRoute extends BrontosaurusRoute {
 
             const parsed = accounts.map((account: IAccountModel) => ({
                 username: account.username,
+                email: account.email,
+                phone: account.phone,
                 twoFA: Boolean(account.twoFA),
                 groups: account.groups.length,
                 infos: account.getInfoRecords(),

@@ -18,6 +18,8 @@ export type OrganizationRegisterRouteBody = {
 
     username: string;
     password: string;
+    email: string;
+    phone: string;
     infos: Record<string, Basics>;
 };
 
@@ -67,9 +69,17 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
             }
 
-            const account: IAccountModel = AccountController.createUnsavedAccount(username, password, organization._id, [], infos, {
-                registeredBy: registeree,
-            });
+            const account: IAccountModel = AccountController.createUnsavedAccount(
+                username,
+                password,
+                req.body.email,
+                req.body.phone,
+                organization._id,
+                [],
+                infos,
+                {
+                    registeredBy: registeree,
+                });
             await account.save();
 
             res.agent.add('account', account.username);
