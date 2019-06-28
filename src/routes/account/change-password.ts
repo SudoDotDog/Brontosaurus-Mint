@@ -54,6 +54,7 @@ export class ChangePasswordRoute extends BrontosaurusRoute {
 
             const password: string = body.direct('password');
             account.setPassword(password);
+            account.resetAttempt();
 
             await account.save();
 
