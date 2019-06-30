@@ -47,7 +47,7 @@ export class ResetAttemptRoute extends BrontosaurusRoute {
 
             await account.save();
 
-            res.agent.add('attempt', account.attemptLeft);
+            res.agent.add('attempt', account.attemptPoints);
         } catch (err) {
             res.agent.fail(400, err);
         } finally {
