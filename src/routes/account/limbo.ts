@@ -45,11 +45,11 @@ export class AccountLimboRoute extends BrontosaurusRoute {
             }
 
             const tempPassword: string = _Random.random(6);
-            const newAccount: IAccountModel | null = await AccountController.resetAccountPasswordAndPutInLimbo(username, tempPassword);
+            account.limbo = true;
+            account.setPassword(tempPassword);
+            account.resetAttempt();
 
-            if (!newAccount) {
-                throw this._error(ERROR_CODE.INTERNAL_ERROR);
-            }
+            await account.save();
 
             res.agent.add('limbo', account.limbo);
             res.agent.add('tempPassword', tempPassword);
