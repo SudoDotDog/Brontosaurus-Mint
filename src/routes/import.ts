@@ -30,7 +30,9 @@ import { OrganizationInplodeRoute } from './organization/inplode';
 import { OrganizationRegisterRoute } from './organization/register';
 import { GlobalPreferenceRoute } from './preference/global';
 import { InfosPreferenceRoute } from './preference/infos';
-import { ReadPreferenceRoute } from './preference/read';
+import { NamePreferenceRoute } from './preference/names';
+import { ReadGlobalPreferenceRoute } from './preference/read-global';
+import { ReadNamesPreferenceRoute } from './preference/read-names';
 
 export const MintRoutes = [
 
@@ -61,7 +63,9 @@ export const MintRoutes = [
 
     // Preference
     new GlobalPreferenceRoute(),
-    new ReadPreferenceRoute(),
+    new NamePreferenceRoute(),
+    new ReadGlobalPreferenceRoute(),
+    new ReadNamesPreferenceRoute(),
     new InfosPreferenceRoute(),
 
     // Organization
