@@ -64,7 +64,7 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
 
             const organizationControlGroup: IGroupModel | null = await GroupController.getGroupByName(INTERNAL_USER_GROUP.ORGANIZATION_CONTROL);
 
-            if (organizationControlGroup) {
+            if (!organizationControlGroup) {
                 throw this._error(ERROR_CODE.INTERNAL_ERROR);
             }
 
