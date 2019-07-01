@@ -87,6 +87,7 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
 
             res.agent.add('account', account.username);
             res.agent.add('organization', organization.name);
+            res.agent.add('tempPassword', tempPassword);
         } catch (err) {
             res.agent.fail(400, err);
         } finally {
