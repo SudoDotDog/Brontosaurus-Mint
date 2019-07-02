@@ -19,6 +19,7 @@ import { SelfEditRoute } from './account/self-edit';
 import { SingleAccountRoute } from './account/single';
 import { CreateApplicationRoute } from './application/create';
 import { FetchApplicationRoute } from './application/fetch';
+import { RefreshGreenApplicationRoute } from './application/refresh-green';
 import { SingleApplicationRoute } from './application/single';
 import { UpdateApplicationRoute } from './application/update';
 import { CreateGroupRoute } from './group/create';
@@ -41,6 +42,7 @@ export const MintRoutes = [
     new FetchApplicationRoute(),
     new SingleApplicationRoute(),
     new UpdateApplicationRoute(),
+    new RefreshGreenApplicationRoute(),
 
     // Group
     new CreateGroupRoute(),
