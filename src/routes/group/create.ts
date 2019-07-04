@@ -15,6 +15,7 @@ import { BrontosaurusRoute } from "../basic";
 export type CreateGroupRouteBody = {
 
     name: string;
+    description?: string;
 };
 
 export class CreateGroupRoute extends BrontosaurusRoute {
@@ -36,6 +37,7 @@ export class CreateGroupRoute extends BrontosaurusRoute {
         try {
 
             const name: string = body.direct('name');
+            const description: string | undefined = req.body.description;
 
             const isDuplicated: boolean = await GroupController.isGroupDuplicatedByName(name);
 
@@ -43,7 +45,7 @@ export class CreateGroupRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_GROUP, name);
             }
 
-            const group: IGroupModel = GroupController.createUnsavedGroup(name);
+            const group: IGroupModel = GroupController.createUnsavedGroup(name, description);
             await group.save();
 
             res.agent.add('group', group.name);
