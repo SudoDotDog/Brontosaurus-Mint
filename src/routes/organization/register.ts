@@ -6,6 +6,7 @@
 
 import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
+import { _Random } from "@sudoo/bark/random";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
@@ -56,7 +57,6 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
             }
 
             const username: string = body.directEnsure('username');
-            const password: string = body.directEnsure('password');
 
             const infoLine: Record<string, Basics> | string = body.direct('infos');
             const infos: Record<string, Basics> = jsonifyBasicRecords(
@@ -69,9 +69,11 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
             }
 
-            const account: IAccountModel = AccountController.createUnsavedAccount(
+            const tempPassword: string = _Random.random(6);
+
+            const account: IAccountModel = AccountController.createOnLimboUnsavedAccount(
                 username,
-                password,
+                tempPassword,
                 req.body.email,
                 req.body.phone,
                 organization._id,
@@ -82,6 +84,7 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
                 });
             await account.save();
 
+            res.agent.add('tempPassword', tempPassword);
             res.agent.add('account', account.username);
         } catch (err) {
             res.agent.fail(400, err);

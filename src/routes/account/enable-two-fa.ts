@@ -4,7 +4,7 @@
  * @description Enable Two FA
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, PreferenceController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import * as QRCode from "qrcode";
@@ -52,7 +52,9 @@ export class EnableTwoFARoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
             }
 
-            const secretURL: string = account.generateAndSetTwoFA();
+            const systemName: string | null = await PreferenceController.getSinglePreference('systemName');
+
+            const secretURL: string = account.generateAndSetTwoFA(systemName || 'Brontosaurus Authorization');
             const qrcode: string = await QRCode.toDataURL(secretURL);
             account.resetAttempt();
 

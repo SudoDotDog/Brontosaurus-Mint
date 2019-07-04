@@ -1,7 +1,7 @@
 /**
  * @author WMXPY
  * @namespace Brontosaurus_Mint_Routes_Red_Preference
- * @description Read
+ * @description Read Global
  */
 
 import { INTERNAL_USER_GROUP, PreferenceController } from "@brontosaurus/db";
@@ -10,16 +10,16 @@ import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler
 import { basicHook } from "../../handlers/hook";
 import { BrontosaurusRoute } from "../basic";
 
-export class ReadPreferenceRoute extends BrontosaurusRoute {
+export class ReadGlobalPreferenceRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/preference/read';
+    public readonly path: string = '/preference/read/global';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.GET;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/preference/read - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/preference/read - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/preference/read - GroupVerifyHandler'),
-        basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/read - Read', true),
+        basicHook.wrap(createTokenHandler(), '/preference/read/global - TokenHandler'),
+        basicHook.wrap(createAuthenticateHandler(), '/preference/read/global - AuthenticateHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/preference/read/global - GroupVerifyHandler'),
+        basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/read/global - Read Global', true),
     ];
 
     private async _preferenceGlobalHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

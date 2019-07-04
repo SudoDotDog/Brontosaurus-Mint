@@ -19,6 +19,7 @@ import { SelfEditRoute } from './account/self-edit';
 import { SingleAccountRoute } from './account/single';
 import { CreateApplicationRoute } from './application/create';
 import { FetchApplicationRoute } from './application/fetch';
+import { RefreshGreenApplicationRoute } from './application/refresh-green';
 import { SingleApplicationRoute } from './application/single';
 import { UpdateApplicationRoute } from './application/update';
 import { CreateGroupRoute } from './group/create';
@@ -30,7 +31,9 @@ import { OrganizationInplodeRoute } from './organization/inplode';
 import { OrganizationRegisterRoute } from './organization/register';
 import { GlobalPreferenceRoute } from './preference/global';
 import { InfosPreferenceRoute } from './preference/infos';
-import { ReadPreferenceRoute } from './preference/read';
+import { NamePreferenceRoute } from './preference/names';
+import { ReadGlobalPreferenceRoute } from './preference/read-global';
+import { ReadNamesPreferenceRoute } from './preference/read-names';
 
 export const MintRoutes = [
 
@@ -39,6 +42,7 @@ export const MintRoutes = [
     new FetchApplicationRoute(),
     new SingleApplicationRoute(),
     new UpdateApplicationRoute(),
+    new RefreshGreenApplicationRoute(),
 
     // Group
     new CreateGroupRoute(),
@@ -61,7 +65,9 @@ export const MintRoutes = [
 
     // Preference
     new GlobalPreferenceRoute(),
-    new ReadPreferenceRoute(),
+    new NamePreferenceRoute(),
+    new ReadGlobalPreferenceRoute(),
+    new ReadNamesPreferenceRoute(),
     new InfosPreferenceRoute(),
 
     // Organization

@@ -6,7 +6,6 @@
 
 import { INTERNAL_USER_GROUP, PreferenceController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
 import { isArray } from "util";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
@@ -15,10 +14,10 @@ import { ERROR_CODE } from "../../util/error";
 
 export type GlobalPreferenceRouteBody = {
 
-    readonly globalAvatar: string;
-    readonly globalBackgroundImages: string[];
-    readonly globalHelpLink: string;
-    readonly globalPrivacyPolicy: string;
+    readonly globalAvatar?: string;
+    readonly globalBackgroundImages?: string[];
+    readonly globalHelpLink?: string;
+    readonly globalPrivacyPolicy?: string;
 };
 
 export class GlobalPreferenceRoute extends BrontosaurusRoute {
@@ -35,25 +34,40 @@ export class GlobalPreferenceRoute extends BrontosaurusRoute {
 
     private async _preferenceGlobalHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<GlobalPreferenceRouteBody> = Safe.extract(req.body as GlobalPreferenceRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: GlobalPreferenceRouteBody = req.body;
 
         try {
 
-            const globalAvatar: string = body.direct('globalAvatar');
-            const globalBackgroundImages: string[] = body.direct('globalBackgroundImages');
-            const globalHelpLink: string = body.direct('globalHelpLink');
-            const globalPrivacyPolicy: string = body.direct('globalPrivacyPolicy');
+            const globalAvatar: string | undefined = body.globalAvatar;
+            const globalBackgroundImages: string[] | undefined = body.globalBackgroundImages;
+            const globalHelpLink: string | undefined = body.globalHelpLink;
+            const globalPrivacyPolicy: string | undefined = body.globalPrivacyPolicy;
 
-            if (!isArray(globalBackgroundImages)) {
-                throw this._error(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN);
+            let changed: number = 0;
+            if (globalAvatar) {
+                await PreferenceController.setSinglePreference('globalAvatar', globalAvatar.toString());
+                changed++;
             }
 
-            await PreferenceController.setSinglePreference('globalAvatar', globalAvatar.toString());
-            await PreferenceController.setSinglePreference('globalBackgroundImages', globalBackgroundImages.map((value: any) => value.toString()));
-            await PreferenceController.setSinglePreference('globalHelpLink', globalHelpLink.toString());
-            await PreferenceController.setSinglePreference('globalPrivacyPolicy', globalPrivacyPolicy.toString());
+            if (globalBackgroundImages) {
+                if (!isArray(globalBackgroundImages)) {
+                    throw this._error(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN);
+                }
+                await PreferenceController.setSinglePreference('globalBackgroundImages', globalBackgroundImages.map((value: any) => value.toString()));
+                changed++;
+            }
 
-            res.agent.add('status', 'done');
+            if (globalHelpLink) {
+                await PreferenceController.setSinglePreference('globalHelpLink', globalHelpLink.toString());
+                changed++;
+            }
+
+            if (globalPrivacyPolicy) {
+                await PreferenceController.setSinglePreference('globalPrivacyPolicy', globalPrivacyPolicy.toString());
+                changed++;
+            }
+
+            res.agent.add('changed', changed);
         } catch (err) {
 
             res.agent.fail(400, err);

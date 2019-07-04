@@ -54,6 +54,7 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
                 key: application.key,
                 expire: application.expire,
                 groups: applicationGroups,
+                green: application.green,
             });
         } catch (err) {
             res.agent.fail(400, err);

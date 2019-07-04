@@ -4,8 +4,9 @@
  * @description Inplode
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { AccountController, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
+import { _Random } from "@sudoo/bark/random";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
@@ -18,7 +19,6 @@ export type OrganizationInplodeRouteBody = {
 
     name: string;
     username: string;
-    password: string;
     email: string;
     phone: string;
     infos: Record<string, Basics>;
@@ -43,7 +43,6 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
         try {
 
             const username: string = body.directEnsure('username');
-            const password: string = body.directEnsure('password');
             const name: string = body.directEnsure('name');
 
             const infoLine: Record<string, Basics> | string = body.direct('infos');
@@ -63,13 +62,21 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ORGANIZATION, name);
             }
 
-            const account: IAccountModel = AccountController.createUnsavedAccount(
+            const organizationControlGroup: IGroupModel | null = await GroupController.getGroupByName(INTERNAL_USER_GROUP.ORGANIZATION_CONTROL);
+
+            if (!organizationControlGroup) {
+                throw this._error(ERROR_CODE.INTERNAL_ERROR);
+            }
+
+            const tempPassword: string = _Random.random(6);
+
+            const account: IAccountModel = AccountController.createOnLimboUnsavedAccount(
                 username,
-                password,
+                tempPassword,
                 req.body.email,
                 req.body.phone,
                 undefined,
-                [],
+                [organizationControlGroup._id],
                 infos,
             );
             const organization: IOrganizationModel = OrganizationController.createUnsavedOrganization(name, account._id);
@@ -80,6 +87,7 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
 
             res.agent.add('account', account.username);
             res.agent.add('organization', organization.name);
+            res.agent.add('tempPassword', tempPassword);
         } catch (err) {
             res.agent.fail(400, err);
         } finally {
