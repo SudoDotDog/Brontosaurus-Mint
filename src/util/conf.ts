@@ -7,7 +7,7 @@
 import * as Fs from 'fs';
 import * as Path from 'path';
 
-export const pageLimit: number = 25;
+export const pageLimit: number = 20;
 
 export type BrontosaurusConfig = {
 

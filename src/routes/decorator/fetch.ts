@@ -47,7 +47,7 @@ export class FetchDecoratorRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const pages: number = await DecoratorController.getTotalActiveDecoratorPages(pageLimit);
+            const pages: number = await DecoratorController.getSelectedActiveDecoratorPages(pageLimit, keyword);
             const decorators: IDecoratorModel[] = await DecoratorController.getSelectedActiveDecoratorsByPage(pageLimit, Math.floor(page), keyword);
 
             const parsed = decorators.map((decorator: IDecoratorModel) => ({

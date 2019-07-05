@@ -47,7 +47,7 @@ export class FetchApplicationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const pages: number = await ApplicationController.getTotalActiveApplicationPages(pageLimit);
+            const pages: number = await ApplicationController.getSelectedActiveApplicationPages(pageLimit, keyword);
             const applications: IApplicationModel[] = await ApplicationController.getSelectedActiveApplicationsByPage(pageLimit, Math.floor(page), keyword);
 
             const parsed = applications.map((application: IApplicationModel) => ({
