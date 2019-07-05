@@ -4,12 +4,12 @@
  * @description Single
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, OrganizationDetail } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, OrganizationController, OrganizationDetail } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
-import { Throwable_MapGroups } from "../../util/auth";
+import { Throwable_MapDecorators, Throwable_MapGroups } from "../../util/auth";
 import { ERROR_CODE, panic } from "../../util/error";
 import { BrontosaurusRoute } from "../basic";
 
@@ -47,6 +47,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
             }
 
             const accountGroups: string[] = await Throwable_MapGroups(account.groups);
+            const accountDecorators: string[] = await Throwable_MapDecorators(account.decorators);
 
             if (!account.organization) {
 
@@ -56,6 +57,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                     phone: account.phone,
                     twoFA: Boolean(account.twoFA),
                     groups: accountGroups,
+                    decorators: accountDecorators,
                     infos: account.getInfoRecords(),
                     beacons: account.getBeaconRecords(),
                 });
@@ -73,6 +75,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                     phone: account.phone,
                     twoFA: Boolean(account.twoFA),
                     groups: accountGroups,
+                    decorators: accountDecorators,
                     organization,
                     infos: account.getInfoRecords(),
                     beacons: account.getBeaconRecords(),

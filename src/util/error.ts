@@ -37,6 +37,7 @@ export enum ERROR_CODE {
     GROUP_NOT_FOUND = 6201,
     ACCOUNT_NOT_FOUND = 6202,
     ORGANIZATION_NOT_FOUND = 6203,
+    DECORATOR_NOT_FOUND = 6204,
 
     DUPLICATE_ACCOUNT = 6250,
     DUPLICATE_APPLICATION = 6251,
@@ -81,6 +82,7 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
     [ERROR_CODE.GROUP_NOT_FOUND]: 'Group: "{}" not found',
     [ERROR_CODE.ACCOUNT_NOT_FOUND]: 'Account: "{}" not found',
     [ERROR_CODE.ORGANIZATION_NOT_FOUND]: 'Organization: "{}" not found',
+    [ERROR_CODE.DECORATOR_NOT_FOUND]: 'Decorator: "{}" not found',
 
     [ERROR_CODE.DUPLICATE_ACCOUNT]: 'Account: "{}" already exist',
     [ERROR_CODE.DUPLICATE_APPLICATION]: 'Application: "{}" already exist',

@@ -4,7 +4,7 @@
  * @description Self Edit
  */
 
-import { AccountController, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, DecoratorController, GroupController, IAccountModel, IDecoratorModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
@@ -18,6 +18,7 @@ export type AdminEditBody = {
 
     username: string;
     groups: string[];
+    decorators: string[];
     email?: string;
     phone?: string;
     account: Partial<{
@@ -76,8 +77,12 @@ export class AdminEditRoute extends BrontosaurusRoute {
             const groups: string[] = body.direct('groups');
             const parsedGroups: IGroupModel[] = await GroupController.getGroupByNames(groups);
 
+            const decorators: string[] = body.direct('decorators');
+            const parsedDecorators: IDecoratorModel[] = await DecoratorController.getDecoratorByNames(decorators);
+
             account.email = req.body.email;
             account.phone = req.body.phone;
+            account.decorators = parsedDecorators.map((decorator: IDecoratorModel) => decorator._id);
             account.groups = parsedGroups.map((group: IGroupModel) => group._id);
 
             await account.save();
