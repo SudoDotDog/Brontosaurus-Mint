@@ -4,7 +4,7 @@
  * @description Inplode
  */
 
-import { AccountController, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, USERNAME_VALIDATE_RESPONSE, validateCommonName, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { _Random } from "@sudoo/bark/random";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
@@ -44,6 +44,18 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
 
             const username: string = body.directEnsure('username');
             const name: string = body.directEnsure('name');
+
+            const usernameValidationResult: USERNAME_VALIDATE_RESPONSE = validateUsername(username);
+
+            if (usernameValidationResult !== USERNAME_VALIDATE_RESPONSE.OK) {
+                throw this._error(ERROR_CODE.INVALID_USERNAME, usernameValidationResult);
+            }
+
+            const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(name);
+
+            if (validateResult !== COMMON_NAME_VALIDATE_RESPONSE.OK) {
+                throw this._error(ERROR_CODE.INVALID_COMMON_NAME, validateResult);
+            }
 
             const infoLine: Record<string, Basics> | string = body.direct('infos');
             const infos: Record<string, Basics> = jsonifyBasicRecords(

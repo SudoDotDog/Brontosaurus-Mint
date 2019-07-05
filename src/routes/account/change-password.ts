@@ -4,7 +4,7 @@
  * @description Change Password
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, PASSWORD_VALIDATE_RESPONSE, validatePassword } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
@@ -38,6 +38,7 @@ export class ChangePasswordRoute extends BrontosaurusRoute {
         try {
 
             const username: string = body.directEnsure('username');
+            const password: string = body.direct('password');
             const principal: SafeToken = req.principal;
 
             const tokenUsername: string = principal.body.directEnsure('username', this._error(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_INFORMATION, 'username'));
@@ -46,13 +47,18 @@ export class ChangePasswordRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.PERMISSION_USER_DOES_NOT_MATCH, username, tokenUsername);
             }
 
+            const validateResult: PASSWORD_VALIDATE_RESPONSE = validatePassword(password);
+
+            if (validateResult !== PASSWORD_VALIDATE_RESPONSE.OK) {
+                throw this._error(ERROR_CODE.INVALID_PASSWORD, validateResult);
+            }
+
             const account: IAccountModel | null = await AccountController.getAccountByUsername(username);
 
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
             }
 
-            const password: string = body.direct('password');
             account.setPassword(password);
             account.resetAttempt();
 

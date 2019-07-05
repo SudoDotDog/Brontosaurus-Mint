@@ -4,7 +4,7 @@
  * @description Create
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, validateCommonName } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
@@ -38,6 +38,12 @@ export class OrganizationCreateRoute extends BrontosaurusRoute {
 
             const name: string = body.direct('name');
             const owner: string = body.direct('owner');
+
+            const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(name);
+
+            if (validateResult !== COMMON_NAME_VALIDATE_RESPONSE.OK) {
+                throw this._error(ERROR_CODE.INVALID_COMMON_NAME, validateResult);
+            }
 
             const isDuplicated: boolean = await OrganizationController.isOrganizationDuplicatedByName(name);
 

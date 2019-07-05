@@ -14,6 +14,10 @@ export enum ERROR_CODE {
     TOKEN_INVALID = 4106,
     TOKEN_EXPIRED = 4107,
 
+    INVALID_USERNAME = 4110,
+    INVALID_PASSWORD = 4111,
+    INVALID_COMMON_NAME = 4112,
+
     APPLICATION_KEY_NOT_FOUND = 4120,
 
     ACCOUNT_MINT_NOT_VALID = 4130,
@@ -58,6 +62,10 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
     [ERROR_CODE.PASSWORD_DOES_NOT_MATCH]: 'Username and password not match',
     [ERROR_CODE.TOKEN_INVALID]: 'Token invalid',
     [ERROR_CODE.TOKEN_EXPIRED]: 'Token expired',
+
+    [ERROR_CODE.INVALID_USERNAME]: 'Invalid username, reason: "{}"',
+    [ERROR_CODE.INVALID_PASSWORD]: 'Invalid password, reason: "{}"',
+    [ERROR_CODE.INVALID_COMMON_NAME]: 'Invalid common name, reason: "{}"',
 
     [ERROR_CODE.APPLICATION_KEY_NOT_FOUND]: 'Application key not found',
 

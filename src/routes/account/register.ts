@@ -4,7 +4,7 @@
  * @description Register
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PASSWORD_VALIDATE_RESPONSE, USERNAME_VALIDATE_RESPONSE, validatePassword, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
@@ -46,6 +46,18 @@ export class RegisterRoute extends BrontosaurusRoute {
 
             const username: string = body.directEnsure('username');
             const password: string = body.directEnsure('password');
+
+            const usernameValidationResult: USERNAME_VALIDATE_RESPONSE = validateUsername(username);
+
+            if (usernameValidationResult !== USERNAME_VALIDATE_RESPONSE.OK) {
+                throw this._error(ERROR_CODE.INVALID_USERNAME, usernameValidationResult);
+            }
+
+            const passwordValidationResult: PASSWORD_VALIDATE_RESPONSE = validatePassword(password);
+
+            if (passwordValidationResult !== PASSWORD_VALIDATE_RESPONSE.OK) {
+                throw this._error(ERROR_CODE.INVALID_PASSWORD, passwordValidationResult);
+            }
 
             const infoLine: Record<string, Basics> | string = body.direct('infos');
             const infos: Record<string, Basics> = jsonifyBasicRecords(

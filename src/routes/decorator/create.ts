@@ -4,7 +4,7 @@
  * @description Create
  */
 
-import { DecoratorController, IDecoratorModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { COMMON_NAME_VALIDATE_RESPONSE, DecoratorController, IDecoratorModel, INTERNAL_USER_GROUP, validateCommonName } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
@@ -37,6 +37,13 @@ export class CreateDecoratorRoute extends BrontosaurusRoute {
         try {
 
             const name: string = body.direct('name');
+
+            const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(name);
+
+            if (validateResult !== COMMON_NAME_VALIDATE_RESPONSE.OK) {
+                throw this._error(ERROR_CODE.INVALID_COMMON_NAME, validateResult);
+            }
+
             const description: string | undefined = req.body.description;
 
             const isDuplicated: boolean = await DecoratorController.isDecoratorDuplicatedByName(name);
