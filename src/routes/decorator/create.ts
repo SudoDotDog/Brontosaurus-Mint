@@ -18,7 +18,7 @@ export type CreateDecoratorBody = {
     description?: string;
 };
 
-export class CreateDecorator extends BrontosaurusRoute {
+export class CreateDecoratorRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/decorator/create';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;

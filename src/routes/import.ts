@@ -22,6 +22,10 @@ import { FetchApplicationRoute } from './application/fetch';
 import { RefreshGreenApplicationRoute } from './application/refresh-green';
 import { SingleApplicationRoute } from './application/single';
 import { UpdateApplicationRoute } from './application/update';
+import { AllDecoratorRoute } from './decorator/all';
+import { CreateDecoratorRoute } from './decorator/create';
+import { FetchDecoratorRoute } from './decorator/fetch';
+import { AllGroupRoute } from './group/all';
 import { CreateGroupRoute } from './group/create';
 import { FetchGroupRoute } from './group/fetch';
 import { OrganizationCreateRoute } from './organization/create';
@@ -45,8 +49,14 @@ export const MintRoutes = [
     new RefreshGreenApplicationRoute(),
 
     // Group
+    new AllGroupRoute(),
     new CreateGroupRoute(),
     new FetchGroupRoute(),
+
+    // Decorator
+    new AllDecoratorRoute(),
+    new CreateDecoratorRoute(),
+    new FetchDecoratorRoute(),
 
     // Account
     new AddGroupRoute(),

@@ -25,10 +25,10 @@
   dependencies:
     "@brontosaurus/definition" "^1.4.3"
 
-"@brontosaurus/db@^2.9.0":
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/@brontosaurus/db/-/db-2.9.0.tgz#607f71669675a6f46fe06f0a6a6319b8675f4f45"
-  integrity sha512-6D6e/NzBKHf9xtAkqNKQHkxDgjvztdsDD3j2+Eo3aH44R3Boau+jrua4w5t5DAdrG9KRLDBMovlRqDBijW1YAQ==
+"@brontosaurus/db@^2.9.1":
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/@brontosaurus/db/-/db-2.9.1.tgz#e55da0e2e5e059d1aafd8f002fb72ba2df030864"
+  integrity sha512-Vae2Krn/xLNRwdJbq1VKXE7sWvm9bdAKoM+iTftEz/1BWvdG3KJ2lqKUN2KbkSzGsCHCkm4ONCQWu4m6OZ/W6g==
   dependencies:
     "@brontosaurus/definition" "^1.4.3"
     "@sudoo/bark" "^2.7.1"
@@ -45,10 +45,10 @@
   resolved "https://registry.yarnpkg.com/@sudoo/bark/-/bark-2.7.1.tgz#84b9db0be3aa7b4d6896ced81d9fa9aac96578ef"
   integrity sha512-0zBFbIQAtu3XNJkFPszdljYXXIPXzR63qypfTwFRupmu3gxgfBMtdPShbQebGuGG0KQEmXasGMBQVi2O0jWbbQ==
 
-"@sudoo/express@^1.11.0":
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/@sudoo/express/-/express-1.11.0.tgz#b08fef75c4b9c965a997d2621eee571cb121c870"
-  integrity sha512-F3QvYTwEbQ+/TLfSCsAOHkNQg5ed8rxjbShSsEeMZ87aleT+CbceyJY8aiFXbvayTp70tP250LBmBAFyheFnoQ==
+"@sudoo/express@^1.12.0":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@sudoo/express/-/express-1.12.0.tgz#e1515bfc5c9265004174ec338fd00c945f02d7a7"
+  integrity sha512-pcNXFWGuzph20jSbFJKbgVMoi+0L0AAGQ6fbGdWWAv6QcabFd3tJY/39x+AwZvM/hiREcfqlwVte3xH9yfkpxw==
   dependencies:
     "@sudoo/bark" "^2.7.1"
     body-parser "^1.19.0"
