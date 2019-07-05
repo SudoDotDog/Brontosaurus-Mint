@@ -9,6 +9,7 @@ import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpress
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+import { pageLimit } from "../../util/conf";
 import { ERROR_CODE } from "../../util/error";
 import { BrontosaurusRoute } from "../basic";
 
@@ -46,10 +47,8 @@ export class FetchDecoratorRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const limit: number = 25;
-
-            const pages: number = await DecoratorController.getTotalActiveDecoratorPages(limit);
-            const decorators: IDecoratorModel[] = await DecoratorController.getSelectedActiveDecoratorsByPage(limit, Math.floor(page), keyword);
+            const pages: number = await DecoratorController.getTotalActiveDecoratorPages(pageLimit);
+            const decorators: IDecoratorModel[] = await DecoratorController.getSelectedActiveDecoratorsByPage(pageLimit, Math.floor(page), keyword);
 
             const parsed = decorators.map((decorator: IDecoratorModel) => ({
                 name: decorator.name,

@@ -7,6 +7,8 @@
 import * as Fs from 'fs';
 import * as Path from 'path';
 
+export const pageLimit: number = 25;
+
 export type BrontosaurusConfig = {
 
     database: string;

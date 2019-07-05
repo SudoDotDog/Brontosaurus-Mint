@@ -25,9 +25,13 @@ import { UpdateApplicationRoute } from './application/update';
 import { AllDecoratorRoute } from './decorator/all';
 import { CreateDecoratorRoute } from './decorator/create';
 import { FetchDecoratorRoute } from './decorator/fetch';
+import { SingleDecoratorRoute } from './decorator/single';
+import { UpdateDecoratorRoute } from './decorator/update';
 import { AllGroupRoute } from './group/all';
 import { CreateGroupRoute } from './group/create';
 import { FetchGroupRoute } from './group/fetch';
+import { SingleGroupRoute } from './group/single';
+import { UpdateGroupRoute } from './group/update';
 import { OrganizationCreateRoute } from './organization/create';
 import { OrganizationDeactivateRoute } from './organization/deactivate';
 import { OrganizationFetchRoute } from './organization/fetch';
@@ -52,11 +56,15 @@ export const MintRoutes = [
     new AllGroupRoute(),
     new CreateGroupRoute(),
     new FetchGroupRoute(),
+    new SingleGroupRoute(),
+    new UpdateGroupRoute(),
 
     // Decorator
     new AllDecoratorRoute(),
     new CreateDecoratorRoute(),
     new FetchDecoratorRoute(),
+    new SingleDecoratorRoute(),
+    new UpdateDecoratorRoute(),
 
     // Account
     new AddGroupRoute(),

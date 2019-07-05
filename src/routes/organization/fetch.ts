@@ -11,6 +11,7 @@ import { Safe, SafeExtract } from '@sudoo/extract';
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
 import { BrontosaurusRoute } from "../../routes/basic";
+import { pageLimit } from "../../util/conf";
 import { ERROR_CODE } from "../../util/error";
 
 export type OrganizationFetchRouteBody = {
@@ -47,10 +48,8 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const limit: number = 25;
-
-            const pages: number = await OrganizationController.getTotalActiveOrganizationPages(limit);
-            const organizations: IOrganizationModel[] = await OrganizationController.getSelectedActiveOrganizationsByPage(limit, Math.floor(page), keyword);
+            const pages: number = await OrganizationController.getTotalActiveOrganizationPages(pageLimit);
+            const organizations: IOrganizationModel[] = await OrganizationController.getSelectedActiveOrganizationsByPage(pageLimit, Math.floor(page), keyword);
 
             const parsed: Array<{
                 name: string;

@@ -1,6 +1,6 @@
 /**
  * @author WMXPY
- * @namespace Brontosaurus_Mint_Routes_Red_Group
+ * @namespace Brontosaurus_Mint_Routes_Group
  * @description Fetch
  */
 
@@ -9,6 +9,7 @@ import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpress
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+import { pageLimit } from "../../util/conf";
 import { ERROR_CODE } from "../../util/error";
 import { BrontosaurusRoute } from "../basic";
 
@@ -46,10 +47,8 @@ export class FetchGroupRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const limit: number = 25;
-
-            const pages: number = await GroupController.getTotalActiveGroupPages(limit);
-            const groups: IGroupModel[] = await GroupController.getSelectedActiveGroupsByPage(limit, Math.floor(page), keyword);
+            const pages: number = await GroupController.getTotalActiveGroupPages(pageLimit);
+            const groups: IGroupModel[] = await GroupController.getSelectedActiveGroupsByPage(pageLimit, Math.floor(page), keyword);
 
             const parsed = groups.map((group: IGroupModel) => ({
                 name: group.name,
