@@ -55,7 +55,9 @@ export class UpdateGroupRoute extends BrontosaurusRoute {
                 group.description = description;
             }
 
-            group.decorators = decorators.map((decorator: IDecoratorModel) => group._id);
+            group.decorators = decorators.map((decorator: IDecoratorModel) => decorator._id);
+
+            await group.save();
 
             res.agent.add('group', group.name);
         } catch (err) {

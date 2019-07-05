@@ -51,10 +51,13 @@ export class SingleDecoratorRoute extends BrontosaurusRoute {
 
             res.agent.migrate({
                 name: decorator.name,
-                description: decorator.description,
                 addableGroups,
                 removableGroups,
             });
+
+            if (decorator.description) {
+                res.agent.add('description', decorator.description);
+            }
         } catch (err) {
             res.agent.fail(400, err);
         } finally {
