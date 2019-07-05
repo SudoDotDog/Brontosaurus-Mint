@@ -1,6 +1,6 @@
 /**
  * @author WMXPY
- * @namespace Brontosaurus_Mint_Routes_Red_Preference
+ * @namespace Brontosaurus_Mint_Routes_Preference
  * @description Read Names
  */
 

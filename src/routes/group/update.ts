@@ -50,8 +50,7 @@ export class UpdateGroupRoute extends BrontosaurusRoute {
 
             const description: any = req.body.description;
 
-            if (typeof description === 'string'
-                && description.length > 0) {
+            if (typeof description === 'string') {
                 group.description = description;
             }
 

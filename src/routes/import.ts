@@ -37,6 +37,8 @@ import { OrganizationDeactivateRoute } from './organization/deactivate';
 import { OrganizationFetchRoute } from './organization/fetch';
 import { OrganizationInplodeRoute } from './organization/inplode';
 import { OrganizationRegisterRoute } from './organization/register';
+import { SingleOrganizationRoute } from './organization/single';
+import { UpdateOrganizationRoute } from './organization/update';
 import { GlobalPreferenceRoute } from './preference/global';
 import { InfosPreferenceRoute } from './preference/infos';
 import { NamePreferenceRoute } from './preference/names';
@@ -94,4 +96,6 @@ export const MintRoutes = [
     new OrganizationFetchRoute(),
     new OrganizationRegisterRoute(),
     new OrganizationDeactivateRoute(),
+    new SingleOrganizationRoute(),
+    new UpdateOrganizationRoute(),
 ];

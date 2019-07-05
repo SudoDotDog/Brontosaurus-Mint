@@ -1,6 +1,6 @@
 /**
  * @author WMXPY
- * @namespace Brontosaurus_Mint_Routes_Red_Organization
+ * @namespace Brontosaurus_Mint_Routes_Organization
  * @description Create
  */
 
