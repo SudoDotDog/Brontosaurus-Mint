@@ -19,6 +19,7 @@ export type UpdateApplicationBody = {
     key: string;
     application: Partial<{
         avatar: string;
+        favicon: string;
         name: string;
         expire: number;
         groups: string[];
@@ -55,6 +56,7 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
 
             const update: Partial<{
                 avatar: string;
+                favicon: string;
                 name: string;
                 expire: number;
                 groups: string[];
@@ -83,6 +85,9 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
             }
             if (update.avatar && typeof update.avatar === 'string') {
                 application.avatar = update.avatar;
+            }
+            if (update.favicon && typeof update.favicon === 'string') {
+                application.favicon = update.favicon;
             }
 
             await application.save();

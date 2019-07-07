@@ -51,6 +51,7 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
 
             res.agent.add('application', {
                 avatar: application.avatar,
+                favicon: application.favicon,
                 name: application.name,
                 key: application.key,
                 expire: application.expire,

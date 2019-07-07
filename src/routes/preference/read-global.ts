@@ -28,11 +28,13 @@ export class ReadGlobalPreferenceRoute extends BrontosaurusRoute {
 
             const globalAvatar: string | null = await PreferenceController.getSinglePreference('globalAvatar');
             const globalBackgroundImages: string[] | null = await PreferenceController.getSinglePreference('globalBackgroundImages');
+            const globalFavicon: string | null = await PreferenceController.getSinglePreference('globalFavicon');
             const globalHelpLink: string | null = await PreferenceController.getSinglePreference('globalHelpLink');
             const globalPrivacyPolicy: string | null = await PreferenceController.getSinglePreference('globalPrivacyPolicy');
 
             res.agent.addIfExist('globalAvatar', globalAvatar)
                 .addIfExist('globalBackgroundImages', globalBackgroundImages)
+                .addIfExist('globalFavicon', globalFavicon)
                 .addIfExist('globalHelpLink', globalHelpLink)
                 .addIfExist('globalPrivacyPolicy', globalPrivacyPolicy);
         } catch (err) {

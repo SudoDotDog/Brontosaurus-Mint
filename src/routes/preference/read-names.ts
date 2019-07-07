@@ -28,8 +28,10 @@ export class ReadNamesPreferenceRoute extends BrontosaurusRoute {
 
             const accountName: string | null = await PreferenceController.getSinglePreference('accountName');
             const systemName: string | null = await PreferenceController.getSinglePreference('systemName');
+            const commandCenterName: string | null = await PreferenceController.getSinglePreference('commandCenterName');
 
             res.agent.addIfExist('accountName', accountName)
+                .addIfExist('commandCenterName', commandCenterName)
                 .addIfExist('systemName', systemName);
         } catch (err) {
 

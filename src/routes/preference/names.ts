@@ -14,6 +14,7 @@ export type NamePreferenceBody = {
 
     readonly systemName?: string;
     readonly accountName?: string;
+    readonly commandCenterName?: string;
 };
 
 export class NamePreferenceRoute extends BrontosaurusRoute {
@@ -36,6 +37,7 @@ export class NamePreferenceRoute extends BrontosaurusRoute {
 
             const systemName: string | undefined = body.systemName;
             const accountName: string | undefined = body.accountName;
+            const commandCenterName: string | undefined = body.commandCenterName;
 
             let changed: number = 0;
             if (systemName) {
@@ -45,6 +47,11 @@ export class NamePreferenceRoute extends BrontosaurusRoute {
 
             if (accountName) {
                 await PreferenceController.setSinglePreference('accountName', accountName.toString());
+                changed++;
+            }
+
+            if (commandCenterName) {
+                await PreferenceController.setSinglePreference('commandCenterName', commandCenterName.toString());
                 changed++;
             }
 

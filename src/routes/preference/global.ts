@@ -16,6 +16,7 @@ export type GlobalPreferenceRouteBody = {
 
     readonly globalAvatar?: string;
     readonly globalBackgroundImages?: string[];
+    readonly globalFavicon?: string;
     readonly globalHelpLink?: string;
     readonly globalPrivacyPolicy?: string;
 };
@@ -40,6 +41,7 @@ export class GlobalPreferenceRoute extends BrontosaurusRoute {
 
             const globalAvatar: string | undefined = body.globalAvatar;
             const globalBackgroundImages: string[] | undefined = body.globalBackgroundImages;
+            const globalFavicon: string | undefined = body.globalFavicon;
             const globalHelpLink: string | undefined = body.globalHelpLink;
             const globalPrivacyPolicy: string | undefined = body.globalPrivacyPolicy;
 
@@ -54,6 +56,11 @@ export class GlobalPreferenceRoute extends BrontosaurusRoute {
                     throw this._error(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN);
                 }
                 await PreferenceController.setSinglePreference('globalBackgroundImages', globalBackgroundImages.map((value: any) => value.toString()));
+                changed++;
+            }
+
+            if (globalFavicon) {
+                await PreferenceController.setSinglePreference('globalFavicon', globalFavicon.toString());
                 changed++;
             }
 
