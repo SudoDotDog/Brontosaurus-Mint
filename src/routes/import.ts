@@ -39,6 +39,7 @@ import { OrganizationInplodeRoute } from './organization/inplode';
 import { OrganizationRegisterRoute } from './organization/register';
 import { SingleOrganizationRoute } from './organization/single';
 import { UpdateOrganizationRoute } from './organization/update';
+import { CommandCenterPreferenceRoute } from './preference/center';
 import { GlobalPreferenceRoute } from './preference/global';
 import { InfosPreferenceRoute } from './preference/infos';
 import { NamePreferenceRoute } from './preference/names';
@@ -89,6 +90,7 @@ export const MintRoutes = [
     new ReadGlobalPreferenceRoute(),
     new ReadNamesPreferenceRoute(),
     new InfosPreferenceRoute(),
+    new CommandCenterPreferenceRoute(),
 
     // Organization
     new OrganizationCreateRoute(),
