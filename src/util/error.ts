@@ -67,6 +67,7 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
     [ERROR_CODE.INVALID_USERNAME]: 'Invalid username, reason: "{}"',
     [ERROR_CODE.INVALID_PASSWORD]: 'Invalid password, reason: "{}"',
     [ERROR_CODE.INVALID_COMMON_NAME]: 'Invalid common name, reason: "{}"',
+    [ERROR_CODE.INVALID_COMMON_KEY]: 'Invalid common key, reason: "{}"',
 
     [ERROR_CODE.APPLICATION_KEY_NOT_FOUND]: 'Application key not found',
 
