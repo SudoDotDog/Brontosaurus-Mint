@@ -41,7 +41,8 @@ export class SingleDecoratorRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'name', 'string', (name as any).toString());
             }
 
-            const decorator: IDecoratorModel | null = await DecoratorController.getDecoratorByName(name);
+            const decoded: string = decodeURIComponent(name);
+            const decorator: IDecoratorModel | null = await DecoratorController.getDecoratorByName(decoded);
             if (!decorator) {
                 throw this._error(ERROR_CODE.DECORATOR_NOT_FOUND, name);
             }

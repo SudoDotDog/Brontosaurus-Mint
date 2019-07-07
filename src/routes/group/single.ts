@@ -41,7 +41,8 @@ export class SingleGroupRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'name', 'string', (name as any).toString());
             }
 
-            const group: IGroupModel | null = await GroupController.getGroupByName(name);
+            const decoded: string = decodeURIComponent(name);
+            const group: IGroupModel | null = await GroupController.getGroupByName(decoded);
             if (!group) {
                 throw this._error(ERROR_CODE.GROUP_NOT_FOUND, name);
             }

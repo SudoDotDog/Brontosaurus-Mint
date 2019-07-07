@@ -41,7 +41,8 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'name', 'string', (name as any).toString());
             }
 
-            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(name);
+            const decoded: string = decodeURIComponent(name);
+            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(decoded);
             if (!organization) {
                 throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, name);
             }

@@ -41,7 +41,8 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'key', 'string', (key as any).toString());
             }
 
-            const application: IApplicationModel | null = await ApplicationController.getApplicationByKey(key);
+            const decoded: string = decodeURIComponent(name);
+            const application: IApplicationModel | null = await ApplicationController.getApplicationByKey(decoded);
             if (!application) {
                 throw this._error(ERROR_CODE.APPLICATION_KEY_NOT_FOUND, key);
             }
