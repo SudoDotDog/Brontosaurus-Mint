@@ -25,7 +25,7 @@ export abstract class BrontosaurusRoute implements ISudooExpressRoute {
 
         return {
             code,
-            message: String(err.code),
+            message: String(err.message),
         };
     }
 }
