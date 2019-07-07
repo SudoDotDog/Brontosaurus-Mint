@@ -41,7 +41,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'username', 'string', (username as any).toString());
             }
 
-            const decoded: string = decodeURIComponent(name);
+            const decoded: string = decodeURIComponent(username);
             const account: IAccountModel | null = await AccountController.getAccountByUsername(decoded);
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);

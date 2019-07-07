@@ -79,7 +79,7 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 application.name = update.name;
             }
             if (update.expire && typeof update.expire === 'number') {
-                application.expire = update.expire;
+                application.expire = Math.ceil(update.expire);
             }
             if (update.avatar && typeof update.avatar === 'string') {
                 application.avatar = update.avatar;
