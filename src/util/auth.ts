@@ -5,7 +5,7 @@
  */
 
 import { Brontosaurus, BrontosaurusToken } from "@brontosaurus/core";
-import { GroupController, IGroupModel, DecoratorController, IDecoratorModel } from "@brontosaurus/db";
+import { DecoratorController, GroupController, IDecoratorModel, IGroupModel } from "@brontosaurus/db";
 import { IBrontosaurusBody, IBrontosaurusHeader } from "@brontosaurus/definition";
 import { Safe } from "@sudoo/extract";
 import { ObjectID } from "bson";
