@@ -4,7 +4,7 @@
  * @description Create
  */
 
-import { ApplicationController, COMMON_NAME_VALIDATE_RESPONSE, IApplicationModel, INTERNAL_USER_GROUP, validateCommonName } from "@brontosaurus/db";
+import { ApplicationController, COMMON_KEY_VALIDATE_RESPONSE, COMMON_NAME_VALIDATE_RESPONSE, IApplicationModel, INTERNAL_USER_GROUP, validateCommonKey, validateCommonName } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
@@ -40,10 +40,18 @@ export class CreateApplicationRoute extends BrontosaurusRoute {
 
             const key: string = body.direct('key');
 
-            const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(key);
+            const validateKeyResult: COMMON_KEY_VALIDATE_RESPONSE = validateCommonKey(key);
 
-            if (validateResult !== COMMON_NAME_VALIDATE_RESPONSE.OK) {
-                throw this._error(ERROR_CODE.INVALID_COMMON_NAME, validateResult);
+            if (validateKeyResult !== COMMON_KEY_VALIDATE_RESPONSE.OK) {
+                throw this._error(ERROR_CODE.INVALID_COMMON_KEY, validateKeyResult);
+            }
+
+            const name: string = body.direct('name');
+
+            const validateNameResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(name);
+
+            if (validateNameResult !== COMMON_NAME_VALIDATE_RESPONSE.OK) {
+                throw this._error(ERROR_CODE.INVALID_COMMON_NAME, validateNameResult);
             }
 
             const isDuplicated: boolean = await ApplicationController.isApplicationDuplicatedByKey(key);
@@ -53,7 +61,7 @@ export class CreateApplicationRoute extends BrontosaurusRoute {
             }
 
             const application: IApplicationModel = ApplicationController.createUnsavedApplication(
-                body.direct('name'),
+                name,
                 key,
                 body.direct('expire'),
                 body.direct('token'),
