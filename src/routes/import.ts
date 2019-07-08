@@ -18,6 +18,7 @@ import { ResetAttemptRoute } from './account/reset-attempt';
 import { SelfEditRoute } from './account/self-edit';
 import { SetOrganizationRoute } from './account/set-organization';
 import { SingleAccountRoute } from './account/single';
+import { FetchStandaloneAccountRoute } from './account/standalone';
 import { CreateApplicationRoute } from './application/create';
 import { FetchApplicationRoute } from './application/fetch';
 import { RefreshGreenApplicationRoute } from './application/refresh-green';
@@ -56,6 +57,7 @@ export const MintRoutes = [
     new UpdateApplicationRoute(),
     new RefreshGreenApplicationRoute(),
     new SetOrganizationRoute(),
+    new FetchStandaloneAccountRoute(),
 
     // Group
     new AllGroupRoute(),
