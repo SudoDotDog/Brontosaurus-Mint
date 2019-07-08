@@ -20,7 +20,7 @@ export const Throwable_ValidateToken = (secret: string, expire: number, tokenStr
     const token: BrontosaurusToken = Brontosaurus.token(secret);
     const createError: ErrorCreationFunction = Connor.getErrorCreator(MODULE_NAME);
 
-    if (!token.clock(tokenString, expire)) {
+    if (!token.clock(tokenString, expire, 1000)) { // Allow delay for 1 second
         throw createError(ERROR_CODE.TOKEN_EXPIRED);
     }
 
