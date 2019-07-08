@@ -16,6 +16,7 @@ import { RemoveGroupRoute } from './account/remove-group';
 import { RemoveTwoFARoute } from './account/remove-two-fa';
 import { ResetAttemptRoute } from './account/reset-attempt';
 import { SelfEditRoute } from './account/self-edit';
+import { SetOrganizationRoute } from './account/set-organization';
 import { SingleAccountRoute } from './account/single';
 import { CreateApplicationRoute } from './application/create';
 import { FetchApplicationRoute } from './application/fetch';
@@ -54,6 +55,7 @@ export const MintRoutes = [
     new SingleApplicationRoute(),
     new UpdateApplicationRoute(),
     new RefreshGreenApplicationRoute(),
+    new SetOrganizationRoute(),
 
     // Group
     new AllGroupRoute(),
