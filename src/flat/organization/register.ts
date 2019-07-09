@@ -26,14 +26,14 @@ export type OrganizationRegisterRouteBody = {
 
 export class OrganizationRegisterRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/organization/register';
+    public readonly path: string = '/organization/flat/register';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/organization/register - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/organization/register - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.ORGANIZATION_CONTROL], this._error), '/organization/register - GroupVerifyHandler'),
-        basicHook.wrap(this._registerSubOrganizationAccountHandler.bind(this), '/organization/register - Register', true),
+        basicHook.wrap(createTokenHandler(), '/organization/flat/register - TokenHandler'),
+        basicHook.wrap(createAuthenticateHandler(), '/organization/flat/register - AuthenticateHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.ORGANIZATION_CONTROL], this._error), '/organization/flat/register - GroupVerifyHandler'),
+        basicHook.wrap(this._registerSubOrganizationAccountHandler.bind(this), '/organization/flat/register - Register', true),
     ];
 
     private async _registerSubOrganizationAccountHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
