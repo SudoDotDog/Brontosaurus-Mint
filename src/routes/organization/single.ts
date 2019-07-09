@@ -52,6 +52,8 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, organization.owner.toHexString());
             }
 
+            const members: IAccountModel[] = await AccountController.getAccountsByOrganization(organization._id);
+
             const decorators: string[] = await Throwable_MapDecorators(organization.decorators);
 
             res.agent.migrate({
@@ -61,6 +63,11 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
                     phone: owner.phone,
                     email: owner.email,
                 },
+                members: members.map((member) => ({
+                    username: member.username,
+                    phone: member.phone,
+                    email: member.email,
+                })),
                 decorators,
             });
         } catch (err) {
