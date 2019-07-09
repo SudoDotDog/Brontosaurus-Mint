@@ -6,9 +6,9 @@
 
 import { GroupController, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
+import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
-import { BrontosaurusRoute } from "../basic";
 
 export class AllGroupRoute extends BrontosaurusRoute {
 

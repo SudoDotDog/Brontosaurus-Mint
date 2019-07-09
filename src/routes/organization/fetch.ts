@@ -10,7 +10,7 @@ import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpress
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
-import { BrontosaurusRoute } from "../../routes/basic";
+import { BrontosaurusRoute } from "../../handlers/basic";
 import { pageLimit } from "../../util/conf";
 import { ERROR_CODE } from "../../util/error";
 

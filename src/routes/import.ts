@@ -38,7 +38,6 @@ import { OrganizationCreateRoute } from './organization/create';
 import { OrganizationDeactivateRoute } from './organization/deactivate';
 import { OrganizationFetchRoute } from './organization/fetch';
 import { OrganizationInplodeRoute } from './organization/inplode';
-import { OrganizationRegisterRoute } from './organization/register';
 import { SingleOrganizationRoute } from './organization/single';
 import { UpdateOrganizationRoute } from './organization/update';
 import { CommandCenterPreferenceRoute } from './preference/center';
@@ -100,7 +99,6 @@ export const MintRoutes = [
     new OrganizationCreateRoute(),
     new OrganizationInplodeRoute(),
     new OrganizationFetchRoute(),
-    new OrganizationRegisterRoute(),
     new OrganizationDeactivateRoute(),
     new SingleOrganizationRoute(),
     new UpdateOrganizationRoute(),

@@ -8,9 +8,9 @@ import { AccountController, DecoratorController, GroupController, IAccountModel,
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
+import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
-import { BrontosaurusRoute } from "../../routes/basic";
 import { ERROR_CODE } from "../../util/error";
 import { parseInfo } from "../../util/token";
 

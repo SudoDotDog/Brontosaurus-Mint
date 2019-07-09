@@ -9,6 +9,7 @@ import { SudooExpress, SudooExpressApplication } from '@sudoo/express';
 import { LOG_LEVEL, SudooLog } from '@sudoo/log';
 import * as Mongoose from "mongoose";
 import * as Path from 'path';
+import { FlatRoutes } from './flat/import';
 import { createReplacementHandler } from './handlers/public';
 import { MintRoutes } from './routes/import';
 import { BrontosaurusConfig, getEnvGettingText, isDevelopment, readConfigEnvironment } from './util/conf';
@@ -39,6 +40,7 @@ app.health('/health');
 
 // Mint
 app.routeList(MintRoutes);
+app.routeList(FlatRoutes);
 
 app.host(9000);
 SudooLog.global.info('Hosting at port 9000');

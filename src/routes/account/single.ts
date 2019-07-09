@@ -7,11 +7,11 @@
 import { AccountController, IAccountModel, INTERNAL_USER_GROUP, OrganizationController, OrganizationDetail } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
+import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
 import { Throwable_MapDecorators, Throwable_MapGroups } from "../../util/auth";
 import { ERROR_CODE, panic } from "../../util/error";
-import { BrontosaurusRoute } from "../basic";
 
 export type SingleAccountBody = {
 

@@ -8,11 +8,11 @@ import { ApplicationController, IApplicationModel, IGroupModel, INTERNAL_USER_GR
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { ObjectID } from "bson";
+import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
 import { Throwable_GetGroupsByNames } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
-import { BrontosaurusRoute } from "../basic";
 
 export type UpdateApplicationBody = {
 
