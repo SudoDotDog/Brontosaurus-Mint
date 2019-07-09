@@ -45,6 +45,18 @@ export class SetOrganizationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
             }
 
+            if (account.organization) {
+                const currentOrganization: IOrganizationModel | null = await OrganizationController.getOrganizationById(account.organization);
+
+                if (!currentOrganization) {
+                    throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, account.organization.toHexString());
+                }
+
+                if (currentOrganization.owner.equals(account._id)) {
+                    throw this._error(ERROR_CODE.CANNOT_WITHDRAW_OWNER);
+                }
+            }
+
             const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(organizationName);
 
             if (!organization) {

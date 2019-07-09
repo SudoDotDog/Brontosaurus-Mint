@@ -4,8 +4,7 @@
  * @description Withdraw Organization
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
-import { _Random } from "@sudoo/bark/random";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { BrontosaurusRoute } from "../../handlers/basic";
@@ -42,6 +41,21 @@ export class WithdrawOrganizationRoute extends BrontosaurusRoute {
 
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
+            }
+
+            if (!account.organization) {
+                res.agent.add('withdraw', account.username);
+                return;
+            }
+
+            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationById(account.organization);
+
+            if (!organization) {
+                throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, account.organization.toHexString());
+            }
+
+            if (organization.owner.equals(account._id)) {
+                throw this._error(ERROR_CODE.CANNOT_WITHDRAW_OWNER);
             }
 
             account.organization = undefined;
