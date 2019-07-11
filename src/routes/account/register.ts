@@ -4,14 +4,15 @@
  * @description Register
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PASSWORD_VALIDATE_RESPONSE, USERNAME_VALIDATE_RESPONSE, validatePassword, validateUsername } from "@brontosaurus/db";
+import { AccountController, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PASSWORD_VALIDATE_RESPONSE, TagController, USERNAME_VALIDATE_RESPONSE, validatePassword, validateUsername } from "@brontosaurus/db";
+import { ITagModel } from "@brontosaurus/db/model/tag";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 import { jsonifyBasicRecords } from "../../util/token";
 
 export type RegisterRouteBody = {
@@ -22,6 +23,8 @@ export type RegisterRouteBody = {
     readonly username: string;
     readonly password: string;
     readonly infos: Record<string, Basics>;
+    readonly tags: string[];
+    readonly groups: string[];
 
     readonly organization?: string;
 };
@@ -47,6 +50,17 @@ export class RegisterRoute extends BrontosaurusRoute {
             const username: string = body.directEnsure('username');
             const password: string = body.directEnsure('password');
 
+            const tags: string[] = body.direct('tags');
+            const groups: string[] = body.direct('groups');
+
+            if (!Array.isArray(tags)) {
+                throw panic.code(ERROR_CODE.INSUFFICIENT_INFORMATION, 'tags');
+            }
+
+            if (!Array.isArray(groups)) {
+                throw panic.code(ERROR_CODE.INSUFFICIENT_INFORMATION, 'groups');
+            }
+
             const usernameValidationResult: USERNAME_VALIDATE_RESPONSE = validateUsername(username);
 
             if (usernameValidationResult !== USERNAME_VALIDATE_RESPONSE.OK) {
@@ -70,45 +84,68 @@ export class RegisterRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
             }
 
-            if (req.body.organization) {
+            const account: IAccountModel = await this._createUnsavedAccount(
+                username,
+                password,
+                req.body.email,
+                req.body.phone,
+                infos,
+                req.body.organization,
+            );
 
-                const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(req.body.organization);
-                if (!organization) {
+            const parsedTags: ITagModel[] = await TagController.getTagByNames(tags);
+            const parsedGroups: IGroupModel[] = await GroupController.getGroupByNames(groups);
 
-                    throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, req.body.organization);
-                }
+            account.tags = parsedTags.map((tag: ITagModel) => tag._id);
+            account.groups = parsedGroups.map((group: IGroupModel) => group._id);
 
-                const account: IAccountModel = AccountController.createUnsavedAccount(
-                    username,
-                    password,
-                    req.body.email,
-                    req.body.phone,
-                    organization._id,
-                    [],
-                    infos,
-                );
-                await account.save();
+            await account.save();
 
-                res.agent.add('account', account.username);
-            } else {
-
-                const account: IAccountModel = AccountController.createUnsavedAccount(
-                    username,
-                    password,
-                    req.body.email,
-                    req.body.phone,
-                    undefined,
-                    [],
-                    infos,
-                );
-                await account.save();
-
-                res.agent.add('account', account.username);
-            }
+            res.agent.add('account', account.username);
         } catch (err) {
             res.agent.fail(400, err);
         } finally {
             next();
+        }
+    }
+
+    private async _createUnsavedAccount(
+        username: string,
+        password: string,
+        email: string | undefined,
+        phone: string | undefined,
+        infos: Record<string, Basics>,
+        organizationName?: string,
+    ): Promise<IAccountModel> {
+
+        if (organizationName) {
+
+            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(organizationName);
+            if (!organization) {
+
+                throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, organizationName);
+            }
+
+            return AccountController.createUnsavedAccount(
+                username,
+                password,
+                email,
+                phone,
+                organization._id,
+                [],
+                infos,
+            );
+        } else {
+
+            return AccountController.createUnsavedAccount(
+                username,
+                password,
+                email,
+                phone,
+                undefined,
+                [],
+                infos,
+            );
         }
     }
 }
