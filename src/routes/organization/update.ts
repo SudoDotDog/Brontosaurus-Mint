@@ -4,7 +4,7 @@
  * @description Update
  */
 
-import { DecoratorController, IDecoratorModel, IGroupModel, INTERNAL_USER_GROUP, OrganizationController } from "@brontosaurus/db";
+import { DecoratorController, IDecoratorModel, INTERNAL_USER_GROUP, IOrganizationModel, ITagModel, OrganizationController, TagController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { BrontosaurusRoute } from "../../handlers/basic";
@@ -15,6 +15,7 @@ import { ERROR_CODE } from "../../util/error";
 export type UpdateOrganizationBody = {
 
     name: string;
+    tags: string[];
     decorators: string[];
 };
 
@@ -38,16 +39,27 @@ export class UpdateOrganizationRoute extends BrontosaurusRoute {
 
             const name: string = body.directEnsure('name');
             const decoratorsNames: string[] = body.direct('decorators');
+            const tagNames: string[] = body.direct('tags');
 
-            const organization: IGroupModel | null = await OrganizationController.getOrganizationByName(name);
+            if (!Array.isArray(tagNames)) {
+                throw this._error(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, 'tags');
+            }
+
+            if (!Array.isArray(decoratorsNames)) {
+                throw this._error(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, 'decorators');
+            }
+
+            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(name);
 
             if (!organization) {
                 throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, name);
             }
 
             const decorators: IDecoratorModel[] = await DecoratorController.getDecoratorByNames(decoratorsNames);
+            const tags: ITagModel[] = await TagController.getTagByNames(tagNames);
 
             organization.decorators = decorators.map((decorator: IDecoratorModel) => decorator._id);
+            organization.tags = tags.map((tag: ITagModel) => tag._id);
 
             await organization.save();
 

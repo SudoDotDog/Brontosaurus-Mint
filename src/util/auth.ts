@@ -5,7 +5,7 @@
  */
 
 import { Brontosaurus, BrontosaurusToken } from "@brontosaurus/core";
-import { DecoratorController, GroupController, IDecoratorModel, IGroupModel } from "@brontosaurus/db";
+import { DecoratorController, GroupController, IDecoratorModel, IGroupModel, ITagModel, TagController } from "@brontosaurus/db";
 import { IBrontosaurusBody, IBrontosaurusHeader } from "@brontosaurus/definition";
 import { Safe } from "@sudoo/extract";
 import { ObjectID } from "bson";
@@ -106,6 +106,26 @@ export const Throwable_MapGroups = async (groups: ObjectID[]): Promise<string[]>
 
         if (!current) {
             throw createError(ERROR_CODE.GROUP_NOT_FOUND, group.toHexString());
+        }
+
+        result.push(current.name);
+    }
+
+    return result;
+};
+
+export const Throwable_MapTags = async (tags: ObjectID[]): Promise<string[]> => {
+
+    const createError: ErrorCreationFunction = Connor.getErrorCreator(MODULE_NAME);
+
+    const result: string[] = [];
+
+    for (const tag of tags) {
+
+        const current: ITagModel | null = await TagController.getTagById(tag);
+
+        if (!current) {
+            throw createError(ERROR_CODE.DECORATOR_NOT_FOUND, tag.toHexString());
         }
 
         result.push(current.name);

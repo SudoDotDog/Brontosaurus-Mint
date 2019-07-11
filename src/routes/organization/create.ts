@@ -14,8 +14,8 @@ import { ERROR_CODE } from "../../util/error";
 
 export type OrganizationCreateRouteBody = {
 
-    name: string;
-    owner: string;
+    readonly name: string;
+    readonly owner: string;
 };
 
 export class OrganizationCreateRoute extends BrontosaurusRoute {

@@ -10,7 +10,7 @@ import { Safe, SafeExtract } from "@sudoo/extract";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
-import { Throwable_MapDecorators } from "../../util/auth";
+import { Throwable_MapDecorators, Throwable_MapTags } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 
 export type SingleOrganizationBody = {
@@ -55,6 +55,7 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
             const members: IAccountModel[] = await AccountController.getAccountsByOrganization(organization._id);
 
             const decorators: string[] = await Throwable_MapDecorators(organization.decorators);
+            const tags: string[] = await Throwable_MapTags(organization.tags);
 
             res.agent.migrate({
                 name: organization.name,
