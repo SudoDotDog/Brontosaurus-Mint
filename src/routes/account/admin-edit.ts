@@ -4,7 +4,7 @@
  * @description Self Edit
  */
 
-import { AccountController, DecoratorController, GroupController, IAccountModel, IDecoratorModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, DecoratorController, GroupController, IAccountModel, IDecoratorModel, IGroupModel, INTERNAL_USER_GROUP, ITagModel, TagController } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
@@ -16,14 +16,15 @@ import { parseInfo } from "../../util/token";
 
 export type AdminEditBody = {
 
-    username: string;
-    groups: string[];
-    decorators: string[];
-    email?: string;
-    phone?: string;
-    account: Partial<{
-        infos: Record<string, Basics>;
-        beacons: Record<string, Basics>;
+    readonly username: string;
+    readonly groups: string[];
+    readonly tags: string[];
+    readonly decorators: string[];
+    readonly email?: string;
+    readonly phone?: string;
+    readonly account: Partial<{
+        readonly infos: Record<string, Basics>;
+        readonly beacons: Record<string, Basics>;
     }>;
 };
 
@@ -75,7 +76,9 @@ export class AdminEditRoute extends BrontosaurusRoute {
             }
 
             const groups: string[] = body.direct('groups');
+            const tags: string[] = body.direct('tags');
             const parsedGroups: IGroupModel[] = await GroupController.getGroupByNames(groups);
+            const parsedTags: ITagModel[] = await TagController.getTagByNames(tags);
 
             const decorators: string[] = body.direct('decorators');
             const parsedDecorators: IDecoratorModel[] = await DecoratorController.getDecoratorByNames(decorators);
@@ -84,6 +87,7 @@ export class AdminEditRoute extends BrontosaurusRoute {
             account.phone = req.body.phone;
             account.decorators = parsedDecorators.map((decorator: IDecoratorModel) => decorator._id);
             account.groups = parsedGroups.map((group: IGroupModel) => group._id);
+            account.tags = parsedTags.map((tag: ITagModel) => tag._id);
 
             await account.save();
 
