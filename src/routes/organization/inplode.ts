@@ -4,7 +4,7 @@
  * @description Inplode
  */
 
-import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, USERNAME_VALIDATE_RESPONSE, validateCommonName, validateUsername } from "@brontosaurus/db";
+import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, IOrganizationModel, ITagModel, OrganizationController, TagController, USERNAME_VALIDATE_RESPONSE, validateCommonName, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { _Random } from "@sudoo/bark/random";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
@@ -21,6 +21,7 @@ export type OrganizationInplodeRouteBody = {
     username: string;
     email: string;
     phone: string;
+    tags: string[];
     infos: Record<string, Basics>;
 };
 
@@ -44,6 +45,11 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
 
             const username: string = body.directEnsure('username');
             const name: string = body.directEnsure('name');
+            const tags: string[] = body.direct('tags');
+
+            if (!Array.isArray(tags)) {
+                throw this._error(ERROR_CODE.INSUFFICIENT_INFORMATION, tags as any);
+            }
 
             const usernameValidationResult: USERNAME_VALIDATE_RESPONSE = validateUsername(username);
 
@@ -93,6 +99,9 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
             );
             const organization: IOrganizationModel = OrganizationController.createUnsavedOrganization(name, account._id);
 
+            const parsedTags: ITagModel[] = await TagController.getTagByNames(tags);
+
+            organization.tags = parsedTags.map((tag: ITagModel) => tag._id);
             account.organization = organization._id;
 
             await Promise.all([account.save(), organization.save()]);
