@@ -56,6 +56,7 @@ export class FetchAccountRoute extends BrontosaurusRoute {
                 phone: account.phone,
                 twoFA: Boolean(account.twoFA),
                 groups: account.groups.length,
+                decorators: account.decorators.length,
                 tags: account.tags.length,
                 infos: account.getInfoRecords(),
             }));

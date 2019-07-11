@@ -54,6 +54,8 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
             const parsed: Array<{
                 name: string;
                 owner: string;
+                decorators: number;
+                tags: number;
             }> = await _Mutate.asyncMap(organizations, async (organization: IOrganizationModel) => {
 
                 const ownerUser: IAccountModel | null = await AccountController.getAccountById(organization.owner);
@@ -65,6 +67,8 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
                 return {
                     name: organization.name,
                     owner: ownerUser.username,
+                    decorators: organization.decorators.length,
+                    tags: organization.tags.length,
                 };
             });
 

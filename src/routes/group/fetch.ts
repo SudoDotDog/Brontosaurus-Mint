@@ -53,6 +53,7 @@ export class FetchGroupRoute extends BrontosaurusRoute {
             const parsed = groups.map((group: IGroupModel) => ({
                 name: group.name,
                 description: group.description,
+                decorators: group.decorators.length,
             }));
 
             res.agent.add('groups', parsed);
