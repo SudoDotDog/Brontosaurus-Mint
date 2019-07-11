@@ -70,6 +70,7 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
                     email: member.email,
                 })),
                 decorators,
+                tags,
             });
         } catch (err) {
             res.agent.fail(400, err);
