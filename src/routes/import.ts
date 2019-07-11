@@ -47,6 +47,11 @@ import { InfosPreferenceRoute } from './preference/infos';
 import { NamePreferenceRoute } from './preference/names';
 import { ReadGlobalPreferenceRoute } from './preference/read-global';
 import { ReadNamesPreferenceRoute } from './preference/read-names';
+import { AllTagRoute } from './tag/all';
+import { CreateTagRoute } from './tag/create';
+import { FetchTagRoute } from './tag/fetch';
+import { SingleTagRoute } from './tag/single';
+import { UpdateTagRoute } from './tag/update';
 
 export const MintRoutes = [
 
@@ -65,6 +70,13 @@ export const MintRoutes = [
     new FetchGroupRoute(),
     new SingleGroupRoute(),
     new UpdateGroupRoute(),
+
+    // Tag
+    new AllTagRoute(),
+    new CreateTagRoute(),
+    new FetchTagRoute(),
+    new SingleTagRoute(),
+    new UpdateTagRoute(),
 
     // Decorator
     new AllDecoratorRoute(),
