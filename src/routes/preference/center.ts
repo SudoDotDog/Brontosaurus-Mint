@@ -26,9 +26,12 @@ export class CommandCenterPreferenceRoute extends BrontosaurusRoute {
         try {
 
             const commandCenterName: string | null = await PreferenceController.getSinglePreference('commandCenterName');
+            const accountName: string | null = await PreferenceController.getSinglePreference('accountName');
 
             res.agent
-                .add('exist', Boolean(commandCenterName))
+                .add('existCommandCenterName', Boolean(commandCenterName))
+                .add('existAccountName', Boolean(accountName))
+                .addIfExist('accountName', accountName)
                 .addIfExist('commandCenterName', commandCenterName);
         } catch (err) {
 
