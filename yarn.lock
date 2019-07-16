@@ -18,32 +18,27 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@brontosaurus/core@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@brontosaurus/core/-/core-1.7.0.tgz#f43377c4e0b4cd9afe103e2895c810b35534e5cd"
-  integrity sha512-Y1i7a64Qt/5wBQjXRo4ctHFsXm+a8Eu1cE2j3Kb9lixwD/qIuK2ef6ziI7V49OYF/QL7t4lwJc+v1vHgx12shw==
+"@brontosaurus/core@^1.7.1":
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/@brontosaurus/core/-/core-1.8.1.tgz#379c15a4399ccc7c4c9525c8153e355b31ea15b6"
+  integrity sha512-xY5qwqVlbsv9gn9cIcUko28klKCbkgaefiP8+WvlsoAWNmaoc9pN+bAdXwN7i0IDWFPcMX8/oRRvoQAcaMAkhg==
   dependencies:
-    "@brontosaurus/definition" "^1.5.0"
+    "@brontosaurus/definition" "^1.6.1"
 
-"@brontosaurus/db@^2.17.2":
-  version "2.17.2"
-  resolved "https://registry.yarnpkg.com/@brontosaurus/db/-/db-2.17.2.tgz#6c818a626a58e6a8792b77dda8c48af783adc6b9"
-  integrity sha512-dsWxORR/RlUe7UP7PYg0XTzWRrCS7WUYCBD9J9/ahA7P0seiC+C0rtnCml6mBzVheooFAdK7z07sQNonL+a5tA==
+"@brontosaurus/db@^2.17.3":
+  version "2.17.3"
+  resolved "https://registry.yarnpkg.com/@brontosaurus/db/-/db-2.17.3.tgz#3709291ae8cbf0412f8e358fbcbda59feb3d9886"
+  integrity sha512-N8GLtWXwGuycji9FJSCdi/lF/9dCZtJwQ59+utIimPFilbS5iTEaQpPaEKht6nI6zZ1iFgJaFP+8i95EsXNkRg==
   dependencies:
-    "@brontosaurus/definition" "^1.6.0"
+    "@brontosaurus/definition" "^1.6.1"
     "@sudoo/bark" "^2.7.1"
     mongoose "^5.6.4"
     speakeasy "^2.0.0"
 
-"@brontosaurus/definition@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@brontosaurus/definition/-/definition-1.5.0.tgz#3b0357b3804f014f5a56eb8a247f9d632f61fa54"
-  integrity sha512-6QNrQbBcRcI/ODyNc8CCvNZ0lJewDIywQX+638EOmp/BKuNwzoOmV979JOg3AClZJ95cAZQn7OTxuQXZ8J7oCw==
-
-"@brontosaurus/definition@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@brontosaurus/definition/-/definition-1.6.0.tgz#941cb485c477575109ee69a9a6fbf6dc014d1f7f"
-  integrity sha512-FmDngdesanhIQgtE50B04lUfuE8hw8YhGgs941CDjO3Cw7ldV71cRo+k6o09agFPb1GrZCoX+fETndn8NTI4pw==
+"@brontosaurus/definition@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@brontosaurus/definition/-/definition-1.6.1.tgz#88ac9ff85066b68a0409c3c2946e45e228bbc3b2"
+  integrity sha512-FNJX31Y+nnNIbC47b7JKPPXQ4iN1CZ5lvNUlBpl3Lt8D1zUlr6sUMcpDKUXXVWZg/uHF39rQgqHb2FaksvLOhQ==
 
 "@sudoo/bark@^2.6.1", "@sudoo/bark@^2.7.1":
   version "2.7.1"
