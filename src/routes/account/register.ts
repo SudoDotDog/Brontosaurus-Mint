@@ -17,6 +17,7 @@ import { jsonifyBasicRecords } from "../../util/token";
 
 export type RegisterRouteBody = {
 
+    readonly displayName?: string;
     readonly email?: string;
     readonly phone?: string;
 
@@ -87,6 +88,7 @@ export class RegisterRoute extends BrontosaurusRoute {
             const account: IAccountModel = await this._createUnsavedAccount(
                 username,
                 password,
+                req.body.displayName,
                 req.body.email,
                 req.body.phone,
                 infos,
@@ -112,6 +114,7 @@ export class RegisterRoute extends BrontosaurusRoute {
     private async _createUnsavedAccount(
         username: string,
         password: string,
+        displayName: string | undefined,
         email: string | undefined,
         phone: string | undefined,
         infos: Record<string, Basics>,
@@ -129,6 +132,7 @@ export class RegisterRoute extends BrontosaurusRoute {
             return AccountController.createUnsavedAccount(
                 username,
                 password,
+                displayName,
                 email,
                 phone,
                 organization._id,
@@ -140,6 +144,7 @@ export class RegisterRoute extends BrontosaurusRoute {
             return AccountController.createUnsavedAccount(
                 username,
                 password,
+                displayName,
                 email,
                 phone,
                 undefined,

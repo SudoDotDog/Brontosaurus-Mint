@@ -19,10 +19,12 @@ export type OrganizationInplodeRouteBody = {
 
     name: string;
     username: string;
-    email: string;
-    phone: string;
     tags: string[];
     infos: Record<string, Basics>;
+
+    displayName?: string;
+    email?: string;
+    phone?: string;
 };
 
 export class OrganizationInplodeRoute extends BrontosaurusRoute {
@@ -91,6 +93,7 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
             const account: IAccountModel = AccountController.createOnLimboUnsavedAccount(
                 username,
                 tempPassword,
+                req.body.displayName,
                 req.body.email,
                 req.body.phone,
                 undefined,
