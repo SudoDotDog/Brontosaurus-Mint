@@ -26,6 +26,7 @@ export enum ERROR_CODE {
     ACCOUNT_ORGANIZATION_NOT_FOUND = 4135,
 
     CANNOT_WITHDRAW_OWNER = 4140,
+    ALREADY_A_MEMBER = 4141,
 
     TOKEN_DOES_NOT_CONTAIN_INFORMATION = 4150,
     TOKEN_DOES_NOT_CONTAIN_HEADER = 4151,
@@ -82,6 +83,7 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
     [ERROR_CODE.ACCOUNT_ORGANIZATION_NOT_FOUND]: 'Account organization not found',
 
     [ERROR_CODE.CANNOT_WITHDRAW_OWNER]: 'Cannot withdraw organization owner',
+    [ERROR_CODE.ALREADY_A_MEMBER]: 'Target account already has a organization: "{}"',
 
     [ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_INFORMATION]: 'Token does not contain information: "{}"',
     [ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_HEADER]: 'Token does not contain header',

@@ -57,7 +57,22 @@ export class OrganizationCreateRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, owner);
             }
 
+            if (ownerUser.organization) {
+
+                const previousOrganization: IOrganizationModel | null = await OrganizationController.getOrganizationById(ownerUser.organization);
+
+                if (!previousOrganization) {
+                    throw this._error(ERROR_CODE.INTERNAL_ERROR);
+                }
+
+                throw this._error(ERROR_CODE.ALREADY_A_MEMBER, previousOrganization.name);
+            }
+
+
             const organization: IOrganizationModel = OrganizationController.createUnsavedOrganization(name, ownerUser._id);
+            ownerUser.organization = organization._id;
+
+            await ownerUser.save();
             await organization.save();
 
             res.agent.add('organization', organization.name);
