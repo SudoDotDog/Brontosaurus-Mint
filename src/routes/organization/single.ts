@@ -59,6 +59,7 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
 
             res.agent.migrate({
                 name: organization.name,
+                limit: organization.limit,
                 owner: {
                     username: owner.username,
                     phone: owner.phone,

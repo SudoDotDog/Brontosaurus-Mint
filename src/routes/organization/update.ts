@@ -15,6 +15,7 @@ import { ERROR_CODE } from "../../util/error";
 export type UpdateOrganizationBody = {
 
     name: string;
+    limit: number;
     tags: string[];
     decorators: string[];
 };
@@ -38,6 +39,7 @@ export class UpdateOrganizationRoute extends BrontosaurusRoute {
         try {
 
             const name: string = body.directEnsure('name');
+            const limit: number = body.direct('limit');
             const decoratorsNames: string[] = body.direct('decorators');
             const tagNames: string[] = body.direct('tags');
 
@@ -57,6 +59,10 @@ export class UpdateOrganizationRoute extends BrontosaurusRoute {
 
             const decorators: IDecoratorModel[] = await DecoratorController.getDecoratorByNames(decoratorsNames);
             const tags: ITagModel[] = await TagController.getTagByNames(tagNames);
+
+            if (typeof limit === 'number' && limit >= 1) {
+                organization.limit = limit;
+            }
 
             organization.decorators = decorators.map((decorator: IDecoratorModel) => decorator._id);
             organization.tags = tags.map((tag: ITagModel) => tag._id);

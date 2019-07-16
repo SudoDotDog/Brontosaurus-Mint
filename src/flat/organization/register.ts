@@ -56,6 +56,12 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, organizationName);
             }
 
+            const accountCount: number = await AccountController.getAccountCountByOrganization(organization._id);
+
+            if (accountCount >= organization.limit) {
+                throw this._error(ERROR_CODE.ORGANIZATION_LIMIT_EXCEED, accountCount.toString(), organization.limit.toString());
+            }
+
             const username: string = body.directEnsure('username');
 
             const infoLine: Record<string, Basics> | string = body.direct('infos');
