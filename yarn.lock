@@ -45,10 +45,10 @@
   resolved "https://registry.yarnpkg.com/@sudoo/bark/-/bark-2.7.1.tgz#84b9db0be3aa7b4d6896ced81d9fa9aac96578ef"
   integrity sha512-0zBFbIQAtu3XNJkFPszdljYXXIPXzR63qypfTwFRupmu3gxgfBMtdPShbQebGuGG0KQEmXasGMBQVi2O0jWbbQ==
 
-"@sudoo/express@^1.12.0":
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/@sudoo/express/-/express-1.12.0.tgz#e1515bfc5c9265004174ec338fd00c945f02d7a7"
-  integrity sha512-pcNXFWGuzph20jSbFJKbgVMoi+0L0AAGQ6fbGdWWAv6QcabFd3tJY/39x+AwZvM/hiREcfqlwVte3xH9yfkpxw==
+"@sudoo/express@^1.13.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@sudoo/express/-/express-1.13.0.tgz#de3535d5337be9aa944b792a84a7ca03cbbe0c2c"
+  integrity sha512-UFhHeVWf5OYSfDLLIXRwt1bnpJcU5rNIfwMYKHJ63L8NDz6C+SVL9XaT9oK+pQqeo4aoi8s0cXGOB1A59AE/Ww==
   dependencies:
     "@sudoo/bark" "^2.7.1"
     body-parser "^1.19.0"
@@ -1092,10 +1092,10 @@ pump@^3.0.0:
     end-of-stream "^1.1.0"
     once "^1.3.1"
 
-qrcode@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/qrcode/-/qrcode-1.4.0.tgz#b4b41b4bbfd5eeac8d5163efacef34ee5b8ad455"
-  integrity sha512-18u+bdSosXO0+wx6F1UUFzJz01VRfMBcb/wbBw/tKYRD0A2Vho5WQ4xz30pHwhh4IE/qhObqIs5yNO0mGdHKkA==
+qrcode@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/qrcode/-/qrcode-1.4.1.tgz#2126814985d0dbbd9aee050fc523d319c6a7dc3b"
+  integrity sha512-3JhHQJkKqJL4PfoM6t+B40f0GWv9eNJAJmuNx2X/sHEOLvMyvEPN8GfbdN1qmr19O8N2nLraOzeWjXocHz1S4w==
   dependencies:
     dijkstrajs "^1.0.1"
     isarray "^2.0.1"

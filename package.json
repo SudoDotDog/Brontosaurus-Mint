@@ -19,12 +19,12 @@
     "@brontosaurus/core": "^1.7.1",
     "@brontosaurus/db": "^2.17.3",
     "@sudoo/bark": "^2.7.1",
-    "@sudoo/express": "^1.12.0",
+    "@sudoo/express": "^1.13.0",
     "@sudoo/extract": "^1.2.0",
     "@sudoo/io": "^1.6.0",
     "@sudoo/log": "^1.2.2",
     "connor": "^2.5.1",
-    "qrcode": "^1.4.0"
+    "qrcode": "^1.4.1"
   },
   "devDependencies": {
     "@sudoo/mock": "^1.2.0",
