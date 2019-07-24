@@ -40,7 +40,7 @@
   resolved "https://registry.yarnpkg.com/@brontosaurus/definition/-/definition-1.6.1.tgz#88ac9ff85066b68a0409c3c2946e45e228bbc3b2"
   integrity sha512-FNJX31Y+nnNIbC47b7JKPPXQ4iN1CZ5lvNUlBpl3Lt8D1zUlr6sUMcpDKUXXVWZg/uHF39rQgqHb2FaksvLOhQ==
 
-"@sudoo/bark@^2.6.1", "@sudoo/bark@^2.7.1":
+"@sudoo/bark@^2.7.1":
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/@sudoo/bark/-/bark-2.7.1.tgz#84b9db0be3aa7b4d6896ced81d9fa9aac96578ef"
   integrity sha512-0zBFbIQAtu3XNJkFPszdljYXXIPXzR63qypfTwFRupmu3gxgfBMtdPShbQebGuGG0KQEmXasGMBQVi2O0jWbbQ==
@@ -60,13 +60,13 @@
   resolved "https://registry.yarnpkg.com/@sudoo/extract/-/extract-1.2.0.tgz#42c0753c1b76bc964180a54ca31668a9ac6576ae"
   integrity sha512-3/F3HuTnX2tAvkSS1KA2A6DPwZQDVhlRT2xfDmHhXp0p2aENvfdvBaiUU+xCqvHfS/Koi4pBUoWryGkTWdn4IA==
 
-"@sudoo/io@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@sudoo/io/-/io-1.6.0.tgz#efc631a04d55419ba1001a467b7151c7c070dfce"
-  integrity sha512-sHpHkuxq+N0Z9fBIda7JEHlK4UbxnAdiqyJ5yorKxtr0YTuCcMfG5QbVXGAE82/jNjaAi6MfIuaCQd15GQ9PpQ==
+"@sudoo/io@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@sudoo/io/-/io-1.6.1.tgz#d8d18d17ed61f36eafa6aa7e4b22562f2bd801a5"
+  integrity sha512-dJPWaZocnnDtZL5kaxbpSQD02GxURxaQC6SmQ8FaPGuijv2cnURqVoSwpZmVexkMMymOmTzWEd7NqK+KfgJuAA==
   dependencies:
-    "@sudoo/bark" "^2.6.1"
-    connor "^2.4.0"
+    "@sudoo/bark" "^2.7.1"
+    connor "^2.6.0"
 
 "@sudoo/log@^1.2.2":
   version "1.2.2"
@@ -398,7 +398,7 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=
 
-connor@^2.4.0, connor@^2.5.1, connor@^2.6.0:
+connor@^2.5.1, connor@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/connor/-/connor-2.6.0.tgz#1ffc2ebc60c2fa0908afd22bc763c74fd6dd4a0f"
   integrity sha512-8y18++OijPHvT3C8d57Z2I3xTFgLJU4hyphsty19kja1KqtgZDFmBwRPZ2zaJHlJZzMAvztVClv30WAaT2l6SA==
