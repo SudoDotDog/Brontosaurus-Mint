@@ -18,7 +18,7 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@brontosaurus/core@^1.7.1":
+"@brontosaurus/core@^1.8.1":
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/@brontosaurus/core/-/core-1.8.1.tgz#379c15a4399ccc7c4c9525c8153e355b31ea15b6"
   integrity sha512-xY5qwqVlbsv9gn9cIcUko28klKCbkgaefiP8+WvlsoAWNmaoc9pN+bAdXwN7i0IDWFPcMX8/oRRvoQAcaMAkhg==
