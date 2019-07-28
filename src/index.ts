@@ -36,6 +36,7 @@ app.express.get(['/', '/index.html'], createReplacementHandler('<!-- Insertion P
 
 const tenHour: number = 36000000;
 app.static(Path.join(__dirname, '..', 'public', 'red'), {
+    immutable: true,
     maxAge: tenHour,
 });
 
