@@ -33,7 +33,11 @@ db.on('error', console.log.bind(console, 'connection error:'));
 
 // Static
 app.express.get(['/', '/index.html'], createReplacementHandler('<!-- Insertion Point -->', getEnvGettingText()));
-app.static(Path.join(__dirname, '..', 'public', 'red'));
+
+const tenHour: number = 36000000;
+app.static(Path.join(__dirname, '..', 'public', 'red'), {
+    maxAge: tenHour,
+});
 
 // Health
 app.health('/health');
