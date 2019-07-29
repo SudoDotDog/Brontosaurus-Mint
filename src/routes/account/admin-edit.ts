@@ -98,6 +98,8 @@ export class AdminEditRoute extends BrontosaurusRoute {
             account.groups = parsedGroups.map((group: IGroupModel) => group._id);
             account.tags = parsedTags.map((tag: ITagModel) => tag._id);
 
+            account.resetMint();
+
             await account.save();
 
             res.agent.add('account', account.username);

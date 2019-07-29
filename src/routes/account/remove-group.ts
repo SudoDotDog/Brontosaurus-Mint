@@ -51,6 +51,7 @@ export class RemoveGroupRoute extends BrontosaurusRoute {
             }
 
             account.removeGroup(group._id);
+            account.resetMint();
 
             await account.save();
 

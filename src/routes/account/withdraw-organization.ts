@@ -59,6 +59,7 @@ export class WithdrawOrganizationRoute extends BrontosaurusRoute {
             }
 
             account.organization = undefined;
+            account.resetMint();
 
             await account.save();
 

@@ -51,6 +51,7 @@ export class AddGroupRoute extends BrontosaurusRoute {
             }
 
             account.addGroup(group._id);
+            account.resetMint();
 
             await account.save();
 

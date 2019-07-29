@@ -56,6 +56,7 @@ export class EnableTwoFARoute extends BrontosaurusRoute {
 
             const secretURL: string = account.generateAndSetTwoFA(systemName || 'Brontosaurus Authorization');
             const qrcode: string = await QRCode.toDataURL(secretURL);
+            account.resetMint();
             account.resetAttempt();
 
             await account.save();

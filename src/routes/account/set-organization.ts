@@ -64,6 +64,7 @@ export class SetOrganizationRoute extends BrontosaurusRoute {
             }
 
             account.organization = organization._id;
+            account.resetMint();
 
             await account.save();
 
