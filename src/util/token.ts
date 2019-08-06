@@ -28,7 +28,10 @@ export const jsonifyBasicRecords = (infoLine: string | Record<string, Basics>, e
 
 export const createToken = (body: IBrontosaurusBody, application: IApplicationModel): string => {
 
-    const sign: BrontosaurusSign = BrontosaurusSign.create(application.key, body, application.secret);
+    const sign: BrontosaurusSign = BrontosaurusSign.create(application.key, body, {
+        public: application.publicKey,
+        private: application.privateKey,
+    });
     const token: string = sign.token(Date.now() + application.expire);
 
     return token;

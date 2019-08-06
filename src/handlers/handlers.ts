@@ -31,7 +31,10 @@ export const createAuthenticateHandler = (): SudooExpressHandler =>
             const token: string = Safe.value(req.info.token).safe();
             const application: IApplicationModel = Safe.value(await ApplicationController.getApplicationByKey(INTERNAL_APPLICATION.RED)).safe();
 
-            Throwable_ValidateToken(application.secret, application.expire, token);
+            Throwable_ValidateToken({
+                public: application.publicKey,
+                private: application.privateKey,
+            }, application.expire, token);
 
             req.principal = getPrincipleFromToken(token);
             req.authenticate = application;

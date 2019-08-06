@@ -17,7 +17,6 @@ export type CreateApplicationRouteBody = {
     name: string;
     key: string;
     expire: number;
-    token: string;
 };
 
 export class CreateApplicationRoute extends BrontosaurusRoute {
@@ -64,7 +63,6 @@ export class CreateApplicationRoute extends BrontosaurusRoute {
                 name,
                 key,
                 body.direct('expire'),
-                body.direct('token'),
                 {},
             );
             await application.save();
