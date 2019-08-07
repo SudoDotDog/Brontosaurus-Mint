@@ -23,6 +23,7 @@ import { WithdrawOrganizationRoute } from './account/withdraw-organization';
 import { CreateApplicationRoute } from './application/create';
 import { FetchApplicationRoute } from './application/fetch';
 import { RefreshGreenApplicationRoute } from './application/refresh-green';
+import { RefreshKeyApplicationRoute } from './application/refresh-key';
 import { SingleApplicationRoute } from './application/single';
 import { UpdateApplicationRoute } from './application/update';
 import { AllDecoratorRoute } from './decorator/all';
@@ -62,6 +63,7 @@ export const MintRoutes = [
     new SingleApplicationRoute(),
     new UpdateApplicationRoute(),
     new RefreshGreenApplicationRoute(),
+    new RefreshKeyApplicationRoute(),
     new SetOrganizationRoute(),
     new FetchStandaloneAccountRoute(),
 

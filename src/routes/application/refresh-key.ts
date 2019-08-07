@@ -1,7 +1,7 @@
 /**
  * @author WMXPY
  * @namespace Brontosaurus_Mint_Routes_Application
- * @description Refresh Green
+ * @description Refresh Key
  */
 
 import { ApplicationController, IApplicationModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
@@ -12,26 +12,26 @@ import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler
 import { basicHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 
-export type RefreshGreenApplicationBody = {
+export type RefreshKeyApplicationBody = {
 
     readonly key: string;
 };
 
-export class RefreshGreenApplicationRoute extends BrontosaurusRoute {
+export class RefreshKeyApplicationRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/application/refresh-green';
+    public readonly path: string = '/application/refresh-key';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/application/refresh-green - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/application/refresh-green - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/application/refresh-green - GroupVerifyHandler'),
-        basicHook.wrap(this._refreshGreenApplicationHandler.bind(this), '/application/refresh-green - Refresh Green', true),
+        basicHook.wrap(createTokenHandler(), '/application/refresh-key - TokenHandler'),
+        basicHook.wrap(createAuthenticateHandler(), '/application/refresh-key - AuthenticateHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/application/refresh-key - GroupVerifyHandler'),
+        basicHook.wrap(this._refreshKeyApplicationHandler.bind(this), '/application/refresh-key - Refresh Green', true),
     ];
 
-    private async _refreshGreenApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _refreshKeyApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<RefreshGreenApplicationBody> = Safe.extract(req.body as RefreshGreenApplicationBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: SafeExtract<RefreshKeyApplicationBody> = Safe.extract(req.body as RefreshKeyApplicationBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
 
         try {
 
@@ -47,7 +47,7 @@ export class RefreshGreenApplicationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.APPLICATION_KEY_NOT_FOUND, key);
             }
 
-            application.refreshGreen();
+            application.refreshKey();
 
             await application.save();
 
