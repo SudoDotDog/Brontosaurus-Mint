@@ -40,6 +40,7 @@ import { OrganizationCreateRoute } from './organization/create';
 import { OrganizationDeactivateRoute } from './organization/deactivate';
 import { OrganizationFetchRoute } from './organization/fetch';
 import { OrganizationInplodeRoute } from './organization/inplode';
+import { SetOwnerRoute } from './organization/set-owner';
 import { SingleOrganizationRoute } from './organization/single';
 import { OrganizationSubRegisterRoute } from './organization/sub-register';
 import { UpdateOrganizationRoute } from './organization/update';
@@ -120,4 +121,5 @@ export const MintRoutes = [
     new SingleOrganizationRoute(),
     new UpdateOrganizationRoute(),
     new OrganizationSubRegisterRoute(),
+    new SetOwnerRoute(),
 ];
