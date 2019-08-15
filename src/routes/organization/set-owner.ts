@@ -64,8 +64,9 @@ export class SetOwnerRoute extends BrontosaurusRoute {
 
             organization.owner = account._id;
 
+            await organization.save();
+
             res.agent.add('account', account.username);
-            res.agent.add('organization', organization.name);
         } catch (err) {
             res.agent.fail(400, err);
         } finally {
