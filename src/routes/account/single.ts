@@ -55,6 +55,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
 
                 res.agent.add('account', {
                     username: account.username,
+                    displayName: account.displayName,
                     email: account.email,
                     phone: account.phone,
                     twoFA: Boolean(account.twoFA),
