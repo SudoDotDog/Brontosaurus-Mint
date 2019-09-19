@@ -24,7 +24,7 @@
     "@sudoo/io": "^1.6.1",
     "@sudoo/log": "^1.2.2",
     "connor": "^2.6.0",
-    "qrcode": "^1.4.1"
+    "qrcode": "^1.4.2"
   },
   "devDependencies": {
     "@sudoo/mock": "^1.2.0",
