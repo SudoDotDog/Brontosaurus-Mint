@@ -23,6 +23,7 @@ if (isDevelopment()) {
     SudooLog.global.level(LOG_LEVEL.INFO);
 }
 
+setting.useBodyParser();
 const app: SudooExpress = SudooExpress.create(setting);
 
 const config: BrontosaurusConfig = readConfigEnvironment();
