@@ -18,6 +18,8 @@ export enum ERROR_CODE {
     INVALID_PASSWORD = 4111,
     INVALID_COMMON_NAME = 4112,
     INVALID_COMMON_KEY = 4113,
+    INVALID_EMAIL = 4114,
+    INVALID_PHONE = 4115,
 
     APPLICATION_KEY_NOT_FOUND = 4120,
 
@@ -75,6 +77,8 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
     [ERROR_CODE.INVALID_PASSWORD]: 'Invalid password, reason: "{}"',
     [ERROR_CODE.INVALID_COMMON_NAME]: 'Invalid common name, reason: "{}"',
     [ERROR_CODE.INVALID_COMMON_KEY]: 'Invalid common key, reason: "{}"',
+    [ERROR_CODE.INVALID_EMAIL]: 'Invalid email, reason: "{}"',
+    [ERROR_CODE.INVALID_PHONE]: 'Invalid phone, reason: "{}"',
 
     [ERROR_CODE.APPLICATION_KEY_NOT_FOUND]: 'Application key not found',
 

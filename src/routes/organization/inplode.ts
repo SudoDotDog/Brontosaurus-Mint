@@ -4,7 +4,7 @@
  * @description Inplode
  */
 
-import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, IOrganizationModel, ITagModel, OrganizationController, TagController, USERNAME_VALIDATE_RESPONSE, validateCommonName, validateUsername } from "@brontosaurus/db";
+import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, EMAIL_VALIDATE_RESPONSE, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, IOrganizationModel, ITagModel, OrganizationController, PHONE_VALIDATE_RESPONSE, TagController, USERNAME_VALIDATE_RESPONSE, validateCommonName, validateEmail, validatePhone, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { _Random } from "@sudoo/bark/random";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
@@ -63,6 +63,22 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
 
             if (validateResult !== COMMON_NAME_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_COMMON_NAME, validateResult);
+            }
+
+            if (req.body.email) {
+
+                const emailValidationResult: EMAIL_VALIDATE_RESPONSE = validateEmail(req.body.email);
+                if (emailValidationResult !== EMAIL_VALIDATE_RESPONSE.OK) {
+                    throw this._error(ERROR_CODE.INVALID_EMAIL, emailValidationResult);
+                }
+            }
+
+            if (req.body.phone) {
+
+                const phoneValidationResult: PHONE_VALIDATE_RESPONSE = validatePhone(req.body.phone);
+                if (phoneValidationResult !== PHONE_VALIDATE_RESPONSE.OK) {
+                    throw this._error(ERROR_CODE.INVALID_PHONE, phoneValidationResult);
+                }
             }
 
             const infoLine: Record<string, Basics> | string = body.direct('infos');

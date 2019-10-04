@@ -4,7 +4,7 @@
  * @description Sub Register
  */
 
-import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, USERNAME_VALIDATE_RESPONSE, validateCommonName, validateUsername } from "@brontosaurus/db";
+import { AccountController, EMAIL_VALIDATE_RESPONSE, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PHONE_VALIDATE_RESPONSE, USERNAME_VALIDATE_RESPONSE, validateEmail, validatePhone, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { _Random } from "@sudoo/bark/random";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
@@ -50,6 +50,22 @@ export class OrganizationSubRegisterRoute extends BrontosaurusRoute {
 
             if (usernameValidationResult !== USERNAME_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_USERNAME, usernameValidationResult);
+            }
+
+            if (req.body.email) {
+
+                const emailValidationResult: EMAIL_VALIDATE_RESPONSE = validateEmail(req.body.email);
+                if (emailValidationResult !== EMAIL_VALIDATE_RESPONSE.OK) {
+                    throw this._error(ERROR_CODE.INVALID_EMAIL, emailValidationResult);
+                }
+            }
+
+            if (req.body.phone) {
+
+                const phoneValidationResult: PHONE_VALIDATE_RESPONSE = validatePhone(req.body.phone);
+                if (phoneValidationResult !== PHONE_VALIDATE_RESPONSE.OK) {
+                    throw this._error(ERROR_CODE.INVALID_PHONE, phoneValidationResult);
+                }
             }
 
             const infoLine: Record<string, Basics> | string = body.direct('infos');

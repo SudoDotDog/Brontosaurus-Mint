@@ -4,7 +4,7 @@
  * @description Register
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { AccountController, EMAIL_VALIDATE_RESPONSE, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PHONE_VALIDATE_RESPONSE, USERNAME_VALIDATE_RESPONSE, validateEmail, validatePhone, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { _Random } from "@sudoo/bark/random";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
@@ -18,7 +18,6 @@ import { jsonifyBasicRecords, SafeToken } from "../../util/token";
 export type OrganizationRegisterRouteBody = {
 
     username: string;
-    password: string;
     infos: Record<string, Basics>;
 
     displayName?: string;
@@ -65,6 +64,28 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
             }
 
             const username: string = body.directEnsure('username');
+
+            const usernameValidationResult: USERNAME_VALIDATE_RESPONSE = validateUsername(username);
+
+            if (usernameValidationResult !== USERNAME_VALIDATE_RESPONSE.OK) {
+                throw this._error(ERROR_CODE.INVALID_USERNAME, usernameValidationResult);
+            }
+
+            if (req.body.email) {
+
+                const emailValidationResult: EMAIL_VALIDATE_RESPONSE = validateEmail(req.body.email);
+                if (emailValidationResult !== EMAIL_VALIDATE_RESPONSE.OK) {
+                    throw this._error(ERROR_CODE.INVALID_EMAIL, emailValidationResult);
+                }
+            }
+
+            if (req.body.phone) {
+
+                const phoneValidationResult: PHONE_VALIDATE_RESPONSE = validatePhone(req.body.phone);
+                if (phoneValidationResult !== PHONE_VALIDATE_RESPONSE.OK) {
+                    throw this._error(ERROR_CODE.INVALID_PHONE, phoneValidationResult);
+                }
+            }
 
             const infoLine: Record<string, Basics> | string = body.direct('infos');
             const infos: Record<string, Basics> = jsonifyBasicRecords(
