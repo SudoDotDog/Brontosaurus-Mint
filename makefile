@@ -19,7 +19,7 @@ build: clean
 run: dev
 	@NODE_ENV=development \
 	BRONTOSAURUS_DB=$(DB) \
-	PORTAL_PATH=$(PP)" \
+	PORTAL_PATH=$(PP) \
 	node dist/index.js
 
 p-run: dev
