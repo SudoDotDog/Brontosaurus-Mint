@@ -98,12 +98,6 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ORGANIZATION, name);
             }
 
-            const organizationControlGroup: IGroupModel | null = await GroupController.getGroupByName(INTERNAL_USER_GROUP.ORGANIZATION_CONTROL);
-
-            if (!organizationControlGroup) {
-                throw this._error(ERROR_CODE.INTERNAL_ERROR);
-            }
-
             const tempPassword: string = _Random.random(6);
 
             const account: IAccountModel = AccountController.createOnLimboUnsavedAccount(
@@ -113,7 +107,7 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
                 req.body.email,
                 req.body.phone,
                 undefined,
-                [organizationControlGroup._id],
+                [],
                 infos,
             );
             const organization: IOrganizationModel = OrganizationController.createUnsavedOrganization(name, account._id);

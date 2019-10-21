@@ -34,6 +34,7 @@ import { UpdateDecoratorRoute } from './decorator/update';
 import { AllGroupRoute } from './group/all';
 import { CreateGroupRoute } from './group/create';
 import { FetchGroupRoute } from './group/fetch';
+import { RemoveAllGroupRoute } from './group/remove-all';
 import { SingleGroupRoute } from './group/single';
 import { UpdateGroupRoute } from './group/update';
 import { OrganizationCreateRoute } from './organization/create';
@@ -74,6 +75,7 @@ export const MintRoutes = [
     new FetchGroupRoute(),
     new SingleGroupRoute(),
     new UpdateGroupRoute(),
+    new RemoveAllGroupRoute(),
 
     // Tag
     new AllTagRoute(),
