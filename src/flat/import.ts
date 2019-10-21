@@ -19,5 +19,5 @@ export const FlatRoutes = [
     // Preference
 
     // Organization
-    // new OrganizationRegisterRoute(),
+    new OrganizationRegisterRoute(),
 ];

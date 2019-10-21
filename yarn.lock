@@ -25,10 +25,10 @@
   dependencies:
     "@brontosaurus/definition" "^3.0.0"
 
-"@brontosaurus/db@^3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@brontosaurus/db/-/db-3.4.0.tgz#241fd890ba511cba28e039bcfb22161cc5852fc4"
-  integrity sha512-LRWWSObw+RAlge17LlJ7Ro5/ZeVhkSsYir/PijAktdTKkc2GnlZk8TZ/5a09ree9EYqR/rLxOeYL7mg6j02oCA==
+"@brontosaurus/db@^3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@brontosaurus/db/-/db-3.4.1.tgz#66e7726a167583eedbc311321e779baab71c0274"
+  integrity sha512-rzKV3VVuYD9crcOT5Pd7hsJZPVn4WGF/fRzILPuRwK45qzDygeF+0RM3898uYcN+aSBhWVnNO71Vr2gsxTtHWQ==
   dependencies:
     "@brontosaurus/core" "^3.0.0"
     "@brontosaurus/definition" "^3.0.0"

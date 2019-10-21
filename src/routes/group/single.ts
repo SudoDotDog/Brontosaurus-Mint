@@ -4,7 +4,8 @@
  * @description Single
  */
 
-import { GroupController, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { GroupController, IAccount, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { getAccountsByGroupLean } from "@brontosaurus/db/controller/account";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { BrontosaurusRoute } from "../../handlers/basic";
@@ -49,8 +50,16 @@ export class SingleGroupRoute extends BrontosaurusRoute {
 
             const groupDecorators: string[] = await Throwable_MapDecorators(group.decorators);
 
+            const accounts: IAccount[] = await getAccountsByGroupLean(group._id);
+
             res.agent.migrate({
                 name: group.name,
+                members: accounts.map((member) => ({
+                    username: member.username,
+                    displayName: member.displayName,
+                    phone: member.phone,
+                    email: member.email,
+                })),
                 description: group.description,
                 decorators: groupDecorators,
             });
