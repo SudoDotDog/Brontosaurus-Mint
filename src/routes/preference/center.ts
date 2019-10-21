@@ -35,6 +35,7 @@ export class CommandCenterPreferenceRoute extends BrontosaurusRoute {
                 .addIfExist('commandCenterName', commandCenterName);
         } catch (err) {
 
+            console.log(err);
             res.agent.fail(400, err);
         } finally {
 
