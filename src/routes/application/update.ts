@@ -65,14 +65,7 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
             if (update.groups && Array.isArray(update.groups)) {
 
                 const applicationGroups: IGroupModel[] = await Throwable_GetGroupsByNames(update.groups);
-
-                const idsGroups: ObjectID[] = applicationGroups.map((group: IGroupModel) => {
-
-                    if (group.name === INTERNAL_USER_GROUP.SUPER_ADMIN || group.name === INTERNAL_USER_GROUP.SELF_CONTROL) {
-                        throw this._error(ERROR_CODE.CANNOT_MODIFY_INTERNAL_GROUP);
-                    }
-                    return group._id;
-                });
+                const idsGroups: ObjectID[] = applicationGroups.map((group: IGroupModel) => group._id);
 
                 application.groups = idsGroups;
             }
