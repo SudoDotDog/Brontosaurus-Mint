@@ -58,6 +58,7 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
             const tags: string[] = await Throwable_MapTags(organization.tags);
 
             res.agent.migrate({
+                active: organization.active,
                 name: organization.name,
                 limit: organization.limit,
                 owner: {

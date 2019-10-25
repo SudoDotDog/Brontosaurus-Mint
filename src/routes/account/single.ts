@@ -54,6 +54,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
             if (!account.organization) {
 
                 res.agent.add('account', {
+                    active: account.active,
                     username: account.username,
                     displayName: account.displayName,
                     email: account.email,
@@ -74,6 +75,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                 }
 
                 res.agent.add('account', {
+                    active: account.active,
                     username: account.username,
                     displayName: account.displayName,
                     email: account.email,
