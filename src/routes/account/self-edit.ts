@@ -42,6 +42,10 @@ export class SelfEditRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const username: string = body.directEnsure('username');
             const principal: SafeToken = req.principal;
 

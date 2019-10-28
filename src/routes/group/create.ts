@@ -36,6 +36,10 @@ export class CreateGroupRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const name: string = body.direct('name');
 
             const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(name);

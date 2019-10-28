@@ -35,6 +35,10 @@ export class RemoveAllGroupRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const name: string = body.directEnsure('name');
 
             const group: IGroupModel | null = await GroupController.getGroupByName(name);

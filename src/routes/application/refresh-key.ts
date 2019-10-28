@@ -35,6 +35,10 @@ export class RefreshKeyApplicationRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const key: string = body.direct('key');
 
             if (typeof key !== 'string') {

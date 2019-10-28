@@ -36,6 +36,10 @@ export class OrganizationCreateRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const name: string = body.direct('name');
             const owner: string = body.direct('owner');
 

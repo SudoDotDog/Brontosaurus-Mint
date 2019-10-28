@@ -9,6 +9,7 @@ import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpress
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+import { ERROR_CODE } from "../../util/error";
 
 export class AllGroupRoute extends BrontosaurusRoute {
 
@@ -22,9 +23,13 @@ export class AllGroupRoute extends BrontosaurusRoute {
         basicHook.wrap(this._allGroupHandler.bind(this), '/group/all - All Groups', true),
     ];
 
-    private async _allGroupHandler(_: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _allGroupHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
         try {
+
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
 
             const groups: IGroupModel[] = await GroupController.getAllActiveGroups();
 

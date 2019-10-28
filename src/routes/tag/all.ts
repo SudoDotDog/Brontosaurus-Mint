@@ -9,6 +9,7 @@ import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpress
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+import { ERROR_CODE } from "../../util/error";
 
 export class AllTagRoute extends BrontosaurusRoute {
 
@@ -22,9 +23,13 @@ export class AllTagRoute extends BrontosaurusRoute {
         basicHook.wrap(this._allTagHandler.bind(this), '/tag/all - All Tags', true),
     ];
 
-    private async _allTagHandler(_: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _allTagHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
         try {
+
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
 
             const tags: ITagModel[] = await TagController.getAllActiveTags();
 

@@ -38,6 +38,10 @@ export class UpdateOrganizationRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const name: string = body.directEnsure('name');
             const limit: number = body.direct('limit');
             const decoratorsNames: string[] = body.direct('decorators');

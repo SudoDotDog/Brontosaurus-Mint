@@ -36,6 +36,10 @@ export class UpdateTagRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const name: string = body.directEnsure('name');
 
             const tag: ITagModel | null = await TagController.getTagByName(name);

@@ -37,6 +37,10 @@ export class CreateApplicationRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const key: string = body.direct('key');
 
             const validateKeyResult: COMMON_KEY_VALIDATE_RESPONSE = validateCommonKey(key);

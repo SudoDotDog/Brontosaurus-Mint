@@ -21,7 +21,7 @@ export class CommandCenterPreferenceRoute extends BrontosaurusRoute {
         basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/command-center - Command Center', true),
     ];
 
-    private async _preferenceGlobalHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _preferenceGlobalHandler(_: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
         try {
 

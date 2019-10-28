@@ -36,6 +36,10 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const key: string = body.direct('key');
             if (typeof key !== 'string') {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'key', 'string', (key as any).toString());

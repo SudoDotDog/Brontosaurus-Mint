@@ -36,6 +36,10 @@ export class SingleAccountRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const username: string = body.direct('username');
             if (typeof username !== 'string') {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'username', 'string', (username as any).toString());

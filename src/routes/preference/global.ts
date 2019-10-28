@@ -39,6 +39,10 @@ export class GlobalPreferenceRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const globalAvatar: string | undefined = body.globalAvatar;
             const globalBackgroundImages: string[] | undefined = body.globalBackgroundImages;
             const globalFavicon: string | undefined = body.globalFavicon;

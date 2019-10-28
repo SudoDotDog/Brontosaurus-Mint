@@ -9,6 +9,7 @@ import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpress
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+import { ERROR_CODE } from "../../util/error";
 
 export class ReadGlobalPreferenceRoute extends BrontosaurusRoute {
 
@@ -25,6 +26,10 @@ export class ReadGlobalPreferenceRoute extends BrontosaurusRoute {
     private async _preferenceGlobalHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
         try {
+
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
 
             const globalAvatar: string | null = await PreferenceController.getSinglePreference('globalAvatar');
             const globalBackgroundImages: string[] | null = await PreferenceController.getSinglePreference('globalBackgroundImages');

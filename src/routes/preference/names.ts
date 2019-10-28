@@ -9,6 +9,7 @@ import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpress
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+import { ERROR_CODE } from "../../util/error";
 
 export type NamePreferenceBody = {
 
@@ -34,6 +35,10 @@ export class NamePreferenceRoute extends BrontosaurusRoute {
         const body: NamePreferenceBody = req.body;
 
         try {
+
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
 
             const systemName: string | undefined = body.systemName;
             const accountName: string | undefined = body.accountName;

@@ -43,6 +43,10 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
 
         try {
 
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
             const token: SafeToken = req.principal;
             const registeree: string = token.body.direct('username');
             const organizationName: string | undefined = token.body.direct('organization', this._error(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_ORGANIZATION));

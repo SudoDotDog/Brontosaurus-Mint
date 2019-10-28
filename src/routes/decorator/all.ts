@@ -9,6 +9,7 @@ import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpress
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+import { ERROR_CODE } from "../../util/error";
 
 export class AllDecoratorRoute extends BrontosaurusRoute {
 
@@ -22,9 +23,13 @@ export class AllDecoratorRoute extends BrontosaurusRoute {
         basicHook.wrap(this._allDecoratorHandler.bind(this), '/decorator/all - All Decorators', true),
     ];
 
-    private async _allDecoratorHandler(_: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _allDecoratorHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
         try {
+
+            if (!req.valid) {
+                throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
 
             const decorators: IDecoratorModel[] = await DecoratorController.getAllActiveDecorators();
 
