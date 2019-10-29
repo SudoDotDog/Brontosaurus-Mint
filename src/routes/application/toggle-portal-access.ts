@@ -1,7 +1,7 @@
 /**
  * @author WMXPY
  * @namespace Brontosaurus_Mint_Routes_Application
- * @description Toggle Green Access
+ * @description Toggle Portal Access
  */
 
 import { ApplicationController, IApplicationModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
@@ -12,26 +12,26 @@ import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler
 import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 
-export type ToggleGreenAccessApplicationBody = {
+export type TogglePortalAccessApplicationBody = {
 
     readonly key: string;
 };
 
-export class ToggleGreenAccessApplicationRoute extends BrontosaurusRoute {
+export class TogglePortalAccessApplicationRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/application/toggle-green-access';
+    public readonly path: string = '/application/toggle-portal-access';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
         autoHook.wrap(createTokenHandler(), 'TokenHandler'),
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), 'GroupVerifyHandler'),
-        autoHook.wrap(this._toggleGreenAccessApplicationHandler.bind(this), 'Toggle Green Access', true),
+        autoHook.wrap(this._togglePortalAccessApplicationHandler.bind(this), 'Toggle Portal Access', true),
     ];
 
-    private async _toggleGreenAccessApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _togglePortalAccessApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<ToggleGreenAccessApplicationBody> = Safe.extract(req.body as ToggleGreenAccessApplicationBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: SafeExtract<TogglePortalAccessApplicationBody> = Safe.extract(req.body as TogglePortalAccessApplicationBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
 
         try {
 
@@ -51,7 +51,7 @@ export class ToggleGreenAccessApplicationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.APPLICATION_KEY_NOT_FOUND, key);
             }
 
-            application.toggleGreenAccess();
+            application.togglePortalAccess();
             await application.save();
 
             res.agent.add('application', application.key);

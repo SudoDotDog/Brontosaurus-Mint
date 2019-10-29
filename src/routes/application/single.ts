@@ -62,6 +62,7 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
                 groups: applicationGroups,
                 green: application.green,
                 greenAccess: application.greenAccess,
+                portalAccess: application.portalAccess,
                 publicKey: application.publicKey,
             });
         } catch (err) {
