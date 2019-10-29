@@ -25,6 +25,7 @@ import { FetchApplicationRoute } from './application/fetch';
 import { RefreshGreenApplicationRoute } from './application/refresh-green';
 import { RefreshKeyApplicationRoute } from './application/refresh-key';
 import { SingleApplicationRoute } from './application/single';
+import { ToggleGreenAccessApplicationRoute } from './application/toggle-green-access';
 import { UpdateApplicationRoute } from './application/update';
 import { AllDecoratorRoute } from './decorator/all';
 import { CreateDecoratorRoute } from './decorator/create';
@@ -68,6 +69,7 @@ export const MintRoutes = [
     new RefreshKeyApplicationRoute(),
     new SetOrganizationRoute(),
     new FetchStandaloneAccountRoute(),
+    new ToggleGreenAccessApplicationRoute(),
 
     // Group
     new AllGroupRoute(),

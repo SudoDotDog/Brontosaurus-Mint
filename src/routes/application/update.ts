@@ -23,7 +23,6 @@ export type UpdateApplicationBody = {
         name: string;
         expire: number;
         groups: string[];
-        greenAccess: boolean;
     }>;
 };
 
@@ -65,7 +64,6 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 name: string;
                 expire: number;
                 groups: string[];
-                greenAccess: boolean;
             }> = body.direct('application');
 
             if (update.groups && Array.isArray(update.groups)) {
@@ -87,9 +85,6 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
             }
             if (update.favicon && typeof update.favicon === 'string') {
                 application.favicon = update.favicon;
-            }
-            if (typeof update.greenAccess === 'boolean') {
-                application.greenAccess = Boolean(update.greenAccess);
             }
 
             await application.save();
