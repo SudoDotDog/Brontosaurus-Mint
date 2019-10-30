@@ -58,6 +58,8 @@ export class FetchApplicationRoute extends BrontosaurusRoute {
                 expire: application.expire,
                 key: application.key,
                 name: application.name,
+                greenAccess: application.greenAccess,
+                portalAccess: application.portalAccess,
             }));
 
             res.agent.add('applications', parsed);
