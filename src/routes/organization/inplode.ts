@@ -4,15 +4,15 @@
  * @description Inplode
  */
 
-import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, EMAIL_VALIDATE_RESPONSE, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, IOrganizationModel, ITagModel, OrganizationController, PHONE_VALIDATE_RESPONSE, TagController, USERNAME_VALIDATE_RESPONSE, validateCommonName, validateEmail, validatePhone, validateUsername } from "@brontosaurus/db";
+import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, EMAIL_VALIDATE_RESPONSE, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, ITagModel, OrganizationController, PHONE_VALIDATE_RESPONSE, TagController, USERNAME_VALIDATE_RESPONSE, validateCommonName, validateEmail, validatePhone, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
-import { _Random } from "@sudoo/bark/random";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { createRandomTempPassword } from "../../util/auth";
+import { ERROR_CODE, panic } from "../../util/error";
 import { jsonifyBasicRecords } from "../../util/token";
 
 export type OrganizationInplodeRouteBody = {
@@ -85,6 +85,13 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
                 }
             }
 
+            if (req.body.displayName) {
+
+                if (typeof req.body.displayName !== 'string') {
+                    throw panic.code(ERROR_CODE.INVALID_DISPLAY_NAME, req.body.displayName);
+                }
+            }
+
             const infoLine: Record<string, Basics> | string = body.direct('infos');
             const infos: Record<string, Basics> = jsonifyBasicRecords(
                 infoLine,
@@ -102,7 +109,7 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ORGANIZATION, name);
             }
 
-            const tempPassword: string = _Random.random(6);
+            const tempPassword: string = createRandomTempPassword();
 
             const account: IAccountModel = AccountController.createOnLimboUnsavedAccount(
                 username,

@@ -5,12 +5,12 @@
  */
 
 import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
-import { _Random } from "@sudoo/bark/random";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+import { createRandomTempPassword } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 
 export type AccountLimboBody = {
@@ -48,7 +48,7 @@ export class AccountLimboRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
             }
 
-            const tempPassword: string = _Random.random(6);
+            const tempPassword: string = createRandomTempPassword();
             account.limbo = true;
             account.setPassword(tempPassword);
             account.resetAttempt();

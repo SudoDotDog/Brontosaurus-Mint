@@ -6,12 +6,12 @@
 
 import { AccountController, EMAIL_VALIDATE_RESPONSE, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PHONE_VALIDATE_RESPONSE, USERNAME_VALIDATE_RESPONSE, validateEmail, validatePhone, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
-import { _Random } from "@sudoo/bark/random";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+import { createRandomTempPassword } from "../../util/auth";
 import { ERROR_CODE, panic } from "../../util/error";
 import { jsonifyBasicRecords } from "../../util/token";
 
@@ -90,7 +90,7 @@ export class OrganizationSubRegisterRoute extends BrontosaurusRoute {
                 throw panic.code(ERROR_CODE.ORGANIZATION_NOT_FOUND, organizationName);
             }
 
-            const tempPassword: string = _Random.random(6);
+            const tempPassword: string = createRandomTempPassword();
 
             const account: IAccountModel = AccountController.createOnLimboUnsavedAccount(
                 username,
