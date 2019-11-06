@@ -25,7 +25,7 @@
     "@sudoo/log": "^1.2.2",
     "@sudoo/random": "^1.0.0",
     "connor": "^2.6.0",
-    "qrcode": "^1.4.3"
+    "qrcode": "^1.4.4"
   },
   "devDependencies": {
     "@sudoo/mock": "^1.2.0",
