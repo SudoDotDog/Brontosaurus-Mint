@@ -67,12 +67,14 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
                 limit: organization.limit,
                 owner: {
                     username: owner.username,
+                    active: owner.active,
                     displayName: owner.displayName,
                     phone: owner.phone,
                     email: owner.email,
                 },
                 members: members.map((member) => ({
                     username: member.username,
+                    active: member.active,
                     displayName: member.displayName,
                     phone: member.phone,
                     email: member.email,
