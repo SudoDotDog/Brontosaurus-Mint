@@ -8,7 +8,7 @@ import { Brontosaurus, BrontosaurusKey, BrontosaurusToken } from "@brontosaurus/
 import { DecoratorController, GroupController, IDecoratorModel, IGroupModel, ITagModel, TagController } from "@brontosaurus/db";
 import { IBrontosaurusBody, IBrontosaurusHeader } from "@brontosaurus/definition";
 import { Safe } from "@sudoo/extract";
-import { random } from "@sudoo/random";
+import { randomString } from "@sudoo/random";
 import { ObjectID } from "bson";
 import { Connor, ErrorCreationFunction } from "connor";
 import { createHash, Hash } from 'crypto';
@@ -211,5 +211,5 @@ export const garblePassword = (password: string, salt: string): string => {
 
 export const createRandomTempPassword = (): string => {
 
-    return random();
+    return randomString();
 };
