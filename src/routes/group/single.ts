@@ -58,7 +58,8 @@ export class SingleGroupRoute extends BrontosaurusRoute {
 
             res.agent.migrate({
                 name: group.name,
-                members: accounts.map((member) => ({
+                members: accounts.map((member: IAccount) => ({
+                    active: member.active,
                     username: member.username,
                     displayName: member.displayName,
                     phone: member.phone,
