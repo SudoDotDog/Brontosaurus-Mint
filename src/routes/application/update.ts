@@ -23,6 +23,7 @@ export type UpdateApplicationBody = {
         name: string;
         expire: number;
         groups: string[];
+        requires: string[];
     }>;
 };
 
@@ -64,6 +65,7 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 name: string;
                 expire: number;
                 groups: string[];
+                requires: string[];
             }> = body.direct('application');
 
             if (update.groups && Array.isArray(update.groups)) {
@@ -72,6 +74,14 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 const idsGroups: ObjectID[] = applicationGroups.map((group: IGroupModel) => group._id);
 
                 application.groups = idsGroups;
+            }
+
+            if (update.requires && Array.isArray(update.requires)) {
+
+                const applicationRequires: IGroupModel[] = await Throwable_GetGroupsByNames(update.requires);
+                const idsGroups: ObjectID[] = applicationRequires.map((group: IGroupModel) => group._id);
+
+                application.requires = idsGroups;
             }
 
             if (update.name && typeof update.name === 'string') {
