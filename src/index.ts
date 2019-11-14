@@ -7,7 +7,6 @@
 import { connect } from '@brontosaurus/db';
 import { SudooExpress, SudooExpressApplication } from '@sudoo/express';
 import { LOG_LEVEL, SudooLog } from '@sudoo/log';
-import * as Mongoose from "mongoose";
 import * as Path from 'path';
 import { FlatRoutes } from './flat/import';
 import { createReplacementHandler } from './handlers/public';
@@ -28,9 +27,13 @@ const app: SudooExpress = SudooExpress.create(setting);
 
 const config: BrontosaurusConfig = readConfigEnvironment();
 
-const db: Mongoose.Connection = connect(config.database);
-
-db.on('error', console.log.bind(console, 'connection error:'));
+connect(config.database, {
+    connected: true,
+    disconnected: true,
+    error: true,
+    reconnected: true,
+    reconnectedFailed: true,
+});
 
 // Static
 app.express.get(['/', '/index.html'], createReplacementHandler('<!-- Insertion Point -->', getEnvGettingText()));
