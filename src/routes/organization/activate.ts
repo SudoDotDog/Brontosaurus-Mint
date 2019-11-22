@@ -26,10 +26,10 @@ export class OrganizationActivateRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'TokenHandler'),
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), 'GroupVerifyHandler'),
-        autoHook.wrap(this._deactivateOrganizationHandler.bind(this), 'Activate', true),
+        autoHook.wrap(this._activateOrganizationHandler.bind(this), 'Activate', true),
     ];
 
-    private async _deactivateOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _activateOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
         const body: SafeExtract<OrganizationActivateRouteBody> = Safe.extract(req.body as OrganizationActivateRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
 
@@ -51,7 +51,7 @@ export class OrganizationActivateRoute extends BrontosaurusRoute {
             organization.active = true;
             await organization.save();
 
-            res.agent.add('deactivated', organization.name);
+            res.agent.add('activated', organization.name);
         } catch (err) {
             res.agent.fail(400, err);
         } finally {

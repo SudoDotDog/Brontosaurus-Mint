@@ -4,6 +4,7 @@
  * @description Import
  */
 
+import { AccountActivateRoute } from './account/activate';
 import { AddGroupRoute } from './account/add-group';
 import { AdminEditRoute } from './account/admin-edit';
 import { ChangePasswordRoute } from './account/change-password';
@@ -107,6 +108,7 @@ export const MintRoutes = [
     new AdminEditRoute(),
     new SingleAccountRoute(),
     new AccountDeactivateRoute(),
+    new AccountActivateRoute(),
     new AccountLimboRoute(),
     new RemoveTwoFARoute(),
     new ResetAttemptRoute(),
