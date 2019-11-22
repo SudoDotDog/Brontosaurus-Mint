@@ -39,6 +39,7 @@ import { FetchGroupRoute } from './group/fetch';
 import { RemoveAllGroupRoute } from './group/remove-all';
 import { SingleGroupRoute } from './group/single';
 import { UpdateGroupRoute } from './group/update';
+import { OrganizationActivateRoute } from './organization/activate';
 import { OrganizationCreateRoute } from './organization/create';
 import { OrganizationDeactivateRoute } from './organization/deactivate';
 import { OrganizationFetchRoute } from './organization/fetch';
@@ -124,6 +125,7 @@ export const MintRoutes = [
     new OrganizationInplodeRoute(),
     new OrganizationFetchRoute(),
     new OrganizationDeactivateRoute(),
+    new OrganizationActivateRoute(),
     new SingleOrganizationRoute(),
     new UpdateOrganizationRoute(),
     new OrganizationSubRegisterRoute(),
