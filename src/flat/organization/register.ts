@@ -121,6 +121,7 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
             res.agent.add('tempPassword', tempPassword);
             res.agent.add('account', account.username);
         } catch (err) {
+
             res.agent.fail(400, err);
         } finally {
             next();
