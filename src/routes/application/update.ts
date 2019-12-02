@@ -7,6 +7,7 @@
 import { ApplicationController, IApplicationModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
+import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { ObjectID } from "bson";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
@@ -101,7 +102,8 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
 
             res.agent.add('application', application.key);
         } catch (err) {
-            res.agent.fail(400, err);
+
+            res.agent.fail(HTTP_RESPONSE_CODE.BAD_REQUEST, err);
         } finally {
             next();
         }

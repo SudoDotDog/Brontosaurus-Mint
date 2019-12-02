@@ -8,6 +8,7 @@ import { AccountController, ApplicationController, IAccountModel, IApplicationMo
 import { IBrontosaurusBody } from "@brontosaurus/definition";
 import { SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeValue } from "@sudoo/extract";
+import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { Connor, ErrorCreationFunction } from "connor";
 import { compareGroups, getPrincipleFromToken, parseBearerAuthorization, Throwable_GetBody, Throwable_MapGroups, Throwable_ValidateToken } from "../util/auth";
 import { ERROR_CODE, MODULE_NAME } from "../util/error";
@@ -39,7 +40,8 @@ export const createAuthenticateHandler = (): SudooExpressHandler =>
             req.principal = getPrincipleFromToken(token);
             req.authenticate = application;
         } catch (err) {
-            res.agent.fail(400, err);
+
+            res.agent.fail(HTTP_RESPONSE_CODE.BAD_REQUEST, err);
         } finally {
             next();
         }
@@ -66,7 +68,8 @@ export const createGroupVerifyHandler = (groups: string[], error: ErrorCreationF
             }
             req.valid = true;
         } catch (err) {
-            res.agent.fail(400, err);
+
+            res.agent.fail(HTTP_RESPONSE_CODE.BAD_REQUEST, err);
         } finally {
             next();
         }
