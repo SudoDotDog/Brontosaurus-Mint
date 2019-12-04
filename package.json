@@ -24,7 +24,7 @@
     "@sudoo/io": "^1.6.1",
     "@sudoo/log": "^1.2.2",
     "@sudoo/magic": "^1.2.0",
-    "@sudoo/random": "^2.0.2",
+    "@sudoo/random": "^2.0.3",
     "connor": "^2.6.1",
     "qrcode": "^1.4.4"
   },
