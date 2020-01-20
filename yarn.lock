@@ -62,13 +62,13 @@
   resolved "https://registry.yarnpkg.com/@sudoo/extract/-/extract-1.2.1.tgz#3602980cff44116e897a186ffdc5250af99b2f5c"
   integrity sha512-oMAvUcPRZq4FlxuBjJXLsfPvZJ7UJUL0xEmh6l3eyW8E4A9USoFiMFTKovk2bPexBCQbC9lARWXo6KfbGMKGRw==
 
-"@sudoo/io@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@sudoo/io/-/io-1.6.1.tgz#d8d18d17ed61f36eafa6aa7e4b22562f2bd801a5"
-  integrity sha512-dJPWaZocnnDtZL5kaxbpSQD02GxURxaQC6SmQ8FaPGuijv2cnURqVoSwpZmVexkMMymOmTzWEd7NqK+KfgJuAA==
+"@sudoo/io@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@sudoo/io/-/io-1.6.2.tgz#f76b4ed1162467b04dd81600bbe1e5eda3102cf0"
+  integrity sha512-aX9XpyZ7Ebh+1Afix662pmYd0gYNG0D49GIDTvDD9DbkZJvKpzUPEndtmDf6rq2kVzvbOezt0BuQPnexYhgq3w==
   dependencies:
     "@sudoo/bark" "^2.7.1"
-    connor "^2.6.0"
+    connor "^2.6.1"
 
 "@sudoo/log@^1.2.2":
   version "1.2.2"
