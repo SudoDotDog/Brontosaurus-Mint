@@ -21,7 +21,7 @@
     "@sudoo/bark": "^2.7.1",
     "@sudoo/express": "^2.0.2",
     "@sudoo/extract": "^1.2.1",
-    "@sudoo/io": "^1.6.1",
+    "@sudoo/io": "^1.6.2",
     "@sudoo/log": "^1.2.2",
     "@sudoo/magic": "^1.4.1",
     "@sudoo/random": "^2.0.3",
