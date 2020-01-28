@@ -37,7 +37,7 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/application/update - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/application/update - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/application/update - GroupVerifyHandler'),
-        basicHook.wrap(this._updateApplicationHandler.bind(this), '/application/update - Update', true),
+        basicHook.wrap(this._updateApplicationHandler.bind(this), '/application/update - Update'),
     ];
 
     private async _updateApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

@@ -27,7 +27,7 @@ export class TogglePortalAccessApplicationRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'TokenHandler'),
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), 'GroupVerifyHandler'),
-        autoHook.wrap(this._togglePortalAccessApplicationHandler.bind(this), 'Toggle Portal Access', true),
+        autoHook.wrap(this._togglePortalAccessApplicationHandler.bind(this), 'Toggle Portal Access'),
     ];
 
     private async _togglePortalAccessApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

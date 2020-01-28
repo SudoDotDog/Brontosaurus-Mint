@@ -27,7 +27,7 @@ export class OrganizationActivateRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'TokenHandler'),
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), 'GroupVerifyHandler'),
-        autoHook.wrap(this._activateOrganizationHandler.bind(this), 'Activate', true),
+        autoHook.wrap(this._activateOrganizationHandler.bind(this), 'Activate'),
     ];
 
     private async _activateOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

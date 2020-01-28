@@ -30,7 +30,7 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/organization/fetch - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/fetch - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/organization/fetch - GroupVerifyHandler'),
-        basicHook.wrap(this._fetchOrganizationHandler.bind(this), '/organization/fetch - Fetch', true),
+        basicHook.wrap(this._fetchOrganizationHandler.bind(this), '/organization/fetch - Fetch'),
     ];
 
     private async _fetchOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

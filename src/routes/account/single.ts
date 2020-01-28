@@ -28,7 +28,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/account/single - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/single - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/single - GroupVerifyHandler'),
-        basicHook.wrap(this._singleAccountHandler.bind(this), '/account/single - Single', true),
+        basicHook.wrap(this._singleAccountHandler.bind(this), '/account/single - Single'),
     ];
 
     private async _singleAccountHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

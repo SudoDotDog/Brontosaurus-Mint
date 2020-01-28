@@ -36,7 +36,7 @@ export class OrganizationSubRegisterRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/organization/sub-register - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/sub-register - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/organization/sub-register - GroupVerifyHandler'),
-        basicHook.wrap(this._organizationCreateSubHandler.bind(this), '/organization/sub-register - Register Sub', true),
+        basicHook.wrap(this._organizationCreateSubHandler.bind(this), '/organization/sub-register - Register Sub'),
     ];
 
     private async _organizationCreateSubHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

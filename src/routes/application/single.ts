@@ -28,7 +28,7 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/application/single - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/application/single - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/application/single - GroupVerifyHandler'),
-        basicHook.wrap(this._singleApplicationHandler.bind(this), '/application/single - Single', true),
+        basicHook.wrap(this._singleApplicationHandler.bind(this), '/application/single - Single'),
     ];
 
     private async _singleApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

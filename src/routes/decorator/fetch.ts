@@ -29,7 +29,7 @@ export class FetchDecoratorRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/decorator/fetch - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/decorator/fetch - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/decorator/fetch - GroupVerifyHandler'),
-        basicHook.wrap(this._fetchDecoratorHandler.bind(this), '/decorator/fetch - Decorator Fetch', true),
+        basicHook.wrap(this._fetchDecoratorHandler.bind(this), '/decorator/fetch - Decorator Fetch'),
     ];
 
     private async _fetchDecoratorHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

@@ -28,7 +28,7 @@ export class SetOrganizationRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/account/set-organization - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/set-organization - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/set-organization - GroupVerifyHandler'),
-        basicHook.wrap(this._setOrganizationHandler.bind(this), '/account/set-organization - Set Organization', true),
+        basicHook.wrap(this._setOrganizationHandler.bind(this), '/account/set-organization - Set Organization'),
     ];
 
     private async _setOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

@@ -19,7 +19,7 @@ export class CommandCenterPreferenceRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/preference/command-center - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/preference/command-center - AuthenticateHandler'),
-        basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/command-center - Command Center', true),
+        basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/command-center - Command Center'),
     ];
 
     private async _preferenceGlobalHandler(_: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

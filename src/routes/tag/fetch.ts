@@ -29,7 +29,7 @@ export class FetchTagRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/tag/fetch - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/tag/fetch - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/tag/fetch - GroupVerifyHandler'),
-        basicHook.wrap(this._fetchTagHandler.bind(this), '/tag/fetch - Fetch Tags', true),
+        basicHook.wrap(this._fetchTagHandler.bind(this), '/tag/fetch - Fetch Tags'),
     ];
 
     private async _fetchTagHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

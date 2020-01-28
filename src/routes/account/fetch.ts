@@ -29,7 +29,7 @@ export class FetchAccountRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/account/fetch - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/fetch - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/fetch - GroupVerifyHandler'),
-        basicHook.wrap(this._fetchAccountHandler.bind(this), '/account/fetch - Fetch', true),
+        basicHook.wrap(this._fetchAccountHandler.bind(this), '/account/fetch - Fetch'),
     ];
 
     private async _fetchAccountHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

@@ -27,7 +27,7 @@ export class RefreshKeyApplicationRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/application/refresh-key - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/application/refresh-key - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/application/refresh-key - GroupVerifyHandler'),
-        basicHook.wrap(this._refreshKeyApplicationHandler.bind(this), '/application/refresh-key - Refresh Green', true),
+        basicHook.wrap(this._refreshKeyApplicationHandler.bind(this), '/application/refresh-key - Refresh Green'),
     ];
 
     private async _refreshKeyApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

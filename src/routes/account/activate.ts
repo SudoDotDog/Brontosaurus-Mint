@@ -27,7 +27,7 @@ export class AccountActivateRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'TokenHandler'),
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), 'GroupVerifyHandler'),
-        autoHook.wrap(this._activateHandler.bind(this), 'Activate', true),
+        autoHook.wrap(this._activateHandler.bind(this), 'Activate'),
     ];
 
     private async _activateHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

@@ -27,7 +27,7 @@ export class AccountDeactivateRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/account/deactivate - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/deactivate - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/deactivate - GroupVerifyHandler'),
-        basicHook.wrap(this._deactivateHandler.bind(this), '/account/deactivate - Deactivate', true),
+        basicHook.wrap(this._deactivateHandler.bind(this), '/account/deactivate - Deactivate'),
     ];
 
     private async _deactivateHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

@@ -28,7 +28,7 @@ export class NamePreferenceRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/preference/names - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/preference/names - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/preference/names - GroupVerifyHandler'),
-        basicHook.wrap(this._preferenceNamesHandler.bind(this), '/preference/names - Names', true),
+        basicHook.wrap(this._preferenceNamesHandler.bind(this), '/preference/names - Names'),
     ];
 
     private async _preferenceNamesHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

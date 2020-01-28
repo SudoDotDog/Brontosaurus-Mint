@@ -34,7 +34,7 @@ export class SelfEditRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/account/edit/self - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/edit/self - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL], this._error), '/account/edit/self - GroupVerifyHandler'),
-        basicHook.wrap(this._selfEditHandler.bind(this), '/account/edit/self - Self Edit', true),
+        basicHook.wrap(this._selfEditHandler.bind(this), '/account/edit/self - Self Edit'),
     ];
 
     private async _selfEditHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

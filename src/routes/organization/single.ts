@@ -28,7 +28,7 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/organization/single - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/single - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/organization/single - GroupVerifyHandler'),
-        basicHook.wrap(this._singleOrganizationHandler.bind(this), '/organization/single - Organization Single', true),
+        basicHook.wrap(this._singleOrganizationHandler.bind(this), '/organization/single - Organization Single'),
     ];
 
     private async _singleOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

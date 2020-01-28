@@ -28,7 +28,7 @@ export class SingleDecoratorRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/decorator/single - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/decorator/single - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/decorator/single - GroupVerifyHandler'),
-        basicHook.wrap(this._singleDecoratorHandler.bind(this), '/decorator/single - Decorator Single', true),
+        basicHook.wrap(this._singleDecoratorHandler.bind(this), '/decorator/single - Decorator Single'),
     ];
 
     private async _singleDecoratorHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

@@ -28,7 +28,7 @@ export class CreateTagRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/tag/create - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/tag/create - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/tag/create - GroupVerifyHandler'),
-        basicHook.wrap(this._tagCreateHandler.bind(this), '/tag/create - Create', true),
+        basicHook.wrap(this._tagCreateHandler.bind(this), '/tag/create - Create'),
     ];
 
     private async _tagCreateHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

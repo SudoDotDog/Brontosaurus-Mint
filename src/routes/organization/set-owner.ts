@@ -29,7 +29,7 @@ export class SetOwnerRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/organization/set-owner - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/set-owner - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/organization/set-owner - GroupVerifyHandler'),
-        basicHook.wrap(this._setOwnerHandler.bind(this), '/organization/set-owner - Set Owner', true),
+        basicHook.wrap(this._setOwnerHandler.bind(this), '/organization/set-owner - Set Owner'),
     ];
 
     private async _setOwnerHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

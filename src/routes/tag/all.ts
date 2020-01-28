@@ -21,7 +21,7 @@ export class AllTagRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/tag/all - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/tag/all - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/tag/all - GroupVerifyHandler'),
-        basicHook.wrap(this._allTagHandler.bind(this), '/tag/all - All Tags', true),
+        basicHook.wrap(this._allTagHandler.bind(this), '/tag/all - All Tags'),
     ];
 
     private async _allTagHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

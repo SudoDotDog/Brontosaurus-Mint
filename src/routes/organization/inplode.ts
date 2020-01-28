@@ -37,7 +37,7 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/organization/inplode - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/inplode - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/organization/inplode - GroupVerifyHandler'),
-        basicHook.wrap(this._inplodeOrganizationHandler.bind(this), '/organization/inplode - Inplode', true),
+        basicHook.wrap(this._inplodeOrganizationHandler.bind(this), '/organization/inplode - Inplode'),
     ];
 
     private async _inplodeOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

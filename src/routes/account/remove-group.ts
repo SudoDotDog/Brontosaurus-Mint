@@ -28,7 +28,7 @@ export class RemoveGroupRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/account/remove-group - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/remove-group - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/remove-group - GroupVerifyHandler'),
-        basicHook.wrap(this._removeGroupHandler.bind(this), '/account/remove-group - Remove Group', true),
+        basicHook.wrap(this._removeGroupHandler.bind(this), '/account/remove-group - Remove Group'),
     ];
 
     private async _removeGroupHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

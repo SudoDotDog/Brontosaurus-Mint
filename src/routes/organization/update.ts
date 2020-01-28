@@ -30,7 +30,7 @@ export class UpdateOrganizationRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/organization/update - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/update - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/organization/update - GroupVerifyHandler'),
-        basicHook.wrap(this._updateOrganizationHandler.bind(this), '/organization/update - Update Organization', true),
+        basicHook.wrap(this._updateOrganizationHandler.bind(this), '/organization/update - Update Organization'),
     ];
 
     private async _updateOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

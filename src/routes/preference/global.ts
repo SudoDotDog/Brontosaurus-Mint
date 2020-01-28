@@ -31,7 +31,7 @@ export class GlobalPreferenceRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/preference/global - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/preference/global - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/preference/global - GroupVerifyHandler'),
-        basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/global - Global', true),
+        basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/global - Global'),
     ];
 
     private async _preferenceGlobalHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

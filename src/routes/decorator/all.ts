@@ -21,7 +21,7 @@ export class AllDecoratorRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/decorator/all - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/decorator/all - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/decorator/all - GroupVerifyHandler'),
-        basicHook.wrap(this._allDecoratorHandler.bind(this), '/decorator/all - All Decorators', true),
+        basicHook.wrap(this._allDecoratorHandler.bind(this), '/decorator/all - All Decorators'),
     ];
 
     private async _allDecoratorHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

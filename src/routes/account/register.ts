@@ -40,7 +40,7 @@ export class RegisterRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/account/register - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/register - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/register - GroupVerifyHandler'),
-        basicHook.wrap(this._registerHandler.bind(this), '/account/register - Register', true),
+        basicHook.wrap(this._registerHandler.bind(this), '/account/register - Register'),
     ];
 
     private async _registerHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

@@ -28,7 +28,7 @@ export class AccountLimboRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/account/limbo - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/limbo - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/limbo - GroupVerifyHandler'),
-        basicHook.wrap(this._limboHandler.bind(this), '/account/limbo - Limbo', true),
+        basicHook.wrap(this._limboHandler.bind(this), '/account/limbo - Limbo'),
     ];
 
     private async _limboHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

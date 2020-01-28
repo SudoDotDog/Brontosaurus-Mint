@@ -27,7 +27,7 @@ export class SingleTagRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/tag/single - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/tag/single - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/tag/single - GroupVerifyHandler'),
-        basicHook.wrap(this._singleTagHandler.bind(this), '/tag/single - Tag Single', true),
+        basicHook.wrap(this._singleTagHandler.bind(this), '/tag/single - Tag Single'),
     ];
 
     private async _singleTagHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

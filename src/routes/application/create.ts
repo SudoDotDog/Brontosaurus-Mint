@@ -29,7 +29,7 @@ export class CreateApplicationRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/application/create - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/application/create - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/application/create - GroupVerifyHandler'),
-        basicHook.wrap(this._applicationCreateHandler.bind(this), '/application/create - Create', true),
+        basicHook.wrap(this._applicationCreateHandler.bind(this), '/application/create - Create'),
     ];
 
     private async _applicationCreateHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

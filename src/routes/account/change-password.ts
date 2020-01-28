@@ -29,7 +29,7 @@ export class ChangePasswordRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/account/edit/password - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/edit/password - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL], this._error), '/account/edit/password - GroupVerifyHandler'),
-        basicHook.wrap(this._changePasswordHandler.bind(this), '/account/edit/password - Change Password', true),
+        basicHook.wrap(this._changePasswordHandler.bind(this), '/account/edit/password - Change Password'),
     ];
 
     private async _changePasswordHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

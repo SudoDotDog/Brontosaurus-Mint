@@ -27,7 +27,7 @@ export class RemoveTwoFARoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/account/remove-2fa - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/remove-2fa - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/remove-2fa - GroupVerifyHandler'),
-        basicHook.wrap(this._removeTwoFAHandler.bind(this), '/account/remove-2fa - Remove Two FA', true),
+        basicHook.wrap(this._removeTwoFAHandler.bind(this), '/account/remove-2fa - Remove Two FA'),
     ];
 
     private async _removeTwoFAHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

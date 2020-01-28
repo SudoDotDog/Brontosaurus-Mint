@@ -29,7 +29,7 @@ export class EnableTwoFARoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/account/self/enable-2fa - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/self/enable-2fa - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL], this._error), '/account/self/enable-2fa - GroupVerifyHandler'),
-        basicHook.wrap(this._enableTwoFAHandler.bind(this), '/account/self/enable-2fa - Enable Two FA', true),
+        basicHook.wrap(this._enableTwoFAHandler.bind(this), '/account/self/enable-2fa - Enable Two FA'),
     ];
 
     private async _enableTwoFAHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

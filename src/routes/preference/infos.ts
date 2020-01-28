@@ -21,7 +21,7 @@ export class InfosPreferenceRoute extends BrontosaurusRoute {
         basicHook.wrap(createTokenHandler(), '/preference/infos - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/preference/infos - AuthenticateHandler'),
         basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/preference/infos - GroupVerifyHandler'),
-        basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/infos - Infos', true),
+        basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/infos - Infos'),
     ];
 
     private async _preferenceGlobalHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
