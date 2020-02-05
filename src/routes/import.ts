@@ -11,6 +11,8 @@ import { ChangePasswordRoute } from './account/change-password';
 import { AccountDeactivateRoute } from './account/deactivate';
 import { EnableTwoFARoute } from './account/enable-two-fa';
 import { FetchAccountRoute } from './account/fetch';
+import { AccountGenerateApplicationPasswordRoute } from './account/generate-application-password';
+import { AccountGenerateTemporaryPasswordRoute } from './account/generate-temp-password';
 import { AccountLimboRoute } from './account/limbo';
 import { RegisterRoute } from './account/register';
 import { RemoveGroupRoute } from './account/remove-group';
@@ -113,6 +115,8 @@ export const MintRoutes = [
     new RemoveTwoFARoute(),
     new ResetAttemptRoute(),
     new WithdrawOrganizationRoute(),
+    new AccountGenerateTemporaryPasswordRoute(),
+    new AccountGenerateApplicationPasswordRoute(),
 
     // Preference
     new GlobalPreferenceRoute(),

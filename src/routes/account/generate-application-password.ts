@@ -12,6 +12,7 @@ import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
+import { SafeToken } from "../../util/token";
 
 export type AccountGenerateApplicationPasswordBody = {
 
@@ -40,7 +41,15 @@ export class AccountGenerateApplicationPasswordRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
+            const token: SafeToken = req.principal;
             const username: string = body.directEnsure('username');
+            const requestUsername: string = token.body.directEnsure('username');
+
+            const requestAccount: IAccountModel | null = await AccountController.getAccountByUsername(requestUsername);
+
+            if (!requestAccount) {
+                throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, requestUsername);
+            }
 
             const account: IAccountModel | null = await AccountController.getAccountByUsername(username);
 
@@ -48,9 +57,13 @@ export class AccountGenerateApplicationPasswordRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
             }
 
+            const expireDate = new Date();
+            expireDate.setMonth(expireDate.getMonth() + 1);
+            account.generateApplicationPassword(requestAccount._id, expireDate);
+
             await account.save();
 
-            res.agent.add('x', '');
+            res.agent.add('account', account.username);
         } catch (err) {
 
             res.agent.fail(HTTP_RESPONSE_CODE.BAD_REQUEST, err);
