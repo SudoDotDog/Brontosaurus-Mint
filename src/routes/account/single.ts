@@ -4,7 +4,7 @@
  * @description Single
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, OrganizationController, OrganizationDetail } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, OrganizationController, OrganizationDetail, SpecialPassword } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -56,6 +56,17 @@ export class SingleAccountRoute extends BrontosaurusRoute {
             const accountTags: string[] = await Throwable_MapTags(account.tags);
             const accountDecorators: string[] = await Throwable_MapDecorators(account.decorators);
 
+            const temporaryPasswords = account.temporaryPasswords.map((value: SpecialPassword) => ({
+                id: value.id,
+                by: value.by,
+                expireAt: value.expireAt,
+            }));
+            const applicationPasswords = account.applicationPasswords.map((value: SpecialPassword) => ({
+                id: value.id,
+                by: value.by,
+                expireAt: value.expireAt,
+            }));
+
             if (!account.organization) {
 
                 res.agent.add('account', {
@@ -70,6 +81,8 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                     decorators: accountDecorators,
                     infos: account.getInfoRecords(),
                     beacons: account.getBeaconRecords(),
+                    temporaryPasswords,
+                    applicationPasswords,
                 });
             } else {
 
@@ -92,6 +105,8 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                     organization,
                     infos: account.getInfoRecords(),
                     beacons: account.getBeaconRecords(),
+                    temporaryPasswords,
+                    applicationPasswords,
                 });
             }
         } catch (err) {

@@ -59,11 +59,13 @@ export class AccountGenerateTemporaryPasswordRoute extends BrontosaurusRoute {
 
             const expireDate = new Date();
             expireDate.setMonth(expireDate.getMonth() + 1);
-            account.generateTemporaryPassword(requestAccount._id, expireDate);
+
+            const password: string = account.generateTemporaryPassword(requestAccount._id, expireDate);
 
             await account.save();
 
-            res.agent.add('account', account.username);
+            res.agent.add('username', account.username);
+            res.agent.add('password', password);
         } catch (err) {
 
             res.agent.fail(HTTP_RESPONSE_CODE.BAD_REQUEST, err);
