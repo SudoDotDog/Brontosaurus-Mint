@@ -57,14 +57,18 @@ export class SingleAccountRoute extends BrontosaurusRoute {
             const accountDecorators: string[] = await Throwable_MapDecorators(account.decorators);
 
             const temporaryPasswords = account.temporaryPasswords.map((value: SpecialPassword) => ({
-                id: value.id,
+                id: value.passwordId,
                 by: value.by,
                 expireAt: value.expireAt,
+                suspendedAt: value.suspendedAt,
+                suspendedBy: value.suspendedBy,
             }));
             const applicationPasswords = account.applicationPasswords.map((value: SpecialPassword) => ({
-                id: value.id,
+                id: value.passwordId,
                 by: value.by,
                 expireAt: value.expireAt,
+                suspendedAt: value.suspendedAt,
+                suspendedBy: value.suspendedBy,
             }));
 
             if (!account.organization) {

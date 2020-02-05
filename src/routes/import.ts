@@ -22,6 +22,8 @@ import { SelfEditRoute } from './account/self-edit';
 import { SetOrganizationRoute } from './account/set-organization';
 import { SingleAccountRoute } from './account/single';
 import { FetchStandaloneAccountRoute } from './account/standalone';
+import { AccountSuspendApplicationPasswordRoute } from './account/suspend-application-password';
+import { AccountSuspendTemporaryPasswordRoute } from './account/suspend-temp-password';
 import { WithdrawOrganizationRoute } from './account/withdraw-organization';
 import { CreateApplicationRoute } from './application/create';
 import { FetchApplicationRoute } from './application/fetch';
@@ -117,6 +119,8 @@ export const MintRoutes = [
     new WithdrawOrganizationRoute(),
     new AccountGenerateTemporaryPasswordRoute(),
     new AccountGenerateApplicationPasswordRoute(),
+    new AccountSuspendTemporaryPasswordRoute(),
+    new AccountSuspendApplicationPasswordRoute(),
 
     // Preference
     new GlobalPreferenceRoute(),
