@@ -56,19 +56,21 @@ export class SingleAccountRoute extends BrontosaurusRoute {
             const accountTags: string[] = await Throwable_MapTags(account.tags);
             const accountDecorators: string[] = await Throwable_MapDecorators(account.decorators);
 
+            const usernameMap: Map<string, string> = await this._generateUsernameMap(account.temporaryPasswords, account.applicationPasswords);
+
             const temporaryPasswords = account.temporaryPasswords.map((value: SpecialPassword) => ({
                 id: value.passwordId,
-                by: value.by,
+                by: usernameMap.get(value.by.toHexString()),
                 expireAt: value.expireAt,
                 suspendedAt: value.suspendedAt,
-                suspendedBy: value.suspendedBy,
+                suspendedBy: value.suspendedBy ? usernameMap.get(value.by.toHexString()) : undefined,
             }));
             const applicationPasswords = account.applicationPasswords.map((value: SpecialPassword) => ({
                 id: value.passwordId,
-                by: value.by,
+                by: usernameMap.get(value.by.toHexString()),
                 expireAt: value.expireAt,
                 suspendedAt: value.suspendedAt,
-                suspendedBy: value.suspendedBy,
+                suspendedBy: value.suspendedBy ? usernameMap.get(value.by.toHexString()) : undefined,
             }));
 
             if (!account.organization) {
@@ -119,5 +121,30 @@ export class SingleAccountRoute extends BrontosaurusRoute {
         } finally {
             next();
         }
+    }
+
+    private async _generateUsernameMap(temporaryPasswords: SpecialPassword[], applicationPasswords: SpecialPassword[]): Promise<Map<string, string>> {
+
+        const accountMap: Map<string, string> = new Map();
+        for (const password of temporaryPasswords) {
+            if (password.suspendedBy) {
+                accountMap.set(password.suspendedBy.toHexString(), 'Unknown');
+            }
+            accountMap.set(password.by.toHexString(), 'Unknown');
+        }
+
+        for (const password of applicationPasswords) {
+            if (password.suspendedBy) {
+                accountMap.set(password.suspendedBy.toHexString(), 'Unknown');
+            }
+            accountMap.set(password.by.toHexString(), 'Unknown');
+        }
+
+        const accounts: IAccountModel[] = await AccountController.getAccountsByIds([...accountMap.keys()]);
+        for (const account of accounts) {
+            accountMap.set(account._id.toString(), account.username);
+        }
+
+        return accountMap;
     }
 }
