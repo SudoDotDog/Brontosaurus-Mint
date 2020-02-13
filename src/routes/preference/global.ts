@@ -20,6 +20,9 @@ export type GlobalPreferenceRouteBody = {
     readonly globalFavicon?: string;
     readonly globalHelpLink?: string;
     readonly globalPrivacyPolicy?: string;
+
+    readonly indexPage?: string;
+    readonly entryPage?: string;
 };
 
 export class GlobalPreferenceRoute extends BrontosaurusRoute {
@@ -50,6 +53,9 @@ export class GlobalPreferenceRoute extends BrontosaurusRoute {
             const globalHelpLink: string | undefined = body.globalHelpLink;
             const globalPrivacyPolicy: string | undefined = body.globalPrivacyPolicy;
 
+            const indexPage: string | undefined = body.indexPage;
+            const entryPage: string | undefined = body.entryPage;
+
             let changed: number = 0;
             if (typeof globalAvatar === 'string') {
                 await PreferenceController.setSinglePreference('globalAvatar', globalAvatar.toString());
@@ -76,6 +82,16 @@ export class GlobalPreferenceRoute extends BrontosaurusRoute {
 
             if (typeof globalPrivacyPolicy === 'string') {
                 await PreferenceController.setSinglePreference('globalPrivacyPolicy', globalPrivacyPolicy.toString());
+                changed++;
+            }
+
+            if (typeof indexPage === 'string') {
+                await PreferenceController.setSinglePreference('indexPage', indexPage.toString());
+                changed++;
+            }
+
+            if (typeof entryPage === 'string') {
+                await PreferenceController.setSinglePreference('entryPage', entryPage.toString());
                 changed++;
             }
 
