@@ -60,6 +60,7 @@ import { MailerTransportPreferenceRoute } from './preference/mailer-transport';
 import { NamePreferenceRoute } from './preference/names';
 import { ReadGlobalPreferenceRoute } from './preference/read-global';
 import { ReadNamesPreferenceRoute } from './preference/read-names';
+import { ReadMailerTransportPreferenceRoute } from './preference/resd-mailer-transport';
 import { AllTagRoute } from './tag/all';
 import { CreateTagRoute } from './tag/create';
 import { FetchTagRoute } from './tag/fetch';
@@ -131,6 +132,7 @@ export const MintRoutes = [
     new InfosPreferenceRoute(),
     new CommandCenterPreferenceRoute(),
     new MailerTransportPreferenceRoute(),
+    new ReadMailerTransportPreferenceRoute(),
 
     // Organization
     new OrganizationCreateRoute(),
