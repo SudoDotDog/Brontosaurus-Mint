@@ -51,7 +51,7 @@ export class GlobalPreferenceRoute extends BrontosaurusRoute {
             const globalPrivacyPolicy: string | undefined = body.globalPrivacyPolicy;
 
             let changed: number = 0;
-            if (globalAvatar) {
+            if (typeof globalAvatar === 'string') {
                 await PreferenceController.setSinglePreference('globalAvatar', globalAvatar.toString());
                 changed++;
             }
@@ -60,21 +60,21 @@ export class GlobalPreferenceRoute extends BrontosaurusRoute {
                 if (!isArray(globalBackgroundImages)) {
                     throw this._error(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN);
                 }
-                await PreferenceController.setSinglePreference('globalBackgroundImages', globalBackgroundImages.map((value: any) => value.toString()));
+                await PreferenceController.setSinglePreference('globalBackgroundImages', globalBackgroundImages.map((value: any) => String(value)));
                 changed++;
             }
 
-            if (globalFavicon) {
+            if (typeof globalFavicon === 'string') {
                 await PreferenceController.setSinglePreference('globalFavicon', globalFavicon.toString());
                 changed++;
             }
 
-            if (globalHelpLink) {
+            if (typeof globalHelpLink === 'string') {
                 await PreferenceController.setSinglePreference('globalHelpLink', globalHelpLink.toString());
                 changed++;
             }
 
-            if (globalPrivacyPolicy) {
+            if (typeof globalPrivacyPolicy === 'string') {
                 await PreferenceController.setSinglePreference('globalPrivacyPolicy', globalPrivacyPolicy.toString());
                 changed++;
             }

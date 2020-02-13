@@ -56,9 +56,11 @@ import { UpdateOrganizationRoute } from './organization/update';
 import { CommandCenterPreferenceRoute } from './preference/center';
 import { GlobalPreferenceRoute } from './preference/global';
 import { InfosPreferenceRoute } from './preference/infos';
+import { MailerSourcePreferenceRoute } from './preference/mailer-source';
 import { MailerTransportPreferenceRoute } from './preference/mailer-transport';
 import { NamePreferenceRoute } from './preference/names';
 import { ReadGlobalPreferenceRoute } from './preference/read-global';
+import { ReadMailerSourcePreferenceRoute } from './preference/read-mailer-source';
 import { ReadMailerTransportPreferenceRoute } from './preference/read-mailer-transport';
 import { ReadNamesPreferenceRoute } from './preference/read-names';
 import { AllTagRoute } from './tag/all';
@@ -133,6 +135,8 @@ export const MintRoutes = [
     new CommandCenterPreferenceRoute(),
     new MailerTransportPreferenceRoute(),
     new ReadMailerTransportPreferenceRoute(),
+    new MailerSourcePreferenceRoute(),
+    new ReadMailerSourcePreferenceRoute(),
 
     // Organization
     new OrganizationCreateRoute(),
