@@ -18,6 +18,7 @@ const setting: SudooExpressApplication = SudooExpressApplication.create('Brontos
 if (isDevelopment()) {
     setting.allowCrossOrigin();
     SudooLog.global.level(LOG_LEVEL.VERBOSE);
+    SudooLog.global.showTime();
 } else {
     SudooLog.global.level(LOG_LEVEL.INFO);
 }
@@ -51,5 +52,6 @@ app.health('/health');
 app.routeList(MintRoutes);
 app.routeList(FlatRoutes);
 
+// tslint:disable-next-line: no-magic-numbers
 app.host(9000);
 SudooLog.global.info('Hosting at port 9000');
