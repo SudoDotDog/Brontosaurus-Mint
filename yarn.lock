@@ -85,10 +85,10 @@
   resolved "https://registry.yarnpkg.com/@sudoo/mock/-/mock-1.2.0.tgz#7c3c5ff731ddaeb8839dac7a1384b8ef9d95948b"
   integrity sha512-k0JtsW2rrbwpjbuVQPCPq3cu+CeRWTP2ksFUnrNwlVbSwWcxzE/NdAajWFRP1tvQQNQ01tj/c4lnOV5IZmZaTg==
 
-"@sudoo/random@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@sudoo/random/-/random-2.1.0.tgz#ea4c571c9366e41ccf56f0dec45af284f4a82917"
-  integrity sha512-93W+l7jr9jGv8H9epP0bc93Dpv0nFPYw3qBJZJ2pbaJ7Wj+EYeMJd59zmJLIacvLHhvtVpSs7PD0xtSdnGPGGA==
+"@sudoo/random@^2.1.0", "@sudoo/random@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@sudoo/random/-/random-2.1.1.tgz#acc6a9a5257d1ce6ea0bfe2c87a3696d873492ac"
+  integrity sha512-OQE1ea2d7RyTlocWorCcJurMDPUcs6XZiPBOjA/x2Bq1p10YUZNbQZtF+X4OXyjsDH36RxbWvU8P49uRicxq1w==
 
 "@sudoo/triforce-mongoose-dev@^1.3.1":
   version "1.3.1"
