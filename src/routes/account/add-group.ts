@@ -15,8 +15,9 @@ import { ERROR_CODE } from "../../util/error";
 
 export type AddGroupBody = {
 
-    username: string;
-    group: string;
+    readonly username: string;
+    readonly namespace: string;
+    readonly group: string;
 };
 
 export class AddGroupRoute extends BrontosaurusRoute {
