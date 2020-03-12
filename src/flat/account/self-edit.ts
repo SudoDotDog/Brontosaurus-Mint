@@ -1,6 +1,6 @@
 /**
  * @author WMXPY
- * @namespace Brontosaurus_Mint_Routes_Account
+ * @namespace Brontosaurus_Mint_Flats_Account
  * @description Self Edit
  */
 
@@ -15,7 +15,7 @@ import { basicHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 import { parseInfo, SafeToken } from "../../util/token";
 
-export type SelfEditBody = {
+export type FlatSelfEditBody = {
 
     username: string;
     email: string;
@@ -25,21 +25,21 @@ export type SelfEditBody = {
     }>;
 };
 
-export class SelfEditRoute extends BrontosaurusRoute {
+export class FlatSelfEditRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/account/edit/self';
+    public readonly path: string = '/flat/account/edit/self';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/account/edit/self - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/account/edit/self - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL], this._error), '/account/edit/self - GroupVerifyHandler'),
-        basicHook.wrap(this._selfEditHandler.bind(this), '/account/edit/self - Self Edit'),
+        basicHook.wrap(createTokenHandler(), '/flat/account/edit/self - TokenHandler'),
+        basicHook.wrap(createAuthenticateHandler(), '/flat/account/edit/self - AuthenticateHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL], this._error), '/flat/account/edit/self - GroupVerifyHandler'),
+        basicHook.wrap(this._flatSelfEditHandler.bind(this), '/flat/account/edit/self - Self Edit'),
     ];
 
-    private async _selfEditHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _flatSelfEditHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<SelfEditBody> = Safe.extract(req.body as SelfEditBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: SafeExtract<FlatSelfEditBody> = Safe.extract(req.body as FlatSelfEditBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
 
         try {
 

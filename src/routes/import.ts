@@ -17,7 +17,6 @@ import { RegisterRoute } from './account/register';
 import { RemoveGroupRoute } from './account/remove-group';
 import { RemoveTwoFARoute } from './account/remove-two-fa';
 import { ResetAttemptRoute } from './account/reset-attempt';
-import { SelfEditRoute } from './account/self-edit';
 import { SetOrganizationRoute } from './account/set-organization';
 import { SingleAccountRoute } from './account/single';
 import { FetchStandaloneAccountRoute } from './account/standalone';
@@ -109,7 +108,6 @@ export const MintRoutes = [
     new RemoveGroupRoute(),
     new FetchAccountRoute(),
     new RegisterRoute(),
-    new SelfEditRoute(),
     new EnableTwoFARoute(),
     new AdminEditRoute(),
     new SingleAccountRoute(),

@@ -5,6 +5,7 @@
  */
 
 import { FlatChangePasswordRoute } from './account/change-password';
+import { FlatSelfEditRoute } from './account/self-edit';
 import { FlatOrganizationRegisterRoute } from './organization/register';
 
 export const FlatRoutes = [
@@ -17,6 +18,7 @@ export const FlatRoutes = [
 
     // Account
     new FlatChangePasswordRoute(),
+    new FlatSelfEditRoute(),
 
     // Preference
 
