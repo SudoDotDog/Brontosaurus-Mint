@@ -4,7 +4,8 @@
  * @description Import
  */
 
-import { OrganizationRegisterRoute } from './organization/register';
+import { FlatChangePasswordRoute } from './account/change-password';
+import { FlatOrganizationRegisterRoute } from './organization/register';
 
 export const FlatRoutes = [
 
@@ -15,9 +16,10 @@ export const FlatRoutes = [
     // Decorator
 
     // Account
+    new FlatChangePasswordRoute(),
 
     // Preference
 
     // Organization
-    new OrganizationRegisterRoute(),
+    new FlatOrganizationRegisterRoute(),
 ];

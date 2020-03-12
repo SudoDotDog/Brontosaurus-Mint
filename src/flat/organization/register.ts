@@ -17,7 +17,7 @@ import { createRandomTempPassword } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 import { jsonifyBasicRecords, SafeToken } from "../../util/token";
 
-export type OrganizationRegisterRouteBody = {
+export type FlatOrganizationRegisterRouteBody = {
 
     username: string;
     namespace: string;
@@ -28,21 +28,21 @@ export type OrganizationRegisterRouteBody = {
     phone?: string;
 };
 
-export class OrganizationRegisterRoute extends BrontosaurusRoute {
+export class FlatOrganizationRegisterRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/organization/flat/register';
+    public readonly path: string = '/flat/organization/register';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/organization/flat/register - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/organization/flat/register - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.ORGANIZATION_CONTROL], this._error), '/organization/flat/register - GroupVerifyHandler'),
-        basicHook.wrap(this._registerSubOrganizationAccountHandler.bind(this), '/organization/flat/register - Register'),
+        basicHook.wrap(createTokenHandler(), '/flat/organization/register - TokenHandler'),
+        basicHook.wrap(createAuthenticateHandler(), '/flat/organization/register - AuthenticateHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.ORGANIZATION_CONTROL], this._error), '/flat/organization/register - GroupVerifyHandler'),
+        basicHook.wrap(this._flatRegisterSubOrganizationAccountHandler.bind(this), '/flat/organization/register - Register'),
     ];
 
-    private async _registerSubOrganizationAccountHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _flatRegisterSubOrganizationAccountHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<OrganizationRegisterRouteBody> = Safe.extract(req.body as OrganizationRegisterRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: SafeExtract<FlatOrganizationRegisterRouteBody> = Safe.extract(req.body as FlatOrganizationRegisterRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
 
         try {
 

@@ -4,7 +4,7 @@
  * @description Self Edit
  */
 
-import { AccountController, DecoratorController, GroupController, IAccountModel, IDecoratorModel, IGroupModel, INTERNAL_USER_GROUP, ITagModel, TagController } from "@brontosaurus/db";
+import { DecoratorController, GroupController, IAccountModel, IDecoratorModel, IGroupModel, INTERNAL_USER_GROUP, ITagModel, MatchController, TagController } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
@@ -18,6 +18,7 @@ import { parseInfo } from "../../util/token";
 export type AdminEditBody = {
 
     readonly username: string;
+    readonly namespace: string;
     readonly groups: string[];
     readonly tags: string[];
     readonly decorators: string[];
@@ -54,8 +55,9 @@ export class AdminEditRoute extends BrontosaurusRoute {
             }
 
             const username: string = body.directEnsure('username');
+            const namespace: string = body.directEnsure('namespace');
 
-            const account: IAccountModel | null = await AccountController.getAccountByUsername(username);
+            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(username, namespace);
 
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);

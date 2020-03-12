@@ -7,7 +7,6 @@
 import { AccountActivateRoute } from './account/activate';
 import { AddGroupRoute } from './account/add-group';
 import { AdminEditRoute } from './account/admin-edit';
-import { ChangePasswordRoute } from './account/change-password';
 import { AccountDeactivateRoute } from './account/deactivate';
 import { EnableTwoFARoute } from './account/enable-two-fa';
 import { FetchAccountRoute } from './account/fetch';
@@ -112,7 +111,6 @@ export const MintRoutes = [
     new RegisterRoute(),
     new SelfEditRoute(),
     new EnableTwoFARoute(),
-    new ChangePasswordRoute(),
     new AdminEditRoute(),
     new SingleAccountRoute(),
     new AccountDeactivateRoute(),

@@ -1,6 +1,6 @@
 /**
  * @author WMXPY
- * @namespace Brontosaurus_Mint_Routes_Account
+ * @namespace Brontosaurus_Mint_Flats_Account
  * @description Change Password
  */
 
@@ -14,27 +14,27 @@ import { basicHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 import { SafeToken } from "../../util/token";
 
-export type ChangePasswordBody = {
+export type FlatChangePasswordBody = {
 
     username: string;
     password: string;
 };
 
-export class ChangePasswordRoute extends BrontosaurusRoute {
+export class FlatChangePasswordRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/account/edit/password';
+    public readonly path: string = '/flat/account/edit/password';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/account/edit/password - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/account/edit/password - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL], this._error), '/account/edit/password - GroupVerifyHandler'),
-        basicHook.wrap(this._changePasswordHandler.bind(this), '/account/edit/password - Change Password'),
+        basicHook.wrap(createTokenHandler(), '/flat/account/edit/password - TokenHandler'),
+        basicHook.wrap(createAuthenticateHandler(), '/flat/account/edit/password - AuthenticateHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL], this._error), '/flat/account/edit/password - GroupVerifyHandler'),
+        basicHook.wrap(this._flatChangePasswordHandler.bind(this), '/flat/account/edit/password - Change Password'),
     ];
 
-    private async _changePasswordHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _flatChangePasswordHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<ChangePasswordBody> = Safe.extract(req.body as ChangePasswordBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: SafeExtract<FlatChangePasswordBody> = Safe.extract(req.body as FlatChangePasswordBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
 
         try {
 
