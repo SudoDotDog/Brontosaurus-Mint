@@ -4,7 +4,7 @@
  * @description Deactivate
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -16,6 +16,7 @@ import { ERROR_CODE } from "../../util/error";
 export type AccountDeactivateBody = {
 
     readonly username: string;
+    readonly namespace: string;
 };
 
 export class AccountDeactivateRoute extends BrontosaurusRoute {
@@ -41,8 +42,9 @@ export class AccountDeactivateRoute extends BrontosaurusRoute {
             }
 
             const username: string = body.directEnsure('username');
+            const namespace: string = body.directEnsure('namespace');
 
-            const account: IAccountModel | null = await AccountController.getAccountByUsername(username);
+            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(username, namespace);
 
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);

@@ -4,7 +4,7 @@
  * @description Generate Application Password
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -17,6 +17,7 @@ import { SafeToken } from "../../util/token";
 export type AccountGenerateApplicationPasswordBody = {
 
     readonly username: string;
+    readonly namespace: string;
 };
 
 export class AccountGenerateApplicationPasswordRoute extends BrontosaurusRoute {
@@ -42,16 +43,19 @@ export class AccountGenerateApplicationPasswordRoute extends BrontosaurusRoute {
             }
 
             const token: SafeToken = req.principal;
-            const username: string = body.directEnsure('username');
             const requestUsername: string = token.body.directEnsure('username');
+            const requestNamespace: string = token.body.directEnsure('namespace');
 
-            const requestAccount: IAccountModel | null = await AccountController.getAccountByUsername(requestUsername);
+            const username: string = body.directEnsure('username');
+            const namespace: string = body.directEnsure('namespace');
+
+            const requestAccount: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(requestUsername, requestNamespace);
 
             if (!requestAccount) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, requestUsername);
             }
 
-            const account: IAccountModel | null = await AccountController.getAccountByUsername(username);
+            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(username, namespace);
 
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
