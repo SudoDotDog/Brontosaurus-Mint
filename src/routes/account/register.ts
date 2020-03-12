@@ -4,12 +4,14 @@
  * @description Register
  */
 
-import { AccountController, EMAIL_VALIDATE_RESPONSE, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PASSWORD_VALIDATE_RESPONSE, PHONE_VALIDATE_RESPONSE, TagController, USERNAME_VALIDATE_RESPONSE, validateEmail, validatePassword, validatePhone, validateUsername } from "@brontosaurus/db";
+import { AccountController, EMAIL_VALIDATE_RESPONSE, GroupController, IAccountModel, IGroupModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PASSWORD_VALIDATE_RESPONSE, PHONE_VALIDATE_RESPONSE, TagController, USERNAME_VALIDATE_RESPONSE, validateEmail, validatePassword, validatePhone, validateUsername } from "@brontosaurus/db";
+import { getBrontosaurusDefaultNamespace } from "@brontosaurus/db/controller/namespace";
 import { ITagModel } from "@brontosaurus/db/model/tag";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { ObjectID } from "bson";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
@@ -106,9 +108,12 @@ export class RegisterRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
             }
 
+            const defaultNamespace: INamespaceModel = await getBrontosaurusDefaultNamespace();
+
             const account: IAccountModel = await this._createUnsavedAccount(
                 username,
                 password,
+                defaultNamespace._id,
                 req.body.displayName,
                 req.body.email,
                 req.body.phone,
@@ -136,6 +141,7 @@ export class RegisterRoute extends BrontosaurusRoute {
     private async _createUnsavedAccount(
         username: string,
         password: string,
+        namespace: ObjectID,
         displayName: string | undefined,
         email: string | undefined,
         phone: string | undefined,
@@ -154,6 +160,7 @@ export class RegisterRoute extends BrontosaurusRoute {
             return AccountController.createUnsavedAccount(
                 username,
                 password,
+                namespace,
                 displayName,
                 email,
                 phone,
@@ -166,6 +173,7 @@ export class RegisterRoute extends BrontosaurusRoute {
             return AccountController.createUnsavedAccount(
                 username,
                 password,
+                namespace,
                 displayName,
                 email,
                 phone,

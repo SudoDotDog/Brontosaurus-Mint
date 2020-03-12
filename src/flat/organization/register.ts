@@ -4,7 +4,8 @@
  * @description Register
  */
 
-import { AccountController, EMAIL_VALIDATE_RESPONSE, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PHONE_VALIDATE_RESPONSE, USERNAME_VALIDATE_RESPONSE, validateEmail, validatePhone, validateUsername } from "@brontosaurus/db";
+import { AccountController, EMAIL_VALIDATE_RESPONSE, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PHONE_VALIDATE_RESPONSE, USERNAME_VALIDATE_RESPONSE, validateEmail, validatePhone, validateUsername } from "@brontosaurus/db";
+import { getBrontosaurusDefaultNamespace } from "@brontosaurus/db/controller/namespace";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
@@ -19,6 +20,7 @@ import { jsonifyBasicRecords, SafeToken } from "../../util/token";
 export type OrganizationRegisterRouteBody = {
 
     username: string;
+    namespace: string;
     infos: Record<string, Basics>;
 
     displayName?: string;
@@ -105,9 +107,12 @@ export class OrganizationRegisterRoute extends BrontosaurusRoute {
 
             const tempPassword: string = createRandomTempPassword();
 
+            const defaultNamespace: INamespaceModel = await getBrontosaurusDefaultNamespace();
+
             const account: IAccountModel = AccountController.createOnLimboUnsavedAccount(
                 username,
                 tempPassword,
+                defaultNamespace._id,
                 req.body.displayName,
                 req.body.email,
                 req.body.phone,
