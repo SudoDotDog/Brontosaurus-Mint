@@ -4,7 +4,7 @@
  * @description Remove Group
  */
 
-import { AccountController, GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -15,8 +15,9 @@ import { ERROR_CODE } from "../../util/error";
 
 export type RemoveGroupBody = {
 
-    username: string;
-    group: string;
+    readonly username: string;
+    readonly namespace: string;
+    readonly group: string;
 };
 
 export class RemoveGroupRoute extends BrontosaurusRoute {
@@ -42,9 +43,10 @@ export class RemoveGroupRoute extends BrontosaurusRoute {
             }
 
             const username: string = body.directEnsure('username');
+            const namespace: string = body.directEnsure('namespace');
             const groupName: string = body.directEnsure('group');
 
-            const account: IAccountModel | null = await AccountController.getAccountByUsername(username);
+            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(username, namespace);
             const group: IGroupModel | null = await GroupController.getGroupByName(groupName);
 
             if (!account) {

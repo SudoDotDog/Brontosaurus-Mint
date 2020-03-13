@@ -57,15 +57,16 @@ export const createGroupVerifyHandler = (groups: string[], error: ErrorCreationF
 
             const tokenBody: IBrontosaurusBody = Throwable_GetBody(token.safe());
 
-            const account: IAccountModel = Safe.value(await AccountController.getAccountByUsername(
-                Safe.value(tokenBody.username, createError(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_INFORMATION, 'username')).safe()),
-            ).safe();
-            const accountGroups: string[] = await Throwable_MapGroups(account.groups);
+            // TODO
+            // const account: IAccountModel = Safe.value(await AccountController.getAccountByUsername(
+            //     Safe.value(tokenBody.username, createError(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_INFORMATION, 'username')).safe()),
+            // ).safe();
+            // const accountGroups: string[] = await Throwable_MapGroups(account.groups);
 
-            if (!compareGroups(accountGroups, groups)) {
+            // if (!compareGroups(accountGroups, groups)) {
 
-                throw error(ERROR_CODE.NOT_ENOUGH_PERMISSION, groups.toString());
-            }
+            //     throw error(ERROR_CODE.NOT_ENOUGH_PERMISSION, groups.toString());
+            // }
             req.valid = true;
         } catch (err) {
 

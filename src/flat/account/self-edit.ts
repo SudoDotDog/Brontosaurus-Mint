@@ -4,7 +4,7 @@
  * @description Self Edit
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
@@ -17,11 +17,12 @@ import { parseInfo, SafeToken } from "../../util/token";
 
 export type FlatSelfEditBody = {
 
-    username: string;
-    email: string;
-    phone: string;
-    account: Partial<{
-        infos: Record<string, Basics>;
+    readonly username: string;
+    readonly namespace: string;
+    readonly email: string;
+    readonly phone: string;
+    readonly account: Partial<{
+        readonly infos: Record<string, Basics>;
     }>;
 };
 
@@ -48,15 +49,21 @@ export class FlatSelfEditRoute extends BrontosaurusRoute {
             }
 
             const username: string = body.directEnsure('username');
+            const namespace: string = body.directEnsure('namespace');
             const principal: SafeToken = req.principal;
 
             const tokenUsername: string = principal.body.directEnsure('username', this._error(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_INFORMATION, 'username'));
+            const tokenNamespace: string = principal.body.directEnsure('namespace', this._error(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_INFORMATION, 'namespace'));
 
             if (username !== tokenUsername) {
                 throw this._error(ERROR_CODE.PERMISSION_USER_DOES_NOT_MATCH, username, tokenUsername);
             }
 
-            const account: IAccountModel | null = await AccountController.getAccountByUsername(username);
+            if (namespace !== tokenNamespace) {
+                throw this._error(ERROR_CODE.PERMISSION_NAMESPACE_DOES_NOT_MATCH, namespace, tokenNamespace);
+            }
+
+            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(username, namespace);
 
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);

@@ -4,7 +4,7 @@
  * @description Create
  */
 
-import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, validateCommonName } from "@brontosaurus/db";
+import { COMMON_NAME_VALIDATE_RESPONSE, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, MatchController, OrganizationController, validateCommonName } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -17,6 +17,7 @@ export type OrganizationCreateRouteBody = {
 
     readonly name: string;
     readonly owner: string;
+    readonly ownerNamespace: string;
 };
 
 export class OrganizationCreateRoute extends BrontosaurusRoute {
@@ -41,8 +42,9 @@ export class OrganizationCreateRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const name: string = body.direct('name');
-            const owner: string = body.direct('owner');
+            const name: string = body.directEnsure('name');
+            const owner: string = body.directEnsure('owner');
+            const ownerNamespace: string = body.directEnsure('ownerNamespace');
 
             const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(name);
 
@@ -56,7 +58,7 @@ export class OrganizationCreateRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.DUPLICATE_ORGANIZATION, name);
             }
 
-            const ownerUser: IAccountModel | null = await AccountController.getAccountByUsername(owner);
+            const ownerUser: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(owner, ownerNamespace);
 
             if (!ownerUser) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, owner);

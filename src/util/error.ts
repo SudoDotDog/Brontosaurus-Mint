@@ -21,6 +21,7 @@ export enum ERROR_CODE {
     INVALID_EMAIL = 4114,
     INVALID_PHONE = 4115,
     INVALID_DISPLAY_NAME = 4116,
+    INVALID_NAMESPACE = 4117,
 
     APPLICATION_KEY_NOT_FOUND = 4120,
 
@@ -53,6 +54,7 @@ export enum ERROR_CODE {
     ORGANIZATION_NOT_FOUND = 6203,
     DECORATOR_NOT_FOUND = 6204,
     TAG_NOT_FOUND = 6205,
+    NAMESPACE_NOT_FOUND = 6206,
 
     DUPLICATE_ACCOUNT = 6250,
     DUPLICATE_APPLICATION = 6251,
@@ -67,6 +69,7 @@ export enum ERROR_CODE {
 
     NOT_ENOUGH_PERMISSION = 7001,
     PERMISSION_USER_DOES_NOT_MATCH = 7002,
+    PERMISSION_NAMESPACE_DOES_NOT_MATCH = 7003,
 
     INTERNAL_ERROR = 8000,
 }
@@ -84,6 +87,7 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
     [ERROR_CODE.INVALID_EMAIL]: 'Invalid email, reason: "{}"',
     [ERROR_CODE.INVALID_PHONE]: 'Invalid phone, reason: "{}"',
     [ERROR_CODE.INVALID_DISPLAY_NAME]: 'Invalid display name "{}"',
+    [ERROR_CODE.INVALID_NAMESPACE]: 'Invalid namespace "{}"',
 
     [ERROR_CODE.APPLICATION_KEY_NOT_FOUND]: 'Application key not found',
 
@@ -116,6 +120,7 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
     [ERROR_CODE.ORGANIZATION_NOT_FOUND]: 'Organization: "{}" not found',
     [ERROR_CODE.DECORATOR_NOT_FOUND]: 'Decorator: "{}" not found',
     [ERROR_CODE.TAG_NOT_FOUND]: 'Tag: "{}" not found',
+    [ERROR_CODE.NAMESPACE_NOT_FOUND]: 'Namespace: "{}" not found',
 
     [ERROR_CODE.DUPLICATE_ACCOUNT]: 'Account: "{}" already exist',
     [ERROR_CODE.DUPLICATE_APPLICATION]: 'Application: "{}" already exist',
@@ -130,6 +135,7 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
 
     [ERROR_CODE.NOT_ENOUGH_PERMISSION]: 'Permission insufficient, need "{}"',
     [ERROR_CODE.PERMISSION_USER_DOES_NOT_MATCH]: 'Permission user does not match between: "{}" and "{}"',
+    [ERROR_CODE.PERMISSION_NAMESPACE_DOES_NOT_MATCH]: 'Permission namespace does not match between: "{}" and "{}"',
 
     [ERROR_CODE.INTERNAL_ERROR]: 'Internal Error',
 };

@@ -4,8 +4,7 @@
  * @description Inplode
  */
 
-import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, EMAIL_VALIDATE_RESPONSE, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, ITagModel, OrganizationController, PHONE_VALIDATE_RESPONSE, TagController, USERNAME_VALIDATE_RESPONSE, validateCommonName, validateEmail, validatePhone, validateUsername } from "@brontosaurus/db";
-import { getBrontosaurusDefaultNamespace } from "@brontosaurus/db/controller/namespace";
+import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, EMAIL_VALIDATE_RESPONSE, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, ITagModel, NamespaceController, OrganizationController, PHONE_VALIDATE_RESPONSE, TagController, USERNAME_VALIDATE_RESPONSE, validateCommonName, validateEmail, validateNamespace, validatePhone, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
@@ -19,14 +18,15 @@ import { jsonifyBasicRecords } from "../../util/token";
 
 export type OrganizationInplodeRouteBody = {
 
-    name: string;
-    username: string;
-    tags: string[];
-    infos: Record<string, Basics>;
+    readonly name: string;
+    readonly username: string;
+    readonly namespace: string;
+    readonly tags: string[];
+    readonly infos: Record<string, Basics>;
 
-    displayName?: string;
-    email?: string;
-    phone?: string;
+    readonly displayName?: string;
+    readonly email?: string;
+    readonly phone?: string;
 };
 
 export class OrganizationInplodeRoute extends BrontosaurusRoute {
@@ -52,6 +52,7 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
             }
 
             const username: string = body.directEnsure('username');
+            const namespace: string = body.directEnsure('namespace');
             const name: string = body.directEnsure('name');
             const tags: string[] = body.direct('tags');
 
@@ -63,6 +64,12 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
 
             if (usernameValidationResult !== USERNAME_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_USERNAME, usernameValidationResult);
+            }
+
+            const namespaceValidationResult: boolean = validateNamespace(namespace);
+
+            if (!namespaceValidationResult) {
+                throw this._error(ERROR_CODE.INVALID_NAMESPACE, usernameValidationResult);
             }
 
             const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(name);
@@ -99,7 +106,13 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
                 infoLine,
                 this._error(ERROR_CODE.INFO_LINE_FORMAT_ERROR, infoLine.toString()));
 
-            const isAccountDuplicated: boolean = await AccountController.isAccountDuplicatedByUsername(username);
+            const namespaceInstance: INamespaceModel | null = await NamespaceController.getNamespaceByNamespace(namespace);
+
+            if (!namespaceInstance) {
+                throw panic.code(ERROR_CODE.NAMESPACE_NOT_FOUND, namespace);
+            }
+
+            const isAccountDuplicated: boolean = await AccountController.isAccountDuplicatedByUsernameAndNamespace(username, namespaceInstance._id);
 
             if (isAccountDuplicated) {
                 throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
@@ -113,12 +126,10 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
 
             const tempPassword: string = createRandomTempPassword();
 
-            const defaultNamespace: INamespaceModel = await getBrontosaurusDefaultNamespace();
-
             const account: IAccountModel = AccountController.createOnLimboUnsavedAccount(
                 username,
                 tempPassword,
-                defaultNamespace._id,
+                namespaceInstance._id,
                 req.body.displayName,
                 req.body.email,
                 req.body.phone,

@@ -102,13 +102,13 @@ export class RegisterRoute extends BrontosaurusRoute {
                 infoLine,
                 this._error(ERROR_CODE.INFO_LINE_FORMAT_ERROR, infoLine.toString()));
 
-            const isDuplicated: boolean = await AccountController.isAccountDuplicatedByUsername(username);
+            const defaultNamespace: INamespaceModel = await getBrontosaurusDefaultNamespace();
+
+            const isDuplicated: boolean = await AccountController.isAccountDuplicatedByUsernameAndNamespace(username, defaultNamespace._id);
 
             if (isDuplicated) {
                 throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
             }
-
-            const defaultNamespace: INamespaceModel = await getBrontosaurusDefaultNamespace();
 
             const account: IAccountModel = await this._createUnsavedAccount(
                 username,

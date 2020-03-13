@@ -4,8 +4,7 @@
  * @description Register
  */
 
-import { AccountController, EMAIL_VALIDATE_RESPONSE, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PHONE_VALIDATE_RESPONSE, USERNAME_VALIDATE_RESPONSE, validateEmail, validatePhone, validateUsername } from "@brontosaurus/db";
-import { getBrontosaurusDefaultNamespace } from "@brontosaurus/db/controller/namespace";
+import { AccountController, EMAIL_VALIDATE_RESPONSE, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, NamespaceController, OrganizationController, PHONE_VALIDATE_RESPONSE, USERNAME_VALIDATE_RESPONSE, validateEmail, validatePhone, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
@@ -52,6 +51,7 @@ export class FlatOrganizationRegisterRoute extends BrontosaurusRoute {
 
             const token: SafeToken = req.principal;
             const registeree: string = token.body.direct('username');
+            const registereeNamespace: string = token.body.direct('namespace');
             const organizationName: string | undefined = token.body.direct('organization', this._error(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_ORGANIZATION));
 
             if (!organizationName) {
@@ -99,15 +99,15 @@ export class FlatOrganizationRegisterRoute extends BrontosaurusRoute {
                 infoLine,
                 this._error(ERROR_CODE.INFO_LINE_FORMAT_ERROR, infoLine.toString()));
 
-            const isDuplicated: boolean = await AccountController.isAccountDuplicatedByUsername(username);
+            const defaultNamespace: INamespaceModel = await NamespaceController.getBrontosaurusDefaultNamespace();
+
+            const isDuplicated: boolean = await AccountController.isAccountDuplicatedByUsernameAndNamespace(username, defaultNamespace._id);
 
             if (isDuplicated) {
                 throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
             }
 
             const tempPassword: string = createRandomTempPassword();
-
-            const defaultNamespace: INamespaceModel = await getBrontosaurusDefaultNamespace();
 
             const account: IAccountModel = AccountController.createOnLimboUnsavedAccount(
                 username,
@@ -120,7 +120,7 @@ export class FlatOrganizationRegisterRoute extends BrontosaurusRoute {
                 [],
                 infos,
                 {
-                    registeredBy: registeree,
+                    registeredBy: registereeNamespace + '/' + registeree,
                 });
             await account.save();
 
