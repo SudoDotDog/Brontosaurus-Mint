@@ -84,7 +84,7 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
                 },
                 members: members.map((member) => ({
                     username: member.username,
-                    namespace: namespaceMap.get(member.namespace.toHexString()),
+                    namespace: namespaceMap.get(member.namespace.toHexString())?.namespace,
                     active: member.active,
                     displayName: member.displayName,
                     phone: member.phone,

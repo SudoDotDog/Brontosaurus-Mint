@@ -4,8 +4,8 @@
  * @description Register
  */
 
-import { AccountController, EMAIL_VALIDATE_RESPONSE, GroupController, IAccountModel, IGroupModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PASSWORD_VALIDATE_RESPONSE, PHONE_VALIDATE_RESPONSE, TagController, USERNAME_VALIDATE_RESPONSE, validateEmail, validatePassword, validatePhone, validateUsername } from "@brontosaurus/db";
-import { getBrontosaurusDefaultNamespace } from "@brontosaurus/db/controller/namespace";
+import { AccountController, EMAIL_VALIDATE_RESPONSE, GroupController, IAccountModel, IGroupModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController, PASSWORD_VALIDATE_RESPONSE, PHONE_VALIDATE_RESPONSE, TagController, USERNAME_VALIDATE_RESPONSE, validateEmail, validateNamespace, validatePassword, validatePhone, validateUsername } from "@brontosaurus/db";
+import { getNamespaceByNamespace } from "@brontosaurus/db/controller/namespace";
 import { ITagModel } from "@brontosaurus/db/model/tag";
 import { Basics } from "@brontosaurus/definition";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
@@ -25,6 +25,7 @@ export type RegisterRouteBody = {
     readonly phone?: string;
 
     readonly username: string;
+    readonly namespace: string;
     readonly password: string;
     readonly infos: Record<string, Basics>;
     readonly tags: string[];
@@ -56,6 +57,7 @@ export class RegisterRoute extends BrontosaurusRoute {
             }
 
             const username: string = body.directEnsure('username');
+            const namespace: string = body.directEnsure('namespace');
             const password: string = body.directEnsure('password');
 
             const tags: string[] = body.direct('tags');
@@ -73,6 +75,12 @@ export class RegisterRoute extends BrontosaurusRoute {
 
             if (usernameValidationResult !== USERNAME_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_USERNAME, usernameValidationResult);
+            }
+
+            const namespaceValidationResult: boolean = validateNamespace(namespace);
+
+            if (!namespaceValidationResult) {
+                throw this._error(ERROR_CODE.INVALID_NAMESPACE);
             }
 
             const passwordValidationResult: PASSWORD_VALIDATE_RESPONSE = validatePassword(password);
@@ -97,14 +105,18 @@ export class RegisterRoute extends BrontosaurusRoute {
                 }
             }
 
+            const namespaceInstance: INamespaceModel | null = await getNamespaceByNamespace(namespace);
+
+            if (!namespaceInstance) {
+                throw this._error(ERROR_CODE.NAMESPACE_NOT_FOUND, namespace);
+            }
+
             const infoLine: Record<string, Basics> | string = body.direct('infos');
             const infos: Record<string, Basics> = jsonifyBasicRecords(
                 infoLine,
                 this._error(ERROR_CODE.INFO_LINE_FORMAT_ERROR, infoLine.toString()));
 
-            const defaultNamespace: INamespaceModel = await getBrontosaurusDefaultNamespace();
-
-            const isDuplicated: boolean = await AccountController.isAccountDuplicatedByUsernameAndNamespace(username, defaultNamespace._id);
+            const isDuplicated: boolean = await AccountController.isAccountDuplicatedByUsernameAndNamespace(username, namespaceInstance._id);
 
             if (isDuplicated) {
                 throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
@@ -113,7 +125,7 @@ export class RegisterRoute extends BrontosaurusRoute {
             const account: IAccountModel = await this._createUnsavedAccount(
                 username,
                 password,
-                defaultNamespace._id,
+                namespaceInstance._id,
                 req.body.displayName,
                 req.body.email,
                 req.body.phone,

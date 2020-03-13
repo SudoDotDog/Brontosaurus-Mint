@@ -64,7 +64,7 @@ export class SingleGroupRoute extends BrontosaurusRoute {
                 members: accounts.map((member: IAccount) => ({
                     active: member.active,
                     username: member.username,
-                    namespace: namespaceMap.get(member.namespace.toHexString()),
+                    namespace: namespaceMap.get(member.namespace.toHexString())?.namespace,
                     displayName: member.displayName,
                     phone: member.phone,
                     email: member.email,

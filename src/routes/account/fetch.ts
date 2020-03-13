@@ -61,7 +61,7 @@ export class FetchAccountRoute extends BrontosaurusRoute {
             const parsed = accounts.map((account: IAccountModel) => ({
                 active: account.active,
                 username: account.username,
-                namespace: namespaceMap.get(account.namespace.toHexString()),
+                namespace: namespaceMap.get(account.namespace.toHexString())?.namespace,
                 displayName: account.displayName,
                 email: account.email,
                 phone: account.phone,
