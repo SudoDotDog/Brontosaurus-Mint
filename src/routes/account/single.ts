@@ -4,7 +4,7 @@
  * @description Single
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, OrganizationController, OrganizationDetail, SpecialPassword } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INTERNAL_USER_GROUP, MatchController, OrganizationController, OrganizationDetail, SpecialPassword } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -17,6 +17,7 @@ import { ERROR_CODE, panic } from "../../util/error";
 export type SingleAccountBody = {
 
     username: string;
+    namespace: string;
 };
 
 export class SingleAccountRoute extends BrontosaurusRoute {
@@ -41,13 +42,19 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const username: string = body.direct('username');
+            const username: string = body.directEnsure('username');
+            const namespace: string = body.directEnsure('namespace');
+
             if (typeof username !== 'string') {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'username', 'string', (username as any).toString());
             }
 
+            if (typeof namespace !== 'string') {
+                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'namespace', 'string', (namespace as any).toString());
+            }
+
             const decoded: string = decodeURIComponent(username);
-            const account: IAccountModel | null = await AccountController.getAccountByUsername(decoded);
+            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(decoded, namespace);
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
             }
