@@ -4,10 +4,11 @@
  * @description Standalone
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { getNamespaceMapByNamespaceIds } from "../../data/namespace";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
@@ -55,8 +56,11 @@ export class FetchStandaloneAccountRoute extends BrontosaurusRoute {
             const pages: number = await AccountController.getStandaloneAcitveAccountPagesByKeyword(pageLimit, keyword);
             const accounts: IAccountModel[] = await AccountController.getStandaloneActiveAccountsByPage(keyword, pageLimit, Math.floor(page));
 
+            const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(accounts.map((each) => each.namespace));
+
             const parsed = accounts.map((account: IAccountModel) => ({
                 username: account.username,
+                namespace: namespaceMap.get(account.namespace.toHexString()),
                 email: account.email,
                 phone: account.phone,
                 twoFA: Boolean(account.twoFA),

@@ -4,10 +4,11 @@
  * @description Single
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, NamespaceController, OrganizationController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { getNamespaceMapByNamespaceIds } from "../../data/namespace";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
@@ -57,10 +58,17 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, organization.owner.toHexString());
             }
 
+            const ownerNamespace: INamespaceModel | null = await NamespaceController.getNamespaceById(owner.namespace);
+            if (!ownerNamespace) {
+                throw this._error(ERROR_CODE.NAMESPACE_NOT_FOUND, owner.namespace.toHexString());
+            }
+
             const members: IAccountModel[] = await AccountController.getAccountsByOrganization(organization._id);
 
             const decorators: string[] = await Throwable_MapDecorators(organization.decorators);
             const tags: string[] = await Throwable_MapTags(organization.tags);
+
+            const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(members.map((each) => each.namespace));
 
             res.agent.migrate({
                 active: organization.active,
@@ -68,6 +76,7 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
                 limit: organization.limit,
                 owner: {
                     username: owner.username,
+                    namespace: ownerNamespace.namespace,
                     active: owner.active,
                     displayName: owner.displayName,
                     phone: owner.phone,
@@ -75,6 +84,7 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
                 },
                 members: members.map((member) => ({
                     username: member.username,
+                    namespace: namespaceMap.get(member.namespace.toHexString()),
                     active: member.active,
                     displayName: member.displayName,
                     phone: member.phone,

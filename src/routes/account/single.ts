@@ -4,7 +4,7 @@
  * @description Single
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, MatchController, OrganizationController, OrganizationDetail, SpecialPassword } from "@brontosaurus/db";
+import { AccountController, AccountNamespaceMatch, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, MatchController, OrganizationController, OrganizationDetail, SpecialPassword } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -54,10 +54,13 @@ export class SingleAccountRoute extends BrontosaurusRoute {
             }
 
             const decoded: string = decodeURIComponent(username);
-            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(decoded, namespace);
-            if (!account) {
+            const matchResult: AccountNamespaceMatch = await MatchController.getAccountNamespaceMatchByUsernameAndNamespace(decoded, namespace);
+            if (matchResult.succeed === false) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
             }
+
+            const account: IAccountModel = matchResult.account;
+            const namespaceInstance: INamespaceModel = matchResult.namespace;
 
             const accountGroups: string[] = await Throwable_MapGroups(account.groups);
             const accountTags: string[] = await Throwable_MapTags(account.tags);
@@ -85,6 +88,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                 res.agent.add('account', {
                     active: account.active,
                     username: account.username,
+                    namespace: namespaceInstance.namespace,
                     displayName: account.displayName,
                     email: account.email,
                     phone: account.phone,
@@ -108,6 +112,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                 res.agent.add('account', {
                     active: account.active,
                     username: account.username,
+                    namespace: namespaceInstance.namespace,
                     displayName: account.displayName,
                     email: account.email,
                     phone: account.phone,

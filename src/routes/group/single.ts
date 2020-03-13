@@ -4,11 +4,12 @@
  * @description Single
  */
 
-import { GroupController, IAccount, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { GroupController, IAccount, IGroupModel, INamespaceModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { getAccountsByGroupLean } from "@brontosaurus/db/controller/account";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { getNamespaceMapByNamespaceIds } from "../../data/namespace";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
@@ -56,12 +57,14 @@ export class SingleGroupRoute extends BrontosaurusRoute {
             const groupDecorators: string[] = await Throwable_MapDecorators(group.decorators);
 
             const accounts: IAccount[] = await getAccountsByGroupLean(group._id);
+            const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(accounts.map((each) => each.namespace));
 
             res.agent.migrate({
                 name: group.name,
                 members: accounts.map((member: IAccount) => ({
                     active: member.active,
                     username: member.username,
+                    namespace: namespaceMap.get(member.namespace.toHexString()),
                     displayName: member.displayName,
                     phone: member.phone,
                     email: member.email,
