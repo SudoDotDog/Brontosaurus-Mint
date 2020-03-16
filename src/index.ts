@@ -40,7 +40,7 @@ connect(config.database, {
 app.express.get(['/', '/index.html'], createReplacementHandler('<!-- Insertion Point -->', getEnvGettingText()));
 
 const tenHour: number = 36000000;
-app.static(Path.join(__dirname, '..', 'public', 'red'), {
+app.expressStatic(Path.join(__dirname, '..', 'public', 'red'), {
     immutable: true,
     maxAge: tenHour,
 });
