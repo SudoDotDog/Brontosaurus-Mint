@@ -41,6 +41,10 @@ import { FetchGroupRoute } from './group/fetch';
 import { RemoveAllGroupRoute } from './group/remove-all';
 import { SingleGroupRoute } from './group/single';
 import { UpdateGroupRoute } from './group/update';
+import { CreateNamespaceRoute } from './namespace/create';
+import { FetchNamespaceRoute } from './namespace/fetch';
+import { SingleNamespaceRoute } from './namespace/single';
+import { UpdateNamespaceRoute } from './namespace/update';
 import { OrganizationActivateRoute } from './organization/activate';
 import { OrganizationCreateRoute } from './organization/create';
 import { OrganizationDeactivateRoute } from './organization/deactivate';
@@ -101,6 +105,12 @@ export const MintRoutes = [
     new FetchDecoratorRoute(),
     new SingleDecoratorRoute(),
     new UpdateDecoratorRoute(),
+
+    // Namespace
+    new CreateNamespaceRoute(),
+    new FetchNamespaceRoute(),
+    new SingleNamespaceRoute(),
+    new UpdateNamespaceRoute(),
 
     // Account
     new AddGroupRoute(),

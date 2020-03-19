@@ -61,7 +61,7 @@ export class CreateNamespaceRoute extends BrontosaurusRoute {
             namespaceInstance.name = name;
             await namespaceInstance.save();
 
-            res.agent.add('namespaceInstance', namespaceInstance.name);
+            res.agent.add('namespace', namespaceInstance.name);
         } catch (err) {
 
 
