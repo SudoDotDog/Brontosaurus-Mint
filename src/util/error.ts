@@ -62,6 +62,7 @@ export enum ERROR_CODE {
     DUPLICATE_ORGANIZATION = 6253,
     DUPLICATE_DECORATOR = 6254,
     DUPLICATE_TAG = 6255,
+    DUPLICATE_NAMESPACE = 6266,
 
     ORGANIZATION_LIMIT_EXCEED = 6400,
 
@@ -128,6 +129,7 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
     [ERROR_CODE.DUPLICATE_ORGANIZATION]: 'Organization: "{}" already exist',
     [ERROR_CODE.DUPLICATE_DECORATOR]: 'Decorator: "{}" already exist',
     [ERROR_CODE.DUPLICATE_TAG]: 'Tag: "{}" already exist',
+    [ERROR_CODE.DUPLICATE_NAMESPACE]: 'Namespace: "{}" already exist',
 
     [ERROR_CODE.ORGANIZATION_LIMIT_EXCEED]: 'Organization limit exceed, has: "{}", max: "{}"',
 
