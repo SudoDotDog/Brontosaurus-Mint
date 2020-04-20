@@ -23,7 +23,7 @@
     "@sudoo/extract": "^1.4.2",
     "@sudoo/io": "^1.7.0",
     "@sudoo/log": "^1.4.1",
-    "@sudoo/magic": "^1.7.0",
+    "@sudoo/magic": "^1.8.0",
     "@sudoo/random": "^2.1.1",
     "connor": "^2.7.0",
     "qrcode": "^1.4.4"
