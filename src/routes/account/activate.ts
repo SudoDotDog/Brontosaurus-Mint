@@ -8,10 +8,19 @@ import { IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaur
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { Pattern } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
+
+const bodyPattern: Pattern = {
+    type: 'map',
+    map: {
+        username: { type: 'string' },
+        namespace: { type: 'string' },
+    },
+};
 
 export type AccountActivateBody = {
 
