@@ -5,22 +5,13 @@
  */
 
 import { IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse, createStringedBodyVerifyHandler } from "@sudoo/express";
+import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
-import { Pattern } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
-
-const bodyPattern: Pattern = {
-    type: 'map',
-    map: {
-        username: { type: 'string' },
-        namespace: { type: 'string' },
-    },
-};
 
 export type AccountActivateBody = {
 
@@ -37,7 +28,6 @@ export class AccountActivateRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'TokenHandler'),
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), 'GroupVerifyHandler'),
-        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._activateHandler.bind(this), 'Activate'),
     ];
 
