@@ -19,11 +19,13 @@ export type FlatSelfEditBody = {
 
     readonly username: string;
     readonly namespace: string;
-    readonly email: string;
-    readonly phone: string;
     readonly account: Partial<{
         readonly infos: Record<string, Basics>;
     }>;
+    readonly avatar?: string;
+    readonly displayName?: string;
+    readonly email?: string;
+    readonly phone?: string;
 };
 
 export class FlatSelfEditRoute extends BrontosaurusRoute {
@@ -83,8 +85,26 @@ export class FlatSelfEditRoute extends BrontosaurusRoute {
                 account.infos = parseInfo(newInfos);
             }
 
-            account.email = req.body.email;
-            account.phone = req.body.phone;
+            if (req.body.avatar) {
+                account.avatar = req.body.avatar;
+            } else if (account.avatar) {
+                account.avatar = undefined;
+            }
+            if (req.body.email) {
+                account.email = req.body.email;
+            } else if (account.email) {
+                account.email = undefined;
+            }
+            if (req.body.phone) {
+                account.phone = req.body.phone;
+            } else if (account.phone) {
+                account.phone = undefined;
+            }
+            if (req.body.displayName) {
+                account.displayName = req.body.displayName;
+            } else if (account.displayName) {
+                account.displayName = undefined;
+            }
 
             await account.save();
 

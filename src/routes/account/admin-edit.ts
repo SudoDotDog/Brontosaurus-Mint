@@ -23,6 +23,7 @@ export type AdminEditBody = {
     readonly tags: string[];
     readonly decorators: string[];
 
+    readonly avatar?: string;
     readonly displayName?: string;
     readonly email?: string;
     readonly phone?: string;
@@ -92,14 +93,25 @@ export class AdminEditRoute extends BrontosaurusRoute {
             const decorators: string[] = body.direct('decorators');
             const parsedDecorators: IDecoratorModel[] = await DecoratorController.getDecoratorByNames(decorators);
 
+            if (req.body.avatar) {
+                account.avatar = req.body.avatar;
+            } else if (account.avatar) {
+                account.avatar = undefined;
+            }
             if (req.body.email) {
                 account.email = req.body.email;
+            } else if (account.email) {
+                account.email = undefined;
             }
             if (req.body.phone) {
                 account.phone = req.body.phone;
+            } else if (account.phone) {
+                account.phone = undefined;
             }
             if (req.body.displayName) {
                 account.displayName = req.body.displayName;
+            } else if (account.displayName) {
+                account.displayName = undefined;
             }
             account.decorators = parsedDecorators.map((decorator: IDecoratorModel) => decorator._id);
             account.groups = parsedGroups.map((group: IGroupModel) => group._id);
