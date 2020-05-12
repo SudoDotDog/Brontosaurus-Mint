@@ -83,24 +83,27 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                 suspendedBy: value.suspendedBy ? usernameMap.get(value.by.toHexString()) : undefined,
             }));
 
+            const response = {
+                active: account.active,
+                username: account.username,
+                namespace: namespaceInstance.namespace,
+                avatar: account.avatar,
+                displayName: account.displayName,
+                email: account.email,
+                phone: account.phone,
+                twoFA: Boolean(account.twoFA),
+                groups: accountGroups,
+                tags: accountTags,
+                decorators: accountDecorators,
+                infos: account.getInfoRecords(),
+                beacons: account.getBeaconRecords(),
+                temporaryPasswords,
+                applicationPasswords,
+            };
+
             if (!account.organization) {
 
-                res.agent.add('account', {
-                    active: account.active,
-                    username: account.username,
-                    namespace: namespaceInstance.namespace,
-                    displayName: account.displayName,
-                    email: account.email,
-                    phone: account.phone,
-                    twoFA: Boolean(account.twoFA),
-                    groups: accountGroups,
-                    tags: accountTags,
-                    decorators: accountDecorators,
-                    infos: account.getInfoRecords(),
-                    beacons: account.getBeaconRecords(),
-                    temporaryPasswords,
-                    applicationPasswords,
-                });
+                res.agent.add('account', response);
             } else {
 
                 const organization: OrganizationDetail | null = await OrganizationController.getOrganizationDetailsById(account.organization);
@@ -110,21 +113,8 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                 }
 
                 res.agent.add('account', {
-                    active: account.active,
-                    username: account.username,
-                    namespace: namespaceInstance.namespace,
-                    displayName: account.displayName,
-                    email: account.email,
-                    phone: account.phone,
-                    twoFA: Boolean(account.twoFA),
-                    groups: accountGroups,
-                    tags: accountTags,
-                    decorators: accountDecorators,
+                    ...response,
                     organization,
-                    infos: account.getInfoRecords(),
-                    beacons: account.getBeaconRecords(),
-                    temporaryPasswords,
-                    applicationPasswords,
                 });
             }
         } catch (err) {
