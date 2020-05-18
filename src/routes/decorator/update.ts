@@ -15,10 +15,10 @@ import { ERROR_CODE } from "../../util/error";
 
 export type UpdateDecoratorBody = {
 
-    name: string;
-    description?: string;
-    addableGroups: string[];
-    removableGroups: string[];
+    readonly name: string;
+    readonly description?: string;
+    readonly addableGroups: string[];
+    readonly removableGroups: string[];
 };
 
 export class UpdateDecoratorRoute extends BrontosaurusRoute {

@@ -16,7 +16,7 @@ import { ERROR_CODE } from "../../util/error";
 
 export type SingleApplicationBody = {
 
-    key: string;
+    readonly key: string;
 };
 
 export class SingleApplicationRoute extends BrontosaurusRoute {

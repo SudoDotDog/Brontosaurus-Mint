@@ -16,8 +16,8 @@ import { ERROR_CODE } from "../../util/error";
 
 export type FetchDecoratorBody = {
 
-    page: number;
-    keyword: string;
+    readonly page: number;
+    readonly keyword: string;
 };
 
 export class FetchDecoratorRoute extends BrontosaurusRoute {

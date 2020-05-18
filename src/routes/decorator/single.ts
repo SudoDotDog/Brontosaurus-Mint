@@ -16,7 +16,7 @@ import { ERROR_CODE } from "../../util/error";
 
 export type SingleDecoratorBody = {
 
-    name: string;
+    readonly name: string;
 };
 
 export class SingleDecoratorRoute extends BrontosaurusRoute {

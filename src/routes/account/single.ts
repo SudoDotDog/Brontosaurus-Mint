@@ -16,8 +16,8 @@ import { ERROR_CODE, panic } from "../../util/error";
 
 export type SingleAccountBody = {
 
-    username: string;
-    namespace: string;
+    readonly username: string;
+    readonly namespace: string;
 };
 
 export class SingleAccountRoute extends BrontosaurusRoute {

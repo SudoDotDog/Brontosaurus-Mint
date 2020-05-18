@@ -18,7 +18,7 @@ import { ERROR_CODE } from "../../util/error";
 
 export type SingleGroupBody = {
 
-    name: string;
+    readonly name: string;
 };
 
 export class SingleGroupRoute extends BrontosaurusRoute {

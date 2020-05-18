@@ -18,13 +18,13 @@ import { jsonifyBasicRecords, SafeToken } from "../../util/token";
 
 export type FlatOrganizationRegisterRouteBody = {
 
-    username: string;
-    namespace: string;
-    infos: Record<string, Basics>;
+    readonly username: string;
+    readonly namespace: string;
+    readonly infos: Record<string, Basics>;
 
-    displayName?: string;
-    email?: string;
-    phone?: string;
+    readonly displayName?: string;
+    readonly email?: string;
+    readonly phone?: string;
 };
 
 export class FlatOrganizationRegisterRoute extends BrontosaurusRoute {

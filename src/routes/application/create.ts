@@ -15,9 +15,9 @@ import { ERROR_CODE } from "../../util/error";
 
 export type CreateApplicationRouteBody = {
 
-    name: string;
-    key: string;
-    expire: number;
+    readonly name: string;
+    readonly key: string;
+    readonly expire: number;
 };
 
 export class CreateApplicationRoute extends BrontosaurusRoute {

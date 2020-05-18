@@ -15,10 +15,10 @@ import { ERROR_CODE } from "../../util/error";
 
 export type UpdateOrganizationBody = {
 
-    name: string;
-    limit: number;
-    tags: string[];
-    decorators: string[];
+    readonly name: string;
+    readonly limit: number;
+    readonly tags: string[];
+    readonly decorators: string[];
 };
 
 export class UpdateOrganizationRoute extends BrontosaurusRoute {

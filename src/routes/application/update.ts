@@ -19,12 +19,12 @@ export type UpdateApplicationBody = {
 
     readonly key: string;
     readonly application: Partial<{
-        avatar: string;
-        favicon: string;
-        name: string;
-        expire: number;
-        groups: string[];
-        requires: string[];
+        readonly avatar: string;
+        readonly favicon: string;
+        readonly name: string;
+        readonly expire: number;
+        readonly groups: string[];
+        readonly requires: string[];
     }>;
 };
 

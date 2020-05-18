@@ -15,8 +15,8 @@ import { ERROR_CODE } from "../../util/error";
 
 export type CreateTagRouteBody = {
 
-    name: string;
-    description?: string;
+    readonly name: string;
+    readonly description?: string;
 };
 
 export class CreateTagRoute extends BrontosaurusRoute {

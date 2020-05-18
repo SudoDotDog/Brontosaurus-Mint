@@ -15,8 +15,8 @@ import { ERROR_CODE } from "../../util/error";
 
 export type UpdateTagBody = {
 
-    name: string;
-    description?: string;
+    readonly name: string;
+    readonly description?: string;
 };
 
 export class UpdateTagRoute extends BrontosaurusRoute {

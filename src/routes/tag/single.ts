@@ -15,7 +15,7 @@ import { ERROR_CODE } from "../../util/error";
 
 export type SingleTagBody = {
 
-    name: string;
+    readonly name: string;
 };
 
 export class SingleTagRoute extends BrontosaurusRoute {

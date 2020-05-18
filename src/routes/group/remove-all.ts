@@ -15,7 +15,7 @@ import { ERROR_CODE } from "../../util/error";
 
 export type RemoveAllGroupBody = {
 
-    name: string;
+    readonly name: string;
 };
 
 export class RemoveAllGroupRoute extends BrontosaurusRoute {

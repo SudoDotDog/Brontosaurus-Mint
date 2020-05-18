@@ -16,9 +16,9 @@ import { SafeToken } from "../../util/token";
 
 export type FlatChangePasswordBody = {
 
-    username: string;
-    namespace: string;
-    password: string;
+    readonly username: string;
+    readonly namespace: string;
+    readonly password: string;
 };
 
 export class FlatChangePasswordRoute extends BrontosaurusRoute {

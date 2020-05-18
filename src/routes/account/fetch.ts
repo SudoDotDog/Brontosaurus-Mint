@@ -17,8 +17,8 @@ import { ERROR_CODE } from "../../util/error";
 
 export type FetchAccountBody = {
 
-    page: number;
-    keyword: string;
+    readonly page: number;
+    readonly keyword: string;
 };
 
 export class FetchAccountRoute extends BrontosaurusRoute {

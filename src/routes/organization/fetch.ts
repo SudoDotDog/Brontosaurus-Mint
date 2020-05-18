@@ -17,8 +17,8 @@ import { ERROR_CODE } from "../../util/error";
 
 export type OrganizationFetchRouteBody = {
 
-    page: number;
-    keyword: string;
+    readonly page: number;
+    readonly keyword: string;
 };
 
 export class OrganizationFetchRoute extends BrontosaurusRoute {
