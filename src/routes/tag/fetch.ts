@@ -16,8 +16,8 @@ import { ERROR_CODE } from "../../util/error";
 
 export type FetchTagBody = {
 
-    page: number;
-    keyword: string;
+    readonly page: number;
+    readonly keyword: string;
 };
 
 export class FetchTagRoute extends BrontosaurusRoute {

@@ -11,7 +11,7 @@ export const pageLimit: number = 20;
 
 export type BrontosaurusConfig = {
 
-    database: string;
+    readonly database: string;
 };
 
 export const readConfigSync = (): BrontosaurusConfig => {
@@ -26,7 +26,7 @@ export const readConfigSync = (): BrontosaurusConfig => {
         process.exit();
     }
 
-    throw new Error('never');
+    throw new Error('Never');
 };
 
 export const readConfigEnvironment = (): BrontosaurusConfig => {
@@ -42,7 +42,7 @@ export const readConfigEnvironment = (): BrontosaurusConfig => {
     console.log('Environment variable not found');
     process.exit();
 
-    throw new Error('never');
+    throw new Error('Never');
 };
 
 export const getEnvGettingText = () => {
