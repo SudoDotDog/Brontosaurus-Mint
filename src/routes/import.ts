@@ -7,6 +7,7 @@
 import { AccountActivateRoute } from './account/activate';
 import { AddGroupRoute } from './account/add-group';
 import { AdminEditRoute } from './account/admin-edit';
+import { FetchAccountAttemptsRoute } from './account/attempts';
 import { AccountDeactivateRoute } from './account/deactivate';
 import { FetchAccountRoute } from './account/fetch';
 import { AccountGenerateApplicationPasswordRoute } from './account/generate-application-password';
@@ -129,6 +130,7 @@ export const MintRoutes = [
     new AccountGenerateApplicationPasswordRoute(),
     new AccountSuspendTemporaryPasswordRoute(),
     new AccountSuspendApplicationPasswordRoute(),
+    new FetchAccountAttemptsRoute(),
 
     // Preference
     new GlobalPreferenceRoute(),
