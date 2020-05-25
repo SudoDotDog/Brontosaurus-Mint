@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/SudoDotDog/Brontosaurus-Mint#readme",
   "dependencies": {
-    "@brontosaurus/core": "^3.3.0",
+    "@brontosaurus/core": "^3.4.0",
     "@brontosaurus/db": "^3.14.0",
     "@sudoo/bark": "^2.7.2",
     "@sudoo/express": "^2.8.0",
