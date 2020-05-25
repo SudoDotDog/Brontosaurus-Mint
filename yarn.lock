@@ -23,27 +23,27 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@brontosaurus/core@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@brontosaurus/core/-/core-3.3.0.tgz#b02688ff009a1ecb7f05da4e255aefa904acca7c"
-  integrity sha512-/O0xX4KpzcxHEqtigsE8ojqN9unFWhfgQc8x1Rsrl5UsZ/xFFVWObm0NQlZnXtbIRVaWLy8ox0ki+baXhPzcYQ==
+"@brontosaurus/core@^3.3.0", "@brontosaurus/core@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@brontosaurus/core/-/core-3.4.0.tgz#e15554154d8654d405daa0260577eca5442c896e"
+  integrity sha512-Zo+vpKEXMBzZdShn1dwOyKg/xwuQlCoD60fiXsP2etQTTiVKsuBljKCFATZjAsMNP9LlMibCrjlnvtCwWZLGZg==
 
-"@brontosaurus/db@^3.14.0":
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/@brontosaurus/db/-/db-3.14.0.tgz#7abbd613f790511d39b72b9786c5ce155a714729"
-  integrity sha512-df2yU+fCvunzjH0Tz+vgiGp5ZStX1teB/FUuFayuZfEZIuvDggDZKwaMbIzwXTkWpdDXyf+gtGnbFsDGAwKmww==
+"@brontosaurus/db@^3.16.0":
+  version "3.16.0"
+  resolved "https://registry.yarnpkg.com/@brontosaurus/db/-/db-3.16.0.tgz#2ed0d2fffd14d199eb882a2417993a57f152d99f"
+  integrity sha512-saNTLOq+agVBjHb/QWl/KAQORx2VDlOq5z64A3vwXx6JP0AEqycKplkRdWRecFXHzH+KdcgtAe5cxz6MPTP4PQ==
   dependencies:
-    "@brontosaurus/core" "^3.3.0"
-    "@brontosaurus/definition" "^3.3.0"
+    "@brontosaurus/core" "^3.4.0"
+    "@brontosaurus/definition" "^3.4.0"
     "@sudoo/bark" "^2.7.2"
     "@sudoo/random" "^2.1.1"
-    mongoose "^5.9.13"
+    mongoose "^5.9.15"
     speakeasy "^2.0.0"
 
-"@brontosaurus/definition@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@brontosaurus/definition/-/definition-3.3.0.tgz#9002ac50ae48c23b16c53cad458e9185e0d3c1c5"
-  integrity sha512-TRGnv2vSkQ9tvetOaIlcuvNvwIAMNlNXqPyXZosPIUxAngnCpnPeflAwWKvjubH9oCibyOm3NYAy/WZ+NtQVQw==
+"@brontosaurus/definition@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@brontosaurus/definition/-/definition-3.4.0.tgz#05f362da522fad8a15f053b2811ec125ad024bf8"
+  integrity sha512-QmL5pCIEMQK8WtrpjxG3Zf0RuocVotXEC+jcUgfr01wOtlkEh4U7qsMra4ZuFzgQx9fTVcvmfuEZsjVz2baRtA==
 
 "@sudoo/bark@^2.7.2":
   version "2.7.2"
@@ -921,10 +921,10 @@ mongoose-legacy-pluralize@1.0.2:
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
 
-mongoose@^5.9.13:
-  version "5.9.13"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.9.13.tgz#fa4af761a0b1d10471daa23aafcc775b04b6db42"
-  integrity sha512-MsFdJAaCTVbDA3gYskUEpUN1kThL7sp4zh8N9rGt0+9vYMn28q92NLK90vGssM9qjOGWp8HqLeT1fBgfMZDnKA==
+mongoose@^5.9.15:
+  version "5.9.15"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.9.15.tgz#935e157d1429c0702b71c5ecf0e6801faa771091"
+  integrity sha512-dGIDqaQkAJoLl7lsRLy70mDg+VcL1IPOHr/0f23MLF45PtnM5exRdmienfyVjdrSVGgTus+1sMUKef6vSnrDZg==
   dependencies:
     bson "^1.1.4"
     kareem "2.3.1"
