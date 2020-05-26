@@ -4,7 +4,7 @@
  * @description Attempts
  */
 
-import { AccountNamespaceMatch, AttemptController, IAccountModel, IAttemptModel, INamespaceModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
+import { AccountNamespaceMatch, ApplicationCacheAgent, AttemptController, IAccountModel, IApplicationModel, IAttemptModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -12,7 +12,7 @@ import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
 import { pageLimit } from "../../util/conf";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type FetchAccountAttemptsBody = {
 
@@ -71,21 +71,32 @@ export class FetchAccountAttemptsRoute extends BrontosaurusRoute {
             const pages: number = await AttemptController.getSelectedAccountAttemptPages(account._id, pageLimit);
             const attempts: IAttemptModel[] = await AttemptController.getAttemptsByAccountAndPage(account._id, pageLimit, Math.floor(page));
 
-            const parsed = attempts.map((attempt: IAttemptModel) => ({
-                account: attempt.account.toHexString(),
-                succeed: attempt.succeed,
-                failedReason: attempt.failedReason,
-                platform: attempt.platform,
-                userAgent: attempt.userAgent,
-                target: attempt.target,
-                source: attempt.source,
-                proxySources: attempt.proxySources,
-                application: attempt.application.toHexString(),
-                identifier: attempt.identifier,
-                at: attempt.at,
-            }));
+            const results = [];
 
-            res.agent.add('attempts', parsed);
+            const applicationAgent: ApplicationCacheAgent = ApplicationCacheAgent.create();
+            for (const attempt of attempts) {
+
+                const currentApplication: IApplicationModel | null = await applicationAgent.getApplication(attempt.application);
+                if (!currentApplication) {
+                    throw panic.code(ERROR_CODE.APPLICATION_NOT_FOUND, attempt.application.toHexString());
+                }
+
+                results.push({
+                    account: attempt.account.toHexString(),
+                    succeed: attempt.succeed,
+                    failedReason: attempt.failedReason,
+                    platform: attempt.platform,
+                    userAgent: attempt.userAgent,
+                    target: attempt.target,
+                    source: attempt.source,
+                    proxySources: attempt.proxySources,
+                    application: currentApplication.name,
+                    identifier: attempt.identifier,
+                    at: attempt.at,
+                });
+            }
+
+            res.agent.add('attempts', results);
             res.agent.add('pages', Math.ceil(pages));
         } catch (err) {
 
