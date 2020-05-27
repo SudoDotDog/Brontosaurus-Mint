@@ -4,7 +4,7 @@
  * @description Fetch
  */
 
-import { AccountController, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, AttemptController, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -57,22 +57,28 @@ export class FetchAccountRoute extends BrontosaurusRoute {
             const accounts: IAccountModel[] = await AccountController.getSelectedAccountsByPage(pageLimit, Math.floor(page), keyword);
 
             const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(accounts.map((each) => each.namespace));
+            const result: any[] = [];
 
-            const parsed = accounts.map((account: IAccountModel) => ({
-                active: account.active,
-                username: account.username,
-                namespace: namespaceMap.get(account.namespace.toHexString())?.namespace,
-                displayName: account.displayName,
-                email: account.email,
-                phone: account.phone,
-                twoFA: Boolean(account.twoFA),
-                groups: account.groups.length,
-                decorators: account.decorators.length,
-                tags: account.tags.length,
-                infos: account.getInfoRecords(),
-            }));
+            for (const account of accounts) {
 
-            res.agent.add('accounts', parsed);
+                const attempts: number = await AttemptController.getAttemptCountByAccount(account._id);
+                result.push({
+                    active: account.active,
+                    attempts,
+                    username: account.username,
+                    namespace: namespaceMap.get(account.namespace.toHexString())?.namespace,
+                    displayName: account.displayName,
+                    email: account.email,
+                    phone: account.phone,
+                    twoFA: Boolean(account.twoFA),
+                    groups: account.groups.length,
+                    decorators: account.decorators.length,
+                    tags: account.tags.length,
+                    infos: account.getInfoRecords(),
+                });
+            }
+
+            res.agent.add('accounts', result);
             res.agent.add('pages', Math.ceil(pages));
         } catch (err) {
 
