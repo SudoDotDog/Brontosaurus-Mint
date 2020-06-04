@@ -69,10 +69,10 @@
   resolved "https://registry.yarnpkg.com/@sudoo/extract/-/extract-1.4.2.tgz#94a27ddb6be9bd7c2c88a8f29f5472322351531d"
   integrity sha512-KwxuMn1evnzStz+N6TMCkTGoz0PP1UM9tAxltoBajDGiENobbxrmUuBdNV+8qNpQ0Tlhb+vdQKi7+HAWdKVMEA==
 
-"@sudoo/io@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@sudoo/io/-/io-1.7.0.tgz#80245407254634430939c881d63d8b9cc5f829c9"
-  integrity sha512-/nup9wyKqwPtNS/KX1HeBOnrLWYtGfHmDBCtpUYfe3V6n9oCvwddiUzLzJWXOB/ZhwdphkJGuuMvjhYBnRFuNQ==
+"@sudoo/io@^1.7.0", "@sudoo/io@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@sudoo/io/-/io-1.8.0.tgz#bc57ae7ed0d76797415c1aab9cc7ea7857c3e46e"
+  integrity sha512-Gvfx9SnCiZSQO6F0gIZzNMSjJWqr/zWfofJIa0TOc/OIdNgQ9wGyS69wWFXgdtQVvWNXYDjw+efwZmlH2i9VrA==
   dependencies:
     "@sudoo/bark" "^2.7.2"
     connor "^2.7.0"
