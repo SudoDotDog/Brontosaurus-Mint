@@ -62,6 +62,7 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
                 key: application.key,
                 expire: application.expire,
                 groups: applicationGroups,
+                redirection: application.redirection,
                 requires: applicationRequires,
                 green: application.green,
                 greenAccess: application.greenAccess,

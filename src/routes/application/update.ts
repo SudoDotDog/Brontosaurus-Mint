@@ -4,7 +4,7 @@
  * @description Update
  */
 
-import { ApplicationController, IApplicationModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { ApplicationController, ApplicationRedirection, IApplicationModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -15,17 +15,21 @@ import { basicHook } from "../../handlers/hook";
 import { Throwable_GetGroupsByNames } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 
+export type ApplicationUpdatePattern = Partial<{
+
+    readonly avatar: string;
+    readonly favicon: string;
+    readonly name: string;
+    readonly expire: number;
+    readonly groups: string[];
+    readonly redirection: ApplicationRedirection[];
+    readonly requires: string[];
+}>;
+
 export type UpdateApplicationBody = {
 
     readonly key: string;
-    readonly application: Partial<{
-        readonly avatar: string;
-        readonly favicon: string;
-        readonly name: string;
-        readonly expire: number;
-        readonly groups: string[];
-        readonly requires: string[];
-    }>;
+    readonly application: ApplicationUpdatePattern;
 };
 
 export class UpdateApplicationRoute extends BrontosaurusRoute {
@@ -60,14 +64,7 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.APPLICATION_KEY_NOT_FOUND, key);
             }
 
-            const update: Partial<{
-                avatar: string;
-                favicon: string;
-                name: string;
-                expire: number;
-                groups: string[];
-                requires: string[];
-            }> = body.direct('application');
+            const update: ApplicationUpdatePattern = body.direct('application');
 
             if (update.groups && Array.isArray(update.groups)) {
 
@@ -75,6 +72,14 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 const idsGroups: ObjectID[] = applicationGroups.map((group: IGroupModel) => group._id);
 
                 application.groups = idsGroups;
+            }
+
+            if (update.redirection && Array.isArray(update.redirection)) {
+
+                application.redirection = update.redirection.map((each: ApplicationRedirection) => ({
+                    name: each.name,
+                    regexp: each.regexp,
+                }));
             }
 
             if (update.requires && Array.isArray(update.requires)) {
