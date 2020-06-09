@@ -22,7 +22,7 @@ export type ApplicationUpdatePattern = Partial<{
     readonly name: string;
     readonly expire: number;
     readonly groups: string[];
-    readonly redirection: ApplicationRedirection[];
+    readonly redirections: ApplicationRedirection[];
     readonly requires: string[];
 }>;
 
@@ -74,9 +74,9 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 application.groups = idsGroups;
             }
 
-            if (update.redirection && Array.isArray(update.redirection)) {
+            if (update.redirections && Array.isArray(update.redirections)) {
 
-                application.redirection = update.redirection.map((each: ApplicationRedirection) => ({
+                application.redirections = update.redirections.map((each: ApplicationRedirection) => ({
                     name: each.name,
                     regexp: each.regexp,
                 }));

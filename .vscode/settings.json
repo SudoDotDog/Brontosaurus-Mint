@@ -17,6 +17,7 @@
         "mongod",
         "mongodb",
         "qrcode",
+        "redirections",
         "registeree",
         "rpnadmin",
         "setx",
