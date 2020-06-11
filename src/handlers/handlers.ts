@@ -62,10 +62,16 @@ export const createGroupVerifyHandler = (groups: string[]): SudooExpressHandler 
                 return;
             }
 
-            const account: IAccountModel = await AccountController.getAccountByUsernameAndNamespace(
+            const account: IAccountModel | null = await AccountController.getAccountByUsernameAndNamespace(
                 tokenBody.username,
                 namespace._id,
             );
+
+            if (!account) {
+                req.valid = false;
+                return;
+            }
+
             const accountGroups: string[] = await Throwable_MapGroups(account.groups);
 
             if (!compareGroups(accountGroups, groups)) {
