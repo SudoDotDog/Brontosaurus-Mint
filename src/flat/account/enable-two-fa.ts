@@ -29,7 +29,7 @@ export class FlatEnableTwoFARoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/flat/account/enable-2fa - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/flat/account/enable-2fa - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL], this._error), '/flat/account/enable-2fa - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL]), '/flat/account/enable-2fa - GroupVerifyHandler'),
         basicHook.wrap(this._flatEnableTwoFAHandler.bind(this), '/flat/account/enable-2fa - Enable Two FA'),
     ];
 

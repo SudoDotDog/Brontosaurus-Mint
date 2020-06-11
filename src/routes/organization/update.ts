@@ -29,7 +29,7 @@ export class UpdateOrganizationRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/organization/update - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/update - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/organization/update - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/organization/update - GroupVerifyHandler'),
         basicHook.wrap(this._updateOrganizationHandler.bind(this), '/organization/update - Update Organization'),
     ];
 

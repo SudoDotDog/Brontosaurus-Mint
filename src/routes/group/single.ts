@@ -13,6 +13,7 @@ import { getNamespaceMapByNamespaceIds } from "../../data/namespace";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+// eslint-disable-next-line camelcase
 import { Throwable_MapDecorators } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 
@@ -29,7 +30,7 @@ export class SingleGroupRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/group/single - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/group/single - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/group/single - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/group/single - GroupVerifyHandler'),
         basicHook.wrap(this._singleGroupHandler.bind(this), '/group/single - Group Single'),
     ];
 

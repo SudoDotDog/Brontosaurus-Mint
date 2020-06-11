@@ -12,6 +12,7 @@ import { ObjectID } from "bson";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+// eslint-disable-next-line camelcase
 import { Throwable_GetGroupsByNames } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 
@@ -40,7 +41,7 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/application/update - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/application/update - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/application/update - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/application/update - GroupVerifyHandler'),
         basicHook.wrap(this._updateApplicationHandler.bind(this), '/application/update - Update'),
     ];
 

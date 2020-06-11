@@ -4,17 +4,16 @@
  * @description Authenticate
  */
 
-import { AccountController, ApplicationController, IAccountModel, IApplicationModel, INTERNAL_APPLICATION } from "@brontosaurus/db";
+import { AccountController, ApplicationController, IAccountModel, IApplicationModel, INamespaceModel, INTERNAL_APPLICATION, NamespaceController } from "@brontosaurus/db";
 import { IBrontosaurusBody } from "@brontosaurus/definition";
 import { SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeValue } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
-import { Connor, ErrorCreationFunction } from "connor";
+// eslint-disable-next-line camelcase
 import { compareGroups, getPrincipleFromToken, parseBearerAuthorization, Throwable_GetBody, Throwable_MapGroups, Throwable_ValidateToken } from "../util/auth";
-import { ERROR_CODE, MODULE_NAME } from "../util/error";
 
 export const createTokenHandler = (): SudooExpressHandler =>
-    async (req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> => {
+    (req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): void => {
 
         const authHeader: string | undefined = req.header('authorization') || req.header('Authorization');
         const auth: string | null = parseBearerAuthorization(authHeader);
@@ -47,26 +46,33 @@ export const createAuthenticateHandler = (): SudooExpressHandler =>
         }
     };
 
-export const createGroupVerifyHandler = (groups: string[], error: ErrorCreationFunction): SudooExpressHandler =>
+export const createGroupVerifyHandler = (groups: string[]): SudooExpressHandler =>
     async (req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> => {
 
         const token: SafeValue<string> = Safe.value(req.info.token);
-        const createError: ErrorCreationFunction = Connor.getErrorCreator(MODULE_NAME);
 
         try {
 
             const tokenBody: IBrontosaurusBody = Throwable_GetBody(token.safe());
 
-            // TODO
-            // const account: IAccountModel = Safe.value(await AccountController.getAccountByUsername(
-            //     Safe.value(tokenBody.username, createError(ERROR_CODE.TOKEN_DOES_NOT_CONTAIN_INFORMATION, 'username')).safe()),
-            // ).safe();
-            // const accountGroups: string[] = await Throwable_MapGroups(account.groups);
+            const namespace: INamespaceModel | null = await NamespaceController.getNamespaceByNamespace(tokenBody.namespace);
 
-            // if (!compareGroups(accountGroups, groups)) {
+            if (!namespace) {
+                req.valid = false;
+                return;
+            }
 
-            //     throw error(ERROR_CODE.NOT_ENOUGH_PERMISSION, groups.toString());
-            // }
+            const account: IAccountModel = await AccountController.getAccountByUsernameAndNamespace(
+                tokenBody.username,
+                namespace._id,
+            );
+            const accountGroups: string[] = await Throwable_MapGroups(account.groups);
+
+            if (!compareGroups(accountGroups, groups)) {
+                req.valid = false;
+                return;
+            }
+
             req.valid = true;
         } catch (err) {
 

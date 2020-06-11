@@ -4,7 +4,7 @@
  * @description Generate Temporary Password
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
+import { IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -28,7 +28,7 @@ export class AccountGenerateTemporaryPasswordRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/account/generate-temporary-password - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/generate-temporary-password - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/generate-temporary-password - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/generate-temporary-password - GroupVerifyHandler'),
         basicHook.wrap(this._temporaryPasswordHandler.bind(this), '/account/generate-temporary-password - Generate Temporary Password'),
     ];
 

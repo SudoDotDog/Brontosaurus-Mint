@@ -27,7 +27,7 @@ export class CreateDecoratorRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/decorator/create - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/decorator/create - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/decorator/create - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/decorator/create - GroupVerifyHandler'),
         basicHook.wrap(this._decoratorCreateHandler.bind(this), '/decorator/create - Decorator Create'),
     ];
 

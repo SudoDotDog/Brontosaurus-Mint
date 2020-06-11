@@ -4,5 +4,8 @@
     },
     "extends": [
         "@sudoo/eslint-config"
-    ]
+    ],
+    "rules": {
+        "no-invalid-this": "off"
+    }
 }

@@ -11,6 +11,7 @@ import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { basicHook } from "../../handlers/hook";
+// eslint-disable-next-line camelcase
 import { Throwable_MapGroups } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 
@@ -27,7 +28,7 @@ export class SingleDecoratorRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/decorator/single - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/decorator/single - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/decorator/single - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/decorator/single - GroupVerifyHandler'),
         basicHook.wrap(this._singleDecoratorHandler.bind(this), '/decorator/single - Decorator Single'),
     ];
 

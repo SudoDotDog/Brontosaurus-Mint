@@ -27,7 +27,7 @@ export class CreateGroupRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/group/create - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/group/create - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/group/create - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/group/create - GroupVerifyHandler'),
         basicHook.wrap(this._groupCreateHandler.bind(this), '/group/create - Create'),
     ];
 

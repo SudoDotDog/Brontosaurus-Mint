@@ -26,7 +26,7 @@ export class MailerTransportPreferenceRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/preference/mailer-transport - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/preference/mailer-transport - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/preference/mailer-transport - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/preference/mailer-transport - GroupVerifyHandler'),
         basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/mailer-transport - Global Mailer Transport'),
     ];
 

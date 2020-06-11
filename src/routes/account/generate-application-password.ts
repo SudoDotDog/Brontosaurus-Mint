@@ -4,7 +4,7 @@
  * @description Generate Application Password
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
+import { IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -28,7 +28,7 @@ export class AccountGenerateApplicationPasswordRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/account/generate-application-password - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/generate-application-password - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/generate-application-password - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/generate-application-password - GroupVerifyHandler'),
         basicHook.wrap(this._applicationPasswordHandler.bind(this), '/account/generate-application-password - Generate Application Password'),
     ];
 

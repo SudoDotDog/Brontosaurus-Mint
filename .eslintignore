@@ -5,3 +5,5 @@ node_modules
 app
 coverage
 
+# Mock
+test/mock

@@ -30,7 +30,7 @@ export class FetchAccountAttemptsRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/account/attempts - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/attempts - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/attempts - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/attempts - GroupVerifyHandler'),
         basicHook.wrap(this._fetchAccountAttemptsHandler.bind(this), '/account/attempts - Account Attempts'),
     ];
 

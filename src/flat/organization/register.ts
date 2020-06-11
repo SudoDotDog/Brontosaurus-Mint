@@ -35,7 +35,7 @@ export class FlatOrganizationRegisterRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/flat/organization/register - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/flat/organization/register - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.ORGANIZATION_CONTROL], this._error), '/flat/organization/register - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.ORGANIZATION_CONTROL]), '/flat/organization/register - GroupVerifyHandler'),
         basicHook.wrap(this._flatRegisterSubOrganizationAccountHandler.bind(this), '/flat/organization/register - Register'),
     ];
 

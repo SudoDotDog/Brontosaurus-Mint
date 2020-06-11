@@ -4,7 +4,7 @@
  * @description Error
  */
 
-import { Connor, Panic } from 'connor';
+import { Connor, Panic, ErrorCreationFunction } from 'connor';
 
 export const MODULE_NAME = 'Brontosaurus-Mint';
 
@@ -143,5 +143,5 @@ export const ERROR_LIST: Record<ERROR_CODE, string> = {
 };
 
 export const panic: Panic<ERROR_CODE> = Panic.withDictionary(MODULE_NAME, ERROR_LIST);
-export const getErrorCreationFunction = () => Connor.getErrorCreator(MODULE_NAME);
+export const getErrorCreationFunction = (): ErrorCreationFunction => Connor.getErrorCreator(MODULE_NAME);
 

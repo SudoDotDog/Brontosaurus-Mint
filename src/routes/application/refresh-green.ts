@@ -26,7 +26,7 @@ export class RefreshGreenApplicationRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/application/refresh-green - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/application/refresh-green - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/application/refresh-green - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/application/refresh-green - GroupVerifyHandler'),
         basicHook.wrap(this._refreshGreenApplicationHandler.bind(this), '/application/refresh-green - Refresh Green'),
     ];
 

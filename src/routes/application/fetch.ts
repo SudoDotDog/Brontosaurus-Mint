@@ -28,7 +28,7 @@ export class FetchApplicationRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/application/fetch - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/application/fetch - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/application/fetch - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/application/fetch - GroupVerifyHandler'),
         basicHook.wrap(this._fetchApplicationHandler.bind(this), '/application/fetch - All'),
     ];
 

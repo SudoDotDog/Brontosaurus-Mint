@@ -29,7 +29,7 @@ export class SetOwnerRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/organization/set-owner - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/set-owner - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/organization/set-owner - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/organization/set-owner - GroupVerifyHandler'),
         basicHook.wrap(this._setOwnerHandler.bind(this), '/organization/set-owner - Set Owner'),
     ];
 

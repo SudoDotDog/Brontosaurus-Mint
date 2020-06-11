@@ -20,7 +20,7 @@ export class AllGroupRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/group/all - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/group/all - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/group/all - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/group/all - GroupVerifyHandler'),
         basicHook.wrap(this._allGroupHandler.bind(this), '/group/all - All Groups'),
     ];
 

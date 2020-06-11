@@ -45,7 +45,7 @@ export const readConfigEnvironment = (): BrontosaurusConfig => {
     throw new Error('Never');
 };
 
-export const getEnvGettingText = () => {
+export const getEnvGettingText = (): string => {
 
     return `<script>if(!window.env){window.env={}};window.env.PORTAL_PATH="${process.env.PORTAL_PATH}"</script>`;
 };

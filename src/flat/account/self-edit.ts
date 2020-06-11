@@ -36,7 +36,7 @@ export class FlatSelfEditRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/flat/account/edit/self - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/flat/account/edit/self - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL], this._error), '/flat/account/edit/self - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL]), '/flat/account/edit/self - GroupVerifyHandler'),
         basicHook.wrap(this._flatSelfEditHandler.bind(this), '/flat/account/edit/self - Self Edit'),
     ];
 

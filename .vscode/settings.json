@@ -5,6 +5,7 @@
         "Inplode",
         "WMXPY",
         "bson",
+        "camelcase",
         "codecov",
         "connor",
         "dbpath",

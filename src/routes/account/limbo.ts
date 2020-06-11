@@ -4,7 +4,7 @@
  * @description Limbo
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
+import { IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -28,7 +28,7 @@ export class AccountLimboRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/account/limbo - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/limbo - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/limbo - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/limbo - GroupVerifyHandler'),
         basicHook.wrap(this._limboHandler.bind(this), '/account/limbo - Limbo'),
     ];
 

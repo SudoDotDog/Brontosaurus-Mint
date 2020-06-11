@@ -20,7 +20,7 @@ export class InfosPreferenceRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/preference/infos - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/preference/infos - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/preference/infos - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/preference/infos - GroupVerifyHandler'),
         basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/infos - Infos'),
     ];
 

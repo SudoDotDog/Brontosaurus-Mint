@@ -29,7 +29,7 @@ export class AccountSuspendTemporaryPasswordRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/account/suspend-temporary-password - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/suspend-temporary-password - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/suspend-temporary-password - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/suspend-temporary-password - GroupVerifyHandler'),
         basicHook.wrap(this._temporaryPasswordHandler.bind(this), '/account/suspend-temporary-password - Suspend Temporary Password'),
     ];
 

@@ -20,7 +20,7 @@ export class ReadMailerSourcePreferenceRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/preference/read/mailer-source - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/preference/read/mailer-source - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/preference/read/mailer-source - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/preference/read/mailer-source - GroupVerifyHandler'),
         basicHook.wrap(this._preferenceMailerSourceHandler.bind(this), '/preference/read/mailer-source - Read Mailer Source'),
     ];
 

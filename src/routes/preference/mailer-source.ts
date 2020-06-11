@@ -6,7 +6,6 @@
 
 import { INTERNAL_USER_GROUP, PreferenceController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
@@ -27,7 +26,7 @@ export class MailerSourcePreferenceRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/preference/mailer-source - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/preference/mailer-source - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/preference/mailer-source - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/preference/mailer-source - GroupVerifyHandler'),
         basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/mailer-source - Global Mailer Source'),
     ];
 

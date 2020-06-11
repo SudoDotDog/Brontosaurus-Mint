@@ -29,7 +29,7 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/organization/fetch - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/fetch - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/organization/fetch - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/organization/fetch - GroupVerifyHandler'),
         basicHook.wrap(this._fetchOrganizationHandler.bind(this), '/organization/fetch - Fetch'),
     ];
 

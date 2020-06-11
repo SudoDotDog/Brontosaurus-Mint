@@ -26,7 +26,7 @@ export class OrganizationActivateRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         autoHook.wrap(createTokenHandler(), 'TokenHandler'),
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
-        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), 'GroupVerifyHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
         autoHook.wrap(this._activateOrganizationHandler.bind(this), 'Activate'),
     ];
 

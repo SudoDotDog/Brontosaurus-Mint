@@ -41,7 +41,7 @@ export class AdminEditRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/account/edit/admin - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/edit/admin - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/edit/admin - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/edit/admin - GroupVerifyHandler'),
         basicHook.wrap(this._adminEditHandler.bind(this), '/account/edit/admin - Admin Edit'),
     ];
 

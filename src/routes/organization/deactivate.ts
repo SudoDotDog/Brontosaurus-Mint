@@ -26,7 +26,7 @@ export class OrganizationDeactivateRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/organization/deactivate - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/deactivate - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/organization/deactivate - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/organization/deactivate - GroupVerifyHandler'),
         basicHook.wrap(this._deactivateOrganizationHandler.bind(this), '/organization/deactivate - Deactivate'),
     ];
 

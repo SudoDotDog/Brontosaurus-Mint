@@ -42,7 +42,7 @@ export class RegisterRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/account/register - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/register - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/register - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/register - GroupVerifyHandler'),
         basicHook.wrap(this._registerHandler.bind(this), '/account/register - Register'),
     ];
 

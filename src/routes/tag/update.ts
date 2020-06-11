@@ -27,7 +27,7 @@ export class UpdateTagRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/tag/update - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/tag/update - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/tag/update - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/tag/update - GroupVerifyHandler'),
         basicHook.wrap(this._updateTagHandler.bind(this), '/tag/update - Update Tag'),
     ];
 

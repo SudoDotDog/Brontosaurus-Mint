@@ -37,7 +37,7 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/organization/inplode - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/organization/inplode - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/organization/inplode - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/organization/inplode - GroupVerifyHandler'),
         basicHook.wrap(this._inplodeOrganizationHandler.bind(this), '/organization/inplode - Inplode'),
     ];
 

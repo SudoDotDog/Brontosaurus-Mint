@@ -27,7 +27,7 @@ export class ResetAttemptRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/account/reset-attempt - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/reset-attempt - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/reset-attempt - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/reset-attempt - GroupVerifyHandler'),
         basicHook.wrap(this._resetAttemptHandler.bind(this), '/account/reset-attempt - Reset Attempt'),
     ];
 

@@ -20,7 +20,7 @@ export class ReadGlobalPreferenceRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/preference/read/global - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/preference/read/global - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/preference/read/global - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/preference/read/global - GroupVerifyHandler'),
         basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/read/global - Read Global'),
     ];
 

@@ -29,7 +29,7 @@ export class AccountSuspendApplicationPasswordRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/account/suspend-application-password - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/suspend-application-password - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/suspend-application-password - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/suspend-application-password - GroupVerifyHandler'),
         basicHook.wrap(this._applicationPasswordHandler.bind(this), '/account/suspend-application-password - Suspend Application Password'),
     ];
 

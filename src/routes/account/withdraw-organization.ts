@@ -27,7 +27,7 @@ export class WithdrawOrganizationRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/account/withdraw-organization - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/withdraw-organization - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/withdraw-organization - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/withdraw-organization - GroupVerifyHandler'),
         basicHook.wrap(this._withdrawOrganizationHandler.bind(this), '/account/withdraw-organization - Withdraw Organization'),
     ];
 

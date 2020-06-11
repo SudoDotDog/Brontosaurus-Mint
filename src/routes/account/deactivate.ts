@@ -27,7 +27,7 @@ export class AccountDeactivateRoute extends BrontosaurusRoute {
     public readonly groups: SudooExpressHandler[] = [
         basicHook.wrap(createTokenHandler(), '/account/deactivate - TokenHandler'),
         basicHook.wrap(createAuthenticateHandler(), '/account/deactivate - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN], this._error), '/account/deactivate - GroupVerifyHandler'),
+        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/deactivate - GroupVerifyHandler'),
         basicHook.wrap(this._deactivateHandler.bind(this), '/account/deactivate - Deactivate'),
     ];
 
