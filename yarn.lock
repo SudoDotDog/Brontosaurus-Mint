@@ -58,15 +58,15 @@
   resolved "https://registry.yarnpkg.com/@sudoo/bark/-/bark-2.7.2.tgz#961c4b482dbc00d7c762607c63f7a3eaa8f8811e"
   integrity sha512-COaH8iYTyutU0bgqhklIQShops+NYHRlCb+XEXkMimlkQuiw2dUY6yATSyiq89vIy74W39FAs/FgHAG4+aJVKA==
 
-"@sudoo/eslint-config-react@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@sudoo/eslint-config-react/-/eslint-config-react-1.1.0.tgz#f38cd4884d897e12b9ac682f43a19b1bc080806d"
-  integrity sha512-CmQpI5iRwM1P3tYz9XALfmvbdCZJA/S+/owvcVyPfOyJiXj/cSNoOulmAMZ2dxeVqwIhQuKGdtVGTxdcwnXd4Q==
+"@sudoo/eslint-config-react@1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@sudoo/eslint-config-react/-/eslint-config-react-1.2.0.tgz#a27866129ffa6dcc8b3d0af4c19cead9d3d981b1"
+  integrity sha512-vANqODO+N0X4IvjP5s17X+PxuZyNahzgcwPtp9kWZJ7gWlyXftuKKfSc6oaaxgClCmfYH9in3flwk2CML0K6Nw==
 
-"@sudoo/eslint-config@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@sudoo/eslint-config/-/eslint-config-1.1.0.tgz#b326166c29cf71382a84ee6381cc38d867431a9c"
-  integrity sha512-gfr8OYglp8HKTYHx0jvwSWRxtEoRIjSa8Ud58kORU428vkCwT2pMjUcwn5j4X2RVpa0EOv43n0WQ7PRTT/jtlg==
+"@sudoo/eslint-config@1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@sudoo/eslint-config/-/eslint-config-1.2.0.tgz#f33e5f148b35dce99e99aafaaddfc92d11d118a6"
+  integrity sha512-YcPs2ZRTrJPvpDSGBsmOLPIJL5NDg60Fv/avM19DGp/Ze+iBpir5JzmI8DHIlKP50xRxObHjXmwyeUJxHHjovQ==
 
 "@sudoo/express@^2.9.0":
   version "2.9.0"
@@ -133,13 +133,13 @@
     "@types/mongodb" "3.5.18"
     "@types/mongoose" "5.7.21"
 
-"@sudoo/triforce@^2.7.1":
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/@sudoo/triforce/-/triforce-2.7.1.tgz#80b75af8d2275dbe05bd7f51d6e0c948390d1258"
-  integrity sha512-XPiK4euNfkdTRv0cvwrzvCsP7PfrxZUmaqwnlTFbepqBdbf/7EnjAtq6PWc3tihqm1ZgNGsojrVhdBSmkZDwUA==
+"@sudoo/triforce@^2.7.2":
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/@sudoo/triforce/-/triforce-2.7.2.tgz#a1a47718fdfa6ab0c28923d2b5c893d9caee1e81"
+  integrity sha512-Zlm8q48/DhFT2vHwuT9NhtxxgfHp5qkz8Baqqjav/JnXo9SPZJ9QMv4PnDLzjJ7RdrFENKzm+YlkmWcqoEFHMg==
   dependencies:
-    "@sudoo/eslint-config" "1.1.0"
-    "@sudoo/eslint-config-react" "1.1.0"
+    "@sudoo/eslint-config" "1.2.0"
+    "@sudoo/eslint-config-react" "1.2.0"
     "@sudoo/mocha-config" "1.0.0"
     "@sudoo/mocha-config-react" "1.1.0"
     "@types/chai" "4.2.11"
