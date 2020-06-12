@@ -63,7 +63,6 @@ export const getPrincipleFromToken = (tokenString: string): SafeToken => {
 
 export const parseBearerAuthorization = (auth: string | undefined): string | null => {
 
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     if (!auth || auth.length <= 7) {
         return null;
     }
