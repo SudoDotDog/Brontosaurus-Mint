@@ -56,11 +56,18 @@ export class FetchApplicationRoute extends BrontosaurusRoute {
             const applications: IApplicationModel[] = await ApplicationController.getSelectedActiveApplicationsByPage(pageLimit, Math.floor(page), keyword);
 
             const parsed = applications.map((application: IApplicationModel) => ({
-                expire: application.expire,
-                key: application.key,
                 name: application.name,
+                key: application.key,
+
+                expire: application.expire,
                 greenAccess: application.greenAccess,
                 portalAccess: application.portalAccess,
+
+                redirections: application.redirections,
+                iFrameProtocol: application.iFrameProtocol,
+                postProtocol: application.postProtocol,
+                alertProtocol: application.alertProtocol,
+                noneProtocol: application.noneProtocol,
             }));
 
             res.agent.add('applications', parsed);

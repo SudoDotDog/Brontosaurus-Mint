@@ -57,18 +57,25 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
             const applicationRequires: string[] = await Throwable_MapGroups(application.requires);
 
             res.agent.add('application', {
-                avatar: application.avatar,
-                favicon: application.favicon,
                 name: application.name,
                 key: application.key,
+
+                avatar: application.avatar,
+                favicon: application.favicon,
                 expire: application.expire,
                 groups: applicationGroups,
+
                 redirections: application.redirections,
-                requires: applicationRequires,
+                iFrameProtocol: application.iFrameProtocol,
+                postProtocol: application.postProtocol,
+                alertProtocol: application.alertProtocol,
+                noneProtocol: application.noneProtocol,
+
                 green: application.green,
                 greenAccess: application.greenAccess,
                 portalAccess: application.portalAccess,
                 publicKey: application.publicKey,
+                requires: applicationRequires,
             });
         } catch (err) {
 

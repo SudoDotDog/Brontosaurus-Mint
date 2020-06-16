@@ -24,6 +24,10 @@ export type ApplicationUpdatePattern = Partial<{
     readonly expire: number;
     readonly groups: string[];
     readonly redirections: ApplicationRedirection[];
+    readonly iFrameProtocol: boolean;
+    readonly postProtocol: boolean;
+    readonly alertProtocol: boolean;
+    readonly noneProtocol: boolean;
     readonly requires: string[];
 }>;
 
@@ -102,6 +106,20 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
             }
             if (update.favicon && typeof update.favicon === 'string') {
                 application.favicon = update.favicon;
+            }
+
+
+            if (typeof update.iFrameProtocol === 'boolean') {
+                application.iFrameProtocol = update.iFrameProtocol;
+            }
+            if (typeof update.postProtocol === 'boolean') {
+                application.postProtocol = update.postProtocol;
+            }
+            if (typeof update.alertProtocol === 'boolean') {
+                application.alertProtocol = update.alertProtocol;
+            }
+            if (typeof update.noneProtocol === 'boolean') {
+                application.noneProtocol = update.noneProtocol;
             }
 
             await application.save();
