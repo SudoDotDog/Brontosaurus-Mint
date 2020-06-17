@@ -108,7 +108,6 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 application.favicon = update.favicon;
             }
 
-
             if (typeof update.iFrameProtocol === 'boolean') {
                 application.iFrameProtocol = update.iFrameProtocol;
             }

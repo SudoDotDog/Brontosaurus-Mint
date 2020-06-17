@@ -15,6 +15,7 @@
         "ifeq",
         "jsonify",
         "lockfile",
+        "mocharc",
         "mongod",
         "mongodb",
         "qrcode",
