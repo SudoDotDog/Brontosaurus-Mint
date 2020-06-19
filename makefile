@@ -49,10 +49,6 @@ lint-fix:
 	$(eslint) . --ext .ts,.tsx \
 	--config ./typescript/.eslintrc.json --fix
 
-lint-fix:
-	@echo "[INFO] Linting and Fixing"
-	@$(eslint) . --ext .ts,.tsx --config ./typescript/.eslintrc.json --fix
-
 install:
 	@echo "[INFO] Installing dev Dependencies"
 	@yarn install --production=false
