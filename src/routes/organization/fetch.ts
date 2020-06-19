@@ -73,6 +73,7 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
                     active: organization.active,
                     name: organization.name,
                     owner: ownerUser.username,
+                    ownerNamespace: ownerUser.namespace,
                     ownerActive: ownerUser.active,
                     ownerDisplayName: ownerUser.displayName,
                     decorators: organization.decorators.length,
