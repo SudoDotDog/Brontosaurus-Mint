@@ -4,7 +4,7 @@
  * @description Create
  */
 
-import { AccountController, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { AccountController, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, NamespaceCacheAgent, OrganizationController } from "@brontosaurus/db";
 import { _Mutate } from "@sudoo/bark/mutate";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
@@ -56,6 +56,8 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
             const pages: number = await OrganizationController.getSelectedOrganizationPages(pageLimit, keyword);
             const organizations: IOrganizationModel[] = await OrganizationController.getSelectedOrganizationsByPage(pageLimit, Math.floor(page), keyword);
 
+            const namespaceAgent: NamespaceCacheAgent = NamespaceCacheAgent.create();
+
             const parsed: Array<{
                 name: string;
                 owner: string;
@@ -69,11 +71,17 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
                     throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, organization.owner.toHexString());
                 }
 
+                const ownerNamespace: INamespaceModel | null = await namespaceAgent.getNamespace(ownerUser.namespace);
+
+                if (!ownerNamespace) {
+                    throw this._error(ERROR_CODE.NAMESPACE_NOT_FOUND, ownerUser.namespace.toHexString());
+                }
+
                 return {
                     active: organization.active,
                     name: organization.name,
                     owner: ownerUser.username,
-                    ownerNamespace: ownerUser.namespace,
+                    ownerNamespace: ownerNamespace.namespace,
                     ownerActive: ownerUser.active,
                     ownerDisplayName: ownerUser.displayName,
                     decorators: organization.decorators.length,
