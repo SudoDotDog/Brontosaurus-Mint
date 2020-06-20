@@ -14,7 +14,10 @@ import { MintRoutes } from './routes/import';
 import { BrontosaurusConfig, getEnvGettingText, isDevelopment, readConfigEnvironment } from './util/conf';
 import { getVersion } from './util/version';
 
-const setting: SudooExpressApplication = SudooExpressApplication.create('Brontosaurus-Mint', getVersion());
+const setting: SudooExpressApplication = SudooExpressApplication.create(
+    'Brontosaurus-Mint',
+    getVersion(),
+);
 
 if (isDevelopment()) {
     setting.allowCrossOrigin();
