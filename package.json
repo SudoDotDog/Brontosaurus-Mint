@@ -26,7 +26,7 @@
     "@sudoo/magic": "^1.8.0",
     "@sudoo/pattern": "^1.0.0",
     "@sudoo/random": "^2.1.1",
-    "@sudoo/verify": "^1.13.0",
+    "@sudoo/verify": "^1.14.0",
     "connor": "^2.7.0",
     "qrcode": "^1.4.4"
   },
