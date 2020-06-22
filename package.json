@@ -24,7 +24,7 @@
     "@sudoo/io": "^1.8.0",
     "@sudoo/log": "^1.4.1",
     "@sudoo/magic": "^1.8.0",
-    "@sudoo/pattern": "^1.0.0",
+    "@sudoo/pattern": "^1.1.0",
     "@sudoo/random": "^2.1.1",
     "@sudoo/verify": "^1.13.0",
     "connor": "^2.7.0",
