@@ -22,6 +22,22 @@ export type FetchAccountResetsBody = {
     readonly page: number;
 };
 
+export type AccountResetElement = {
+
+    readonly account: string;
+    readonly succeed: boolean;
+    readonly emailUsed: string;
+    readonly emailExpected: string;
+    readonly platform: string;
+    readonly userAgent: string;
+    readonly target: string;
+    readonly source: string;
+    readonly proxySources: string[];
+    readonly application: string;
+    readonly identifier: string;
+    readonly at: Date;
+};
+
 export class FetchAccountResetsRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/account/resets';
@@ -71,7 +87,7 @@ export class FetchAccountResetsRoute extends BrontosaurusRoute {
             const pages: number = await ResetController.getSelectedAccountResetPages(account._id, pageLimit);
             const resets: IResetModel[] = await ResetController.getResetsByAccountAndPage(account._id, pageLimit, Math.floor(page));
 
-            const results = [];
+            const results: AccountResetElement[] = [];
 
             const applicationAgent: ApplicationCacheAgent = ApplicationCacheAgent.create();
             for (const reset of resets) {
@@ -92,6 +108,7 @@ export class FetchAccountResetsRoute extends BrontosaurusRoute {
                     source: reset.source,
                     proxySources: reset.proxySources,
                     application: currentApplication.name,
+                    identifier: reset.id.toString(),
                     at: reset.at,
                 });
             }

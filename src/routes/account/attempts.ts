@@ -22,6 +22,21 @@ export type FetchAccountAttemptsBody = {
     readonly page: number;
 };
 
+export type AccountAttemptElement = {
+
+    readonly account: string;
+    readonly succeed: boolean;
+    readonly failedReason?: string;
+    readonly platform: string;
+    readonly userAgent: string;
+    readonly target: string;
+    readonly source: string;
+    readonly proxySources: string[];
+    readonly application: string;
+    readonly identifier: string;
+    readonly at: Date;
+};
+
 export class FetchAccountAttemptsRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/account/attempts';
@@ -71,7 +86,7 @@ export class FetchAccountAttemptsRoute extends BrontosaurusRoute {
             const pages: number = await AttemptController.getSelectedAccountAttemptPages(account._id, pageLimit);
             const attempts: IAttemptModel[] = await AttemptController.getAttemptsByAccountAndPage(account._id, pageLimit, Math.floor(page));
 
-            const results = [];
+            const results: AccountAttemptElement[] = [];
 
             const applicationAgent: ApplicationCacheAgent = ApplicationCacheAgent.create();
             for (const attempt of attempts) {

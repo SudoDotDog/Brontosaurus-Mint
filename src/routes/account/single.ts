@@ -93,6 +93,7 @@ export class SingleAccountRoute extends BrontosaurusRoute {
                 email: account.email,
                 phone: account.phone,
                 twoFA: Boolean(account.twoFA),
+                previousPasswords: account.previousPasswords,
                 groups: accountGroups,
                 tags: accountTags,
                 decorators: accountDecorators,

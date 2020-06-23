@@ -71,7 +71,7 @@ export class FlatChangePasswordRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
             }
 
-            account.setPassword(password);
+            account.setPassword(password, 'change');
             account.resetAttempt();
 
             await account.save();
