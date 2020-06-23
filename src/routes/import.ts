@@ -17,6 +17,7 @@ import { RegisterRoute } from './account/register';
 import { RemoveGroupRoute } from './account/remove-group';
 import { RemoveTwoFARoute } from './account/remove-two-fa';
 import { ResetAttemptRoute } from './account/reset-attempt';
+import { FetchAccountResetsRoute } from './account/resets';
 import { SetOrganizationRoute } from './account/set-organization';
 import { SingleAccountRoute } from './account/single';
 import { FetchStandaloneAccountRoute } from './account/standalone';
@@ -131,6 +132,7 @@ export const MintRoutes = [
     new AccountSuspendTemporaryPasswordRoute(),
     new AccountSuspendApplicationPasswordRoute(),
     new FetchAccountAttemptsRoute(),
+    new FetchAccountResetsRoute(),
 
     // Preference
     new GlobalPreferenceRoute(),
