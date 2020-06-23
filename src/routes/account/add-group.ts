@@ -47,11 +47,12 @@ export class AddGroupRoute extends BrontosaurusRoute {
             const groupName: string = body.directEnsure('group');
 
             const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(username, namespace);
-            const group: IGroupModel | null = await GroupController.getGroupByName(groupName);
 
             if (!account) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
             }
+
+            const group: IGroupModel | null = await GroupController.getGroupByName(groupName);
 
             if (!group) {
                 throw this._error(ERROR_CODE.GROUP_NOT_FOUND, groupName);

@@ -23,6 +23,7 @@ import { SingleAccountRoute } from './account/single';
 import { FetchStandaloneAccountRoute } from './account/standalone';
 import { AccountSuspendApplicationPasswordRoute } from './account/suspend-application-password';
 import { AccountSuspendTemporaryPasswordRoute } from './account/suspend-temp-password';
+import { VerifyPreviousPasswordRoute } from './account/verify-previous-password';
 import { WithdrawOrganizationRoute } from './account/withdraw-organization';
 import { CreateApplicationRoute } from './application/create';
 import { FetchApplicationRoute } from './application/fetch';
@@ -133,6 +134,7 @@ export const MintRoutes = [
     new AccountSuspendApplicationPasswordRoute(),
     new FetchAccountAttemptsRoute(),
     new FetchAccountResetsRoute(),
+    new VerifyPreviousPasswordRoute(),
 
     // Preference
     new GlobalPreferenceRoute(),
