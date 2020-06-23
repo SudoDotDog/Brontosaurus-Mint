@@ -10,7 +10,7 @@ import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 
 export type AddGroupBody = {
@@ -26,10 +26,10 @@ export class AddGroupRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/account/add-group - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/account/add-group - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/add-group - GroupVerifyHandler'),
-        basicHook.wrap(this._addGroupHandler.bind(this), '/account/add-group - Add Group'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._addGroupHandler.bind(this), 'Add Group'),
     ];
 
     private async _addGroupHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

@@ -10,7 +10,7 @@ import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 import { SafeToken } from "../../util/token";
 
@@ -26,10 +26,10 @@ export class AccountGenerateApplicationPasswordRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/account/generate-application-password - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/account/generate-application-password - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/generate-application-password - GroupVerifyHandler'),
-        basicHook.wrap(this._applicationPasswordHandler.bind(this), '/account/generate-application-password - Generate Application Password'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._applicationPasswordHandler.bind(this), 'Generate Application Password'),
     ];
 
     private async _applicationPasswordHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

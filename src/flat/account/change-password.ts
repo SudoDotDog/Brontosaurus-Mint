@@ -10,7 +10,7 @@ import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 import { SafeToken } from "../../util/token";
 
@@ -27,10 +27,10 @@ export class FlatChangePasswordRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/flat/account/edit/password - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/flat/account/edit/password - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL]), '/flat/account/edit/password - GroupVerifyHandler'),
-        basicHook.wrap(this._flatChangePasswordHandler.bind(this), '/flat/account/edit/password - Change Password'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._flatChangePasswordHandler.bind(this), 'Change Password'),
     ];
 
     private async _flatChangePasswordHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

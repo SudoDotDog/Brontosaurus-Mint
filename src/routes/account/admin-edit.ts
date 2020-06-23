@@ -11,7 +11,7 @@ import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 import { parseInfo } from "../../util/token";
 
@@ -39,10 +39,10 @@ export class AdminEditRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/account/edit/admin - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/account/edit/admin - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/edit/admin - GroupVerifyHandler'),
-        basicHook.wrap(this._adminEditHandler.bind(this), '/account/edit/admin - Admin Edit'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._adminEditHandler.bind(this), 'Admin Edit'),
     ];
 
     private async _adminEditHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

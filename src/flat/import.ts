@@ -11,18 +11,10 @@ import { FlatOrganizationRegisterRoute } from './organization/register';
 
 export const FlatRoutes = [
 
-    // Application
-
-    // Group
-
-    // Decorator
-
     // Account
     new FlatChangePasswordRoute(),
     new FlatSelfEditRoute(),
     new FlatEnableTwoFARoute(),
-
-    // Preference
 
     // Organization
     new FlatOrganizationRegisterRoute(),

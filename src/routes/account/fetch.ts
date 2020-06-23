@@ -11,7 +11,7 @@ import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { getNamespaceMapByNamespaceIds } from "../../data/namespace";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 import { pageLimit } from "../../util/conf";
 import { ERROR_CODE } from "../../util/error";
 
@@ -27,10 +27,10 @@ export class FetchAccountRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/account/fetch - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/account/fetch - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/fetch - GroupVerifyHandler'),
-        basicHook.wrap(this._fetchAccountHandler.bind(this), '/account/fetch - Fetch'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._fetchAccountHandler.bind(this), 'Fetch Account'),
     ];
 
     private async _fetchAccountHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

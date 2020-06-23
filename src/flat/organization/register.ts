@@ -11,7 +11,7 @@ import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 import { createRandomTempPassword } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 import { jsonifyBasicRecords, SafeToken } from "../../util/token";
@@ -33,10 +33,10 @@ export class FlatOrganizationRegisterRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/flat/organization/register - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/flat/organization/register - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.ORGANIZATION_CONTROL]), '/flat/organization/register - GroupVerifyHandler'),
-        basicHook.wrap(this._flatRegisterSubOrganizationAccountHandler.bind(this), '/flat/organization/register - Register'),
+        autoHook.wrap(createTokenHandler(), '/flat/organization/register - TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), '/flat/organization/register - AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.ORGANIZATION_CONTROL]), '/flat/organization/register - GroupVerifyHandler'),
+        autoHook.wrap(this._flatRegisterSubOrganizationAccountHandler.bind(this), '/flat/organization/register - Register'),
     ];
 
     private async _flatRegisterSubOrganizationAccountHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

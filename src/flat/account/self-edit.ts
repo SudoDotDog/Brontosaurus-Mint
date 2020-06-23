@@ -11,7 +11,7 @@ import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 import { parseInfo, SafeToken } from "../../util/token";
 
@@ -34,10 +34,10 @@ export class FlatSelfEditRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/flat/account/edit/self - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/flat/account/edit/self - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL]), '/flat/account/edit/self - GroupVerifyHandler'),
-        basicHook.wrap(this._flatSelfEditHandler.bind(this), '/flat/account/edit/self - Self Edit'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._flatSelfEditHandler.bind(this), 'Self Edit'),
     ];
 
     private async _flatSelfEditHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

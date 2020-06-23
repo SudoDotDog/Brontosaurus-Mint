@@ -11,7 +11,7 @@ import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import * as QRCode from "qrcode";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 import { SafeToken } from "../../util/token";
 
@@ -27,10 +27,10 @@ export class FlatEnableTwoFARoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/flat/account/enable-2fa - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/flat/account/enable-2fa - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL]), '/flat/account/enable-2fa - GroupVerifyHandler'),
-        basicHook.wrap(this._flatEnableTwoFAHandler.bind(this), '/flat/account/enable-2fa - Enable Two FA'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._flatEnableTwoFAHandler.bind(this), 'Enable Two FA'),
     ];
 
     private async _flatEnableTwoFAHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

@@ -10,7 +10,7 @@ import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 import { pageLimit } from "../../util/conf";
 import { ERROR_CODE, panic } from "../../util/error";
 
@@ -43,10 +43,10 @@ export class FetchAccountAttemptsRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/account/attempts - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/account/attempts - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/account/attempts - GroupVerifyHandler'),
-        basicHook.wrap(this._fetchAccountAttemptsHandler.bind(this), '/account/attempts - Account Attempts'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._fetchAccountAttemptsHandler.bind(this), 'Account Attempts'),
     ];
 
     private async _fetchAccountAttemptsHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
