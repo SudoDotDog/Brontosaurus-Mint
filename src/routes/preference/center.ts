@@ -9,7 +9,7 @@ import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpress
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 
 export class CommandCenterPreferenceRoute extends BrontosaurusRoute {
 
@@ -17,9 +17,9 @@ export class CommandCenterPreferenceRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.GET;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/preference/command-center - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/preference/command-center - AuthenticateHandler'),
-        basicHook.wrap(this._preferenceGlobalHandler.bind(this), '/preference/command-center - Command Center'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(this._preferenceGlobalHandler.bind(this), 'Command Center'),
     ];
 
     private async _preferenceGlobalHandler(_: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

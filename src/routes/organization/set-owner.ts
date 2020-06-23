@@ -11,7 +11,7 @@ import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { ObjectID } from "bson";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 
 export type SetOwnerBody = {
@@ -27,10 +27,10 @@ export class SetOwnerRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/organization/set-owner - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/organization/set-owner - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/organization/set-owner - GroupVerifyHandler'),
-        basicHook.wrap(this._setOwnerHandler.bind(this), '/organization/set-owner - Set Owner'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._setOwnerHandler.bind(this), 'Set Owner'),
     ];
 
     private async _setOwnerHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

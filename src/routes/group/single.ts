@@ -12,7 +12,7 @@ import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { getNamespaceMapByNamespaceIds } from "../../data/namespace";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 // eslint-disable-next-line camelcase
 import { Throwable_MapDecorators } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
@@ -28,10 +28,10 @@ export class SingleGroupRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/group/single - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/group/single - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/group/single - GroupVerifyHandler'),
-        basicHook.wrap(this._singleGroupHandler.bind(this), '/group/single - Group Single'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._singleGroupHandler.bind(this), 'Fetch Single Group'),
     ];
 
     private async _singleGroupHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

@@ -11,7 +11,7 @@ import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { ObjectID } from "bson";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 // eslint-disable-next-line camelcase
 import { Throwable_GetGroupsByNames } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
@@ -43,10 +43,10 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/application/update - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/application/update - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/application/update - GroupVerifyHandler'),
-        basicHook.wrap(this._updateApplicationHandler.bind(this), '/application/update - Update'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._updateApplicationHandler.bind(this), 'Update Application'),
     ];
 
     private async _updateApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

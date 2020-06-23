@@ -9,7 +9,7 @@ import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpress
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
-import { basicHook } from "../../handlers/hook";
+import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE } from "../../util/error";
 
 export class ReadMailerTransportPreferenceRoute extends BrontosaurusRoute {
@@ -18,10 +18,10 @@ export class ReadMailerTransportPreferenceRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.GET;
 
     public readonly groups: SudooExpressHandler[] = [
-        basicHook.wrap(createTokenHandler(), '/preference/read/mailer-transport - TokenHandler'),
-        basicHook.wrap(createAuthenticateHandler(), '/preference/read/mailer-transport - AuthenticateHandler'),
-        basicHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), '/preference/read/mailer-transport - GroupVerifyHandler'),
-        basicHook.wrap(this._preferenceMailerTransportHandler.bind(this), '/preference/read/mailer-transport - Read Mailer Transport'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._preferenceMailerTransportHandler.bind(this), 'Read Mailer Transport'),
     ];
 
     private async _preferenceMailerTransportHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {

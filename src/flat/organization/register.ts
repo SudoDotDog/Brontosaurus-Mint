@@ -33,10 +33,10 @@ export class FlatOrganizationRegisterRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        autoHook.wrap(createTokenHandler(), '/flat/organization/register - TokenHandler'),
-        autoHook.wrap(createAuthenticateHandler(), '/flat/organization/register - AuthenticateHandler'),
-        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.ORGANIZATION_CONTROL]), '/flat/organization/register - GroupVerifyHandler'),
-        autoHook.wrap(this._flatRegisterSubOrganizationAccountHandler.bind(this), '/flat/organization/register - Register'),
+        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
+        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.ORGANIZATION_CONTROL]), 'GroupVerifyHandler'),
+        autoHook.wrap(this._flatRegisterSubOrganizationAccountHandler.bind(this), 'Flat Register'),
     ];
 
     private async _flatRegisterSubOrganizationAccountHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
