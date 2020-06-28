@@ -18,7 +18,7 @@ export const createTokenHandler = (): SudooExpressHandler =>
         const authHeader: string | undefined = req.header('authorization') || req.header('Authorization');
         const auth: string | null = parseBearerAuthorization(authHeader);
 
-        req.info.token = auth;
+        req.infos.token = auth;
 
         next();
     };
@@ -28,7 +28,7 @@ export const createAuthenticateHandler = (): SudooExpressHandler =>
 
         try {
 
-            const token: string = Safe.value(req.info.token).safe();
+            const token: string = Safe.value(req.infos.token).safe();
             const application: IApplicationModel = Safe.value(await ApplicationController.getApplicationByKey(INTERNAL_APPLICATION.RED)).safe();
 
             Throwable_ValidateToken({
@@ -49,7 +49,7 @@ export const createAuthenticateHandler = (): SudooExpressHandler =>
 export const createGroupVerifyHandler = (groups: string[]): SudooExpressHandler =>
     async (req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> => {
 
-        const token: SafeValue<string> = Safe.value(req.info.token);
+        const token: SafeValue<string> = Safe.value(req.infos.token);
 
         try {
 
