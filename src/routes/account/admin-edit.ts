@@ -6,13 +6,15 @@
 
 import { DecoratorController, GroupController, IAccountModel, IDecoratorModel, IGroupModel, INTERNAL_USER_GROUP, ITagModel, MatchController, TagController } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createListPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 import { parseInfo } from "../../util/token";
 
 export type AdminEditBody = {
@@ -33,6 +35,33 @@ export type AdminEditBody = {
     }>;
 };
 
+export const bodyPattern: Pattern = createStrictMapPattern({
+
+    username: createStringPattern(),
+    namespace: createStringPattern(),
+    groups: createListPattern(createStringPattern()),
+    tags: createListPattern(createStringPattern()),
+    decorators: createListPattern(createStringPattern()),
+
+    avatar: createStringPattern({
+        optional: true,
+    }),
+    displayName: createStringPattern({
+        optional: true,
+    }),
+    email: createStringPattern({
+        optional: true,
+    }),
+    phone: createStringPattern({
+        optional: true,
+    }),
+    account: {
+        type: 'any',
+        banishNull: true,
+        banishUndefined: true,
+    },
+});
+
 export class AdminEditRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/account/edit/admin';
@@ -42,6 +71,7 @@ export class AdminEditRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'TokenHandler'),
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._adminEditHandler.bind(this), 'Admin Edit'),
     ];
 
@@ -55,8 +85,11 @@ export class AdminEditRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const username: string = body.directEnsure('username');
-            const namespace: string = body.directEnsure('namespace');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
+
+            if (!verify.succeed) {
+                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
+            }
 
             const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(username, namespace);
 
