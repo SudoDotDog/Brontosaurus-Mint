@@ -27,7 +27,7 @@ export const bodyPattern: Pattern = createStrictMapPattern({
     page: createNumberPattern({
         integer: true,
     }),
-    namespace: createStringPattern(),
+    keyword: createStringPattern(),
 });
 
 export class FetchAccountRoute extends BrontosaurusRoute {
