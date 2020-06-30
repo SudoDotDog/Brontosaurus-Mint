@@ -5,7 +5,7 @@
  */
 
 import { GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
 import { fillStringedResult, StringedResult } from "@sudoo/verify";
@@ -37,6 +37,7 @@ export class AddGroupRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'TokenHandler'),
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._addGroupHandler.bind(this), 'Add Group'),
     ];
 
