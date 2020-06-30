@@ -5,21 +5,30 @@
  */
 
 import { AccountController, AttemptController, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from "@sudoo/extract";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createNumberPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { getNamespaceMapByNamespaceIds } from "../../data/namespace";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 import { pageLimit } from "../../util/conf";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type FetchAccountBody = {
 
     readonly page: number;
     readonly keyword: string;
 };
+
+export const bodyPattern: Pattern = createStrictMapPattern({
+
+    page: createNumberPattern({
+        integer: true,
+    }),
+    namespace: createStringPattern(),
+});
 
 export class FetchAccountRoute extends BrontosaurusRoute {
 
@@ -30,12 +39,13 @@ export class FetchAccountRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'TokenHandler'),
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._fetchAccountHandler.bind(this), 'Fetch Account'),
     ];
 
     private async _fetchAccountHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<FetchAccountBody> = Safe.extract(req.body as FetchAccountBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: FetchAccountBody = req.body;
 
         try {
 
@@ -43,18 +53,22 @@ export class FetchAccountRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const page: number = body.direct('page');
-            if (typeof page !== 'number' || page < 0) {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'page', 'number', (page as any).toString());
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
+
+            if (!verify.succeed) {
+                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            const keyword: string = body.direct('keyword');
-            if (typeof keyword !== 'string') {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
+            if (body.page < 0) {
+                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'page', 'number', body.page.toString());
             }
 
-            const pages: number = await AccountController.getSelectedAccountPages(pageLimit, keyword);
-            const accounts: IAccountModel[] = await AccountController.getSelectedAccountsByPage(pageLimit, Math.floor(page), keyword);
+            const pages: number = await AccountController.getSelectedAccountPages(pageLimit, body.keyword);
+            const accounts: IAccountModel[] = await AccountController.getSelectedAccountsByPage(
+                pageLimit,
+                Math.floor(body.page),
+                body.keyword,
+            );
 
             const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(accounts.map((each) => each.namespace));
             const result: any[] = [];
