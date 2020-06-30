@@ -6,12 +6,13 @@
 
 import { GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type AddGroupBody = {
 
@@ -19,6 +20,13 @@ export type AddGroupBody = {
     readonly namespace: string;
     readonly group: string;
 };
+
+export const bodyPattern: Pattern = createStrictMapPattern({
+
+    username: createStringPattern(),
+    namespace: createStringPattern(),
+    group: createStringPattern(),
+});
 
 export class AddGroupRoute extends BrontosaurusRoute {
 
@@ -34,7 +42,7 @@ export class AddGroupRoute extends BrontosaurusRoute {
 
     private async _addGroupHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<AddGroupBody> = Safe.extract(req.body as AddGroupBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: AddGroupBody = req.body;
 
         try {
 
@@ -42,20 +50,22 @@ export class AddGroupRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const username: string = body.directEnsure('username');
-            const namespace: string = body.directEnsure('namespace');
-            const groupName: string = body.directEnsure('group');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(username, namespace);
-
-            if (!account) {
-                throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
+            if (!verify.succeed) {
+                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            const group: IGroupModel | null = await GroupController.getGroupByName(groupName);
+            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(body.username, body.namespace);
+
+            if (!account) {
+                throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, body.username);
+            }
+
+            const group: IGroupModel | null = await GroupController.getGroupByName(body.group);
 
             if (!group) {
-                throw this._error(ERROR_CODE.GROUP_NOT_FOUND, groupName);
+                throw this._error(ERROR_CODE.GROUP_NOT_FOUND, body.group);
             }
 
             account.addGroup(group._id);
