@@ -47,6 +47,7 @@ import { SingleGroupRoute } from './group/single';
 import { UpdateGroupRoute } from './group/update';
 import { CreateNamespaceRoute } from './namespace/create';
 import { FetchNamespaceRoute } from './namespace/fetch';
+import { NamespaceFetchMemberRoute } from './namespace/member';
 import { SingleNamespaceRoute } from './namespace/single';
 import { UpdateNamespaceRoute } from './namespace/update';
 import { OrganizationActivateRoute } from './organization/activate';
@@ -71,7 +72,7 @@ import { ReadNamesPreferenceRoute } from './preference/read-names';
 import { AllTagRoute } from './tag/all';
 import { CreateTagRoute } from './tag/create';
 import { FetchTagRoute } from './tag/fetch';
-import { TagFetchMemberRoute } from './tag/members';
+import { TagFetchMemberRoute } from './tag/member';
 import { SingleTagRoute } from './tag/single';
 import { UpdateTagRoute } from './tag/update';
 
@@ -118,6 +119,7 @@ export const MintRoutes = [
     new FetchNamespaceRoute(),
     new SingleNamespaceRoute(),
     new UpdateNamespaceRoute(),
+    new NamespaceFetchMemberRoute(),
 
     // Account
     new AddGroupRoute(),
