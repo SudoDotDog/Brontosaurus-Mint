@@ -62,7 +62,7 @@ export class NamespaceFetchMemberRoute extends BrontosaurusRoute {
             const decoded: string = decodeURIComponent(body.namespace);
             const namespace: INamespaceModel | null = await NamespaceController.getNamespaceByNamespace(decoded);
             if (!namespace) {
-                throw this._error(ERROR_CODE.NAMESPACE_NOT_FOUND, body.namespace);
+                throw this._error(ERROR_CODE.NAMESPACE_NOT_FOUND, decoded);
             }
 
             const accounts: IAccount[] = await AccountController.getAccountsByNamespaceAndPageLean(namespace._id, pageLimit, body.page);

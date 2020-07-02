@@ -36,6 +36,7 @@ import { UpdateApplicationRoute } from './application/update';
 import { AllDecoratorRoute } from './decorator/all';
 import { CreateDecoratorRoute } from './decorator/create';
 import { FetchDecoratorRoute } from './decorator/fetch';
+import { DecoratorFetchMemberRoute } from './decorator/member';
 import { SingleDecoratorRoute } from './decorator/single';
 import { UpdateDecoratorRoute } from './decorator/update';
 import { AllGroupRoute } from './group/all';
@@ -113,6 +114,7 @@ export const MintRoutes = [
     new FetchDecoratorRoute(),
     new SingleDecoratorRoute(),
     new UpdateDecoratorRoute(),
+    new DecoratorFetchMemberRoute(),
 
     // Namespace
     new CreateNamespaceRoute(),

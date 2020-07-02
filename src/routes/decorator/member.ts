@@ -1,10 +1,10 @@
 /**
  * @author WMXPY
- * @namespace Brontosaurus_Mint_Routes_Tag
+ * @namespace Brontosaurus_Mint_Routes_Decorator
  * @description Member
  */
 
-import { AccountController, IAccount, INamespaceModel, INTERNAL_USER_GROUP, ITagModel, TagController } from "@brontosaurus/db";
+import { AccountController, DecoratorController, IAccount, IDecoratorModel, INamespaceModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { createNumberPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
@@ -16,24 +16,24 @@ import { autoHook } from "../../handlers/hook";
 import { pageLimit } from "../../util/conf";
 import { ERROR_CODE, panic } from "../../util/error";
 
-export type TagFetchMemberBody = {
+export type DecoratorFetchMemberBody = {
 
-    readonly tag: string;
+    readonly decorator: string;
     readonly page: number;
 };
 
 export const bodyPattern: Pattern = createStrictMapPattern({
 
-    tag: createStringPattern(),
+    decorator: createStringPattern(),
     page: createNumberPattern({
         integer: true,
         minimum: 0,
     }),
 });
 
-export class TagFetchMemberRoute extends BrontosaurusRoute {
+export class DecoratorFetchMemberRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/tag/members';
+    public readonly path: string = '/decorator/members';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
@@ -41,12 +41,12 @@ export class TagFetchMemberRoute extends BrontosaurusRoute {
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
         autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
-        autoHook.wrap(this._tagFetchMemberHandler.bind(this), 'Fetch Tag Member'),
+        autoHook.wrap(this._decoratorFetchMemberHandler.bind(this), 'Fetch Decorator Member'),
     ];
 
-    private async _tagFetchMemberHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _decoratorFetchMemberHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: TagFetchMemberBody = req.body;
+        const body: DecoratorFetchMemberBody = req.body;
 
         try {
 
@@ -60,14 +60,14 @@ export class TagFetchMemberRoute extends BrontosaurusRoute {
                 throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            const decoded: string = decodeURIComponent(body.tag);
-            const tag: ITagModel | null = await TagController.getTagByName(decoded);
-            if (!tag) {
-                throw this._error(ERROR_CODE.TAG_NOT_FOUND, decoded);
+            const decoded: string = decodeURIComponent(body.decorator);
+            const decorator: IDecoratorModel | null = await DecoratorController.getDecoratorByName(decoded);
+            if (!decorator) {
+                throw this._error(ERROR_CODE.DECORATOR_NOT_FOUND, decoded);
             }
 
-            const accounts: IAccount[] = await AccountController.getAccountsByTagAndPageLean(tag._id, pageLimit, body.page);
-            const pages: number = await AccountController.getAccountsByTagPages(tag._id, pageLimit);
+            const accounts: IAccount[] = await AccountController.getAccountsByDecoratorAndPageLean(decorator._id, pageLimit, body.page);
+            const pages: number = await AccountController.getAccountsByDecoratorPages(decorator._id, pageLimit);
 
             const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(accounts.map((each) => each.namespace));
 

@@ -63,7 +63,7 @@ export class GroupFetchMemberRoute extends BrontosaurusRoute {
             const decoded: string = decodeURIComponent(body.group);
             const group: IGroupModel | null = await GroupController.getGroupByName(decoded);
             if (!group) {
-                throw this._error(ERROR_CODE.GROUP_NOT_FOUND, body.group);
+                throw this._error(ERROR_CODE.GROUP_NOT_FOUND, decoded);
             }
 
             const accounts: IAccount[] = await AccountController.getAccountsByGroupAndPageLean(group._id, pageLimit, body.page);
