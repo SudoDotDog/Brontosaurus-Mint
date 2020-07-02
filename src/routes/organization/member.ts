@@ -4,7 +4,7 @@
  * @description Member
  */
 
-import { AccountController, IAccount, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { AccountController, IAccount, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, NamespaceController, OrganizationController } from "@brontosaurus/db";
 import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { createNumberPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
@@ -66,12 +66,26 @@ export class OrganizationFetchMemberRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, decoded);
             }
 
+            const owner: IAccountModel | null = await AccountController.getAccountById(organization.owner);
+            if (!owner) {
+                throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, organization.owner.toHexString());
+            }
+
+            const ownerNamespace: INamespaceModel | null = await NamespaceController.getNamespaceById(owner.namespace);
+            if (!ownerNamespace) {
+                throw this._error(ERROR_CODE.NAMESPACE_NOT_FOUND, owner.namespace.toHexString());
+            }
+
             const accounts: IAccount[] = await AccountController.getAccountsByOrganizationAndPageLean(organization._id, pageLimit, body.page);
             const pages: number = await AccountController.getAccountsByOrganizationPages(organization._id, pageLimit);
 
             const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(accounts.map((each) => each.namespace));
 
             res.agent.add('pages', pages);
+            res.agent.add('owner', {
+                username: owner.username,
+                namespace: ownerNamespace.namespace,
+            });
             res.agent.add('members', accounts.map((member: IAccount) => ({
                 active: member.active,
                 username: member.username,
