@@ -1,10 +1,10 @@
 /**
  * @author WMXPY
- * @namespace Brontosaurus_Mint_Routes_Group
+ * @namespace Brontosaurus_Mint_Routes_Tag
  * @description Member
  */
 
-import { AccountController, GroupController, IAccount, IGroupModel, INamespaceModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, IAccount, INamespaceModel, INTERNAL_USER_GROUP, ITagModel, TagController } from "@brontosaurus/db";
 import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { createNumberPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
@@ -16,24 +16,24 @@ import { autoHook } from "../../handlers/hook";
 import { pageLimit } from "../../util/conf";
 import { ERROR_CODE, panic } from "../../util/error";
 
-export type GroupFetchMemberBody = {
+export type TagFetchMemberBody = {
 
-    readonly group: string;
+    readonly tag: string;
     readonly page: number;
 };
 
 export const bodyPattern: Pattern = createStrictMapPattern({
 
-    group: createStringPattern(),
+    tag: createStringPattern(),
     page: createNumberPattern({
         integer: true,
         minimum: 0,
     }),
 });
 
-export class GroupFetchMemberRoute extends BrontosaurusRoute {
+export class TagFetchMemberRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/group/members';
+    public readonly path: string = '/tag/members';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
@@ -41,12 +41,12 @@ export class GroupFetchMemberRoute extends BrontosaurusRoute {
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
         autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
-        autoHook.wrap(this._groupFetchMemberHandler.bind(this), 'Fetch Group Member'),
+        autoHook.wrap(this._tagFetchMemberHandler.bind(this), 'Fetch Tag Member'),
     ];
 
-    private async _groupFetchMemberHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _tagFetchMemberHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: GroupFetchMemberBody = req.body;
+        const body: TagFetchMemberBody = req.body;
 
         try {
 
@@ -60,14 +60,14 @@ export class GroupFetchMemberRoute extends BrontosaurusRoute {
                 throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            const decoded: string = decodeURIComponent(body.group);
-            const group: IGroupModel | null = await GroupController.getGroupByName(decoded);
-            if (!group) {
-                throw this._error(ERROR_CODE.GROUP_NOT_FOUND, body.group);
+            const decoded: string = decodeURIComponent(body.tag);
+            const tag: ITagModel | null = await TagController.getTagByName(decoded);
+            if (!tag) {
+                throw this._error(ERROR_CODE.TAG_NOT_FOUND, body.tag);
             }
 
-            const accounts: IAccount[] = await AccountController.getAccountsByGroupAndPageLean(group._id, pageLimit, body.page);
-            const pages: number = await AccountController.getAccountsByGroupPages(group._id, pageLimit);
+            const accounts: IAccount[] = await AccountController.getAccountsByTagAndPageLean(tag._id, pageLimit, body.page);
+            const pages: number = await AccountController.getAccountsByTagPages(tag._id, pageLimit);
 
             const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(accounts.map((each) => each.namespace));
 

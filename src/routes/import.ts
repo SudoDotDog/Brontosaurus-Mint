@@ -71,6 +71,7 @@ import { ReadNamesPreferenceRoute } from './preference/read-names';
 import { AllTagRoute } from './tag/all';
 import { CreateTagRoute } from './tag/create';
 import { FetchTagRoute } from './tag/fetch';
+import { TagFetchMemberRoute } from './tag/members';
 import { SingleTagRoute } from './tag/single';
 import { UpdateTagRoute } from './tag/update';
 
@@ -103,6 +104,7 @@ export const MintRoutes = [
     new FetchTagRoute(),
     new SingleTagRoute(),
     new UpdateTagRoute(),
+    new TagFetchMemberRoute(),
 
     // Decorator
     new AllDecoratorRoute(),
