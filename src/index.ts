@@ -56,4 +56,4 @@ app.routeList(MintRoutes);
 app.routeList(FlatRoutes);
 
 app.host(hostPort);
-SudooLog.global.info('Hosting at port 9000');
+SudooLog.global.info(`Hosting at port ${hostPort}`);
