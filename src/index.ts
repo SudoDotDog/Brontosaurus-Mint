@@ -11,7 +11,7 @@ import * as Path from 'path';
 import { FlatRoutes } from './flat/import';
 import { createReplacementHandler } from './handlers/public';
 import { MintRoutes } from './routes/import';
-import { BrontosaurusConfig, getEnvGettingText, isDevelopment, readConfigEnvironment } from './util/conf';
+import { BrontosaurusConfig, getEnvGettingText, isDevelopment, readConfigEnvironment, staticMaxAge } from './util/conf';
 import { getVersion } from './util/version';
 
 const setting: SudooExpressApplication = SudooExpressApplication.create(
@@ -43,10 +43,9 @@ connect(config.database, {
 // Static
 app.express.get(['/', '/index.html'], createReplacementHandler('<!-- Insertion Point -->', getEnvGettingText()));
 
-const tenHour: number = 36000000;
 app.expressStatic(Path.join(__dirname, '..', 'public', 'red'), {
     immutable: true,
-    maxAge: tenHour,
+    maxAge: staticMaxAge,
 });
 
 // Health

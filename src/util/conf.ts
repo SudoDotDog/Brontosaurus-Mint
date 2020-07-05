@@ -4,10 +4,14 @@
  * @description Conf
  */
 
+import { TimeBuilder } from "@sudoo/magic";
 import * as Fs from 'fs';
 import * as Path from 'path';
 
 export const pageLimit: number = 20;
+export const staticMaxAge: number = TimeBuilder.from({
+    hour: 10,
+}).inMilliseconds();
 
 export type BrontosaurusConfig = {
 
