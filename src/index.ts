@@ -11,7 +11,7 @@ import * as Path from 'path';
 import { FlatRoutes } from './flat/import';
 import { createReplacementHandler } from './handlers/public';
 import { MintRoutes } from './routes/import';
-import { BrontosaurusConfig, getEnvGettingText, isDevelopment, readConfigEnvironment, staticMaxAge } from './util/conf';
+import { BrontosaurusConfig, getEnvGettingText, hostPort, isDevelopment, readConfigEnvironment, staticMaxAge } from './util/conf';
 import { getVersion } from './util/version';
 
 const setting: SudooExpressApplication = SudooExpressApplication.create(
@@ -55,6 +55,5 @@ app.health('/health');
 app.routeList(MintRoutes);
 app.routeList(FlatRoutes);
 
-// eslint-disable-next-line @typescript-eslint/no-magic-numbers
-app.host(9000);
+app.host(hostPort);
 SudooLog.global.info('Hosting at port 9000');

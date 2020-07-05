@@ -9,6 +9,7 @@ import * as Fs from 'fs';
 import * as Path from 'path';
 
 export const pageLimit: number = 20;
+export const hostPort: number = 9000;
 export const staticMaxAge: number = TimeBuilder.from({
     hour: 10,
 }).inMilliseconds();
