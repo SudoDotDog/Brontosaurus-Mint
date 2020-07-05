@@ -4,6 +4,7 @@
  * @description Conf
  */
 
+import { SudooLog } from "@sudoo/log";
 import { TimeBuilder } from "@sudoo/magic";
 import * as Fs from 'fs';
 import * as Path from 'path';
@@ -34,17 +35,22 @@ export const readConfigSync = (): BrontosaurusConfig => {
     throw new Error('Never');
 };
 
-export const readConfigEnvironment = (): BrontosaurusConfig => {
+export const getDatabaseLink = (): string | undefined => {
 
     const database: string | undefined = process.env.BRONTOSAURUS_DB || process.env.BRONTOSAURUS_DATABASE;
+    return database;
+};
 
+export const readConfigEnvironment = (): BrontosaurusConfig => {
+
+    const database: string | undefined = getDatabaseLink();
     if (database) {
         return {
             database,
         };
     }
 
-    console.log('Environment variable not found');
+    SudooLog.global.error('Database environment variable not found');
     process.exit();
 
     throw new Error('Never');
@@ -55,4 +61,7 @@ export const getEnvGettingText = (): string => {
     return `<script>if(!window.env){window.env={}};window.env.PORTAL_PATH="${process.env.PORTAL_PATH}"</script>`;
 };
 
-export const isDevelopment = (): boolean => process.env.NODE_ENV === 'development';
+export const isDevelopment = (): boolean => {
+
+    return process.env.NODE_ENV === 'development';
+};
