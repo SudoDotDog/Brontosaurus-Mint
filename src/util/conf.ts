@@ -6,8 +6,6 @@
 
 import { SudooLog } from "@sudoo/log";
 import { TimeBuilder } from "@sudoo/magic";
-import * as Fs from 'fs';
-import * as Path from 'path';
 
 export const pageLimit: number = 20;
 export const hostPort: number = 9000;
@@ -18,21 +16,6 @@ export const staticMaxAge: number = TimeBuilder.from({
 export type BrontosaurusConfig = {
 
     readonly database: string;
-};
-
-export const readConfigSync = (): BrontosaurusConfig => {
-
-    try {
-
-        const configPath: string = Path.join(__dirname, '..', '..', 'brontosaurus.conf');
-        return JSON.parse(Fs.readFileSync(configPath, 'utf8'));
-    } catch (err) {
-
-        console.log('Config file not exist');
-        process.exit();
-    }
-
-    throw new Error('Never');
 };
 
 export const getDatabaseLink = (): string | undefined => {
