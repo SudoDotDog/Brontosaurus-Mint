@@ -16,12 +16,12 @@ import { ERROR_CODE, panic } from "../../util/error";
 
 export type GroupDeactivateBody = {
 
-    readonly name: string;
+    readonly group: string;
 };
 
 export const bodyPattern: Pattern = createStrictMapPattern({
 
-    name: createStringPattern(),
+    group: createStringPattern(),
 });
 
 export class GroupDeactivateRoute extends BrontosaurusRoute {
@@ -53,14 +53,14 @@ export class GroupDeactivateRoute extends BrontosaurusRoute {
                 throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            const group: IGroupModel | null = await GroupController.getGroupByName(body.name);
+            const group: IGroupModel | null = await GroupController.getGroupByName(body.group);
 
             if (!group) {
-                throw this._error(ERROR_CODE.GROUP_NOT_FOUND, body.name);
+                throw this._error(ERROR_CODE.GROUP_NOT_FOUND, body.group);
             }
 
             if (!group.active) {
-                throw this._error(ERROR_CODE.ALREADY_DEACTIVATED, body.name);
+                throw this._error(ERROR_CODE.ALREADY_DEACTIVATED, body.group);
             }
 
             group.active = false;
