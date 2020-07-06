@@ -96,12 +96,18 @@ export class FetchAccountRoute extends BrontosaurusRoute {
                 const attempts: number = await AttemptController.getAttemptCountByAccount(account._id);
                 const resets: number = await ResetController.getResetCountByAccount(account._id);
 
+                const namespaceInstance: INamespaceModel | undefined = namespaceMap.get(account.namespace.toHexString());
+
+                if (!namespaceInstance) {
+                    throw panic.code(ERROR_CODE.NAMESPACE_NOT_FOUND, account.namespace.toHexString());
+                }
+
                 result.push({
                     active: account.active,
                     attempts,
                     resets,
                     username: account.username,
-                    namespace: namespaceMap.get(account.namespace.toHexString())?.namespace,
+                    namespace: namespaceInstance.namespace,
                     displayName: account.displayName,
                     email: account.email,
                     phone: account.phone,

@@ -45,7 +45,6 @@ export class OrganizationActivateRoute extends BrontosaurusRoute {
             const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(organizationName);
 
             if (!organization) {
-
                 throw panic.code(ERROR_CODE.ORGANIZATION_NOT_FOUND, organizationName);
             }
 
