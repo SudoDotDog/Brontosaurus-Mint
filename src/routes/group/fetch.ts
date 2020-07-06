@@ -20,6 +20,14 @@ export type FetchGroupBody = {
     readonly keyword: string;
 };
 
+export type GroupResponse = {
+
+    readonly active: boolean;
+    readonly name: string;
+    readonly decorators: number;
+    readonly description?: string;
+};
+
 export class FetchGroupRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/group/fetch';
@@ -52,10 +60,11 @@ export class FetchGroupRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const pages: number = await GroupController.getSelectedActiveGroupPages(pageLimit, keyword);
-            const groups: IGroupModel[] = await GroupController.getSelectedActiveGroupsByPage(pageLimit, Math.floor(page), keyword);
+            const pages: number = await GroupController.getGroupPagesByKeyword(pageLimit, keyword);
+            const groups: IGroupModel[] = await GroupController.getSelectedGroupsByPage(pageLimit, Math.floor(page), keyword);
 
-            const parsed = groups.map((group: IGroupModel) => ({
+            const parsed: GroupResponse[] = groups.map((group: IGroupModel) => ({
+                active: group.active,
                 name: group.name,
                 description: group.description,
                 decorators: group.decorators.length,

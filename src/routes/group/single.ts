@@ -22,6 +22,22 @@ export type SingleGroupBody = {
     readonly name: string;
 };
 
+export type SingleGroupResponse = {
+
+    readonly active: boolean;
+    readonly name: string;
+    readonly members: Array<{
+        readonly active: boolean;
+        readonly username: string;
+        readonly namespace: string;
+        readonly phone?: string;
+        readonly email?: string;
+        readonly displayName?: string;
+    }>;
+    readonly description?: string;
+    readonly decorators: string[];
+};
+
 export class SingleGroupRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/group/single';
@@ -60,19 +76,31 @@ export class SingleGroupRoute extends BrontosaurusRoute {
             const accounts: IAccount[] = await getAccountsByGroupLean(group._id);
             const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(accounts.map((each) => each.namespace));
 
-            res.agent.migrate({
+            const response: SingleGroupResponse = {
+
+                active: group.active,
                 name: group.name,
-                members: accounts.map((member: IAccount) => ({
-                    active: member.active,
-                    username: member.username,
-                    namespace: namespaceMap.get(member.namespace.toHexString())?.namespace,
-                    displayName: member.displayName,
-                    phone: member.phone,
-                    email: member.email,
-                })),
+                members: accounts.map((member: IAccount) => {
+
+                    const namespaceInstance: INamespaceModel | undefined = namespaceMap.get(member.namespace.toHexString());
+                    if (!namespaceInstance) {
+                        throw this._error(ERROR_CODE.NAMESPACE_NOT_FOUND, member.namespace.toHexString());
+                    }
+
+                    return {
+                        active: member.active,
+                        username: member.username,
+                        namespace: namespaceInstance.namespace,
+                        displayName: member.displayName,
+                        phone: member.phone,
+                        email: member.email,
+                    };
+                }),
                 description: group.description,
                 decorators: groupDecorators,
-            });
+            };
+
+            res.agent.migrate(response);
         } catch (err) {
 
             res.agent.fail(HTTP_RESPONSE_CODE.BAD_REQUEST, err);
