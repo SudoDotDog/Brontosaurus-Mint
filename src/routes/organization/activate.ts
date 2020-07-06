@@ -5,9 +5,10 @@
  */
 
 import { INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
@@ -18,6 +19,11 @@ export type OrganizationActivateRouteBody = {
     readonly organization: string;
 };
 
+export const bodyPattern: Pattern = createStrictMapPattern({
+
+    organization: createStringPattern(),
+});
+
 export class OrganizationActivateRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/organization/activate';
@@ -27,12 +33,13 @@ export class OrganizationActivateRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'TokenHandler'),
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._activateOrganizationHandler.bind(this), 'Activate'),
     ];
 
     private async _activateOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<OrganizationActivateRouteBody> = Safe.extract(req.body as OrganizationActivateRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: OrganizationActivateRouteBody = req.body;
 
         try {
 
@@ -40,12 +47,20 @@ export class OrganizationActivateRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const organizationName: string = body.directEnsure('organization');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(organizationName);
+            if (!verify.succeed) {
+                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
+            }
+
+            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(body.organization);
 
             if (!organization) {
-                throw panic.code(ERROR_CODE.ORGANIZATION_NOT_FOUND, organizationName);
+                throw panic.code(ERROR_CODE.ORGANIZATION_NOT_FOUND, body.organization);
+            }
+
+            if (organization.active) {
+                throw this._error(ERROR_CODE.ALREADY_ACTIVATED, body.organization);
             }
 
             organization.active = true;
