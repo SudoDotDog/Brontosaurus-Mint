@@ -1,7 +1,7 @@
 /**
  * @author WMXPY
  * @namespace Brontosaurus_Mint_Routes_Group
- * @description Activate
+ * @description Deactivate
  */
 
 import { GroupController, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
@@ -14,7 +14,7 @@ import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler
 import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE, panic } from "../../util/error";
 
-export type GroupActivateBody = {
+export type GroupDeactivateBody = {
 
     readonly name: string;
 };
@@ -24,9 +24,9 @@ export const bodyPattern: Pattern = createStrictMapPattern({
     name: createStringPattern(),
 });
 
-export class GroupActivateRoute extends BrontosaurusRoute {
+export class GroupDeactivateRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/group/activate';
+    public readonly path: string = '/group/deactivate';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
@@ -34,12 +34,12 @@ export class GroupActivateRoute extends BrontosaurusRoute {
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
         autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
-        autoHook.wrap(this._activateHandler.bind(this), 'Activate Group'),
+        autoHook.wrap(this._deactivateHandler.bind(this), 'Deactivate Group'),
     ];
 
-    private async _activateHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _deactivateHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: GroupActivateBody = req.body;
+        const body: GroupDeactivateBody = req.body;
 
         try {
 
@@ -59,10 +59,10 @@ export class GroupActivateRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.GROUP_NOT_FOUND, body.name);
             }
 
-            group.active = true;
+            group.active = false;
             await group.save();
 
-            res.agent.add('activated', group.name);
+            res.agent.add('deactivated', group.name);
         } catch (err) {
 
             res.agent.fail(HTTP_RESPONSE_CODE.BAD_REQUEST, err);
