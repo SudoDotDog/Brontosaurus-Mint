@@ -61,6 +61,10 @@ export class AccountActivateRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, body.username);
             }
 
+            if (account.active) {
+                throw this._error(ERROR_CODE.ALREADY_ACTIVATED, body.username);
+            }
+
             account.active = true;
             await account.save();
 

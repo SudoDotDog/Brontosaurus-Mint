@@ -59,6 +59,10 @@ export class GroupDeactivateRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.GROUP_NOT_FOUND, body.name);
             }
 
+            if (!group.active) {
+                throw this._error(ERROR_CODE.ALREADY_DEACTIVATED, body.name);
+            }
+
             group.active = false;
             await group.save();
 

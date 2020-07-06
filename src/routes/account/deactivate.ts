@@ -61,6 +61,10 @@ export class AccountDeactivateRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, body.username);
             }
 
+            if (!account.active) {
+                throw this._error(ERROR_CODE.ALREADY_DEACTIVATED, body.username);
+            }
+
             account.active = false;
             await account.save();
 
