@@ -4,8 +4,9 @@
  * @description Fetch
  */
 
-import { AccountController, AttemptController, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { AccountController, AttemptController, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, ResetController } from "@brontosaurus/db";
 import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
+import { Basics } from "@sudoo/extract/declare";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { createNumberPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
 import { fillStringedResult, StringedResult } from "@sudoo/verify";
@@ -20,6 +21,23 @@ export type FetchAccountBody = {
 
     readonly page: number;
     readonly keyword: string;
+};
+
+export type FetchAccountResponse = {
+
+    readonly active: boolean;
+    readonly attempts: number;
+    readonly resets: number;
+    readonly username: string;
+    readonly namespace: string;
+    readonly displayName?: string;
+    readonly email?: string;
+    readonly phone?: string;
+    readonly twoFA: boolean;
+    readonly groups: number;
+    readonly decorators: number;
+    readonly tags: number;
+    readonly infos: Record<string, Basics>;
 };
 
 export const bodyPattern: Pattern = createStrictMapPattern({
@@ -71,14 +89,17 @@ export class FetchAccountRoute extends BrontosaurusRoute {
             );
 
             const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(accounts.map((each) => each.namespace));
-            const result: any[] = [];
+            const result: FetchAccountResponse[] = [];
 
             for (const account of accounts) {
 
                 const attempts: number = await AttemptController.getAttemptCountByAccount(account._id);
+                const resets: number = await ResetController.getResetCountByAccount(account._id);
+
                 result.push({
                     active: account.active,
                     attempts,
+                    resets,
                     username: account.username,
                     namespace: namespaceMap.get(account.namespace.toHexString())?.namespace,
                     displayName: account.displayName,
