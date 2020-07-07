@@ -79,8 +79,10 @@ import { ReadGlobalPreferenceRoute } from './preference/read-global';
 import { ReadMailerSourcePreferenceRoute } from './preference/read-mailer-source';
 import { ReadMailerTransportPreferenceRoute } from './preference/read-mailer-transport';
 import { ReadNamesPreferenceRoute } from './preference/read-names';
+import { TagActivateRoute } from './tag/activate';
 import { AllTagRoute } from './tag/all';
 import { CreateTagRoute } from './tag/create';
+import { TagDeactivateRoute } from './tag/deactivate';
 import { FetchTagRoute } from './tag/fetch';
 import { TagFetchMemberRoute } from './tag/member';
 import { SingleTagRoute } from './tag/single';
@@ -120,6 +122,8 @@ export const MintRoutes = [
     new SingleTagRoute(),
     new UpdateTagRoute(),
     new TagFetchMemberRoute(),
+    new TagActivateRoute(),
+    new TagDeactivateRoute(),
 
     // Decorator
     new AllDecoratorRoute(),
