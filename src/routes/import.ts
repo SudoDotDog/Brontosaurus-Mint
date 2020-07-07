@@ -35,8 +35,10 @@ import { SingleApplicationRoute } from './application/single';
 import { ToggleGreenAccessApplicationRoute } from './application/toggle-green-access';
 import { TogglePortalAccessApplicationRoute } from './application/toggle-portal-access';
 import { UpdateApplicationRoute } from './application/update';
+import { DecoratorActivateRoute } from './decorator/activate';
 import { AllDecoratorRoute } from './decorator/all';
 import { CreateDecoratorRoute } from './decorator/create';
+import { DecoratorDeactivateRoute } from './decorator/deactivate';
 import { FetchDecoratorRoute } from './decorator/fetch';
 import { DecoratorFetchMemberRoute } from './decorator/member';
 import { SingleDecoratorRoute } from './decorator/single';
@@ -50,7 +52,9 @@ import { GroupFetchMemberRoute } from './group/member';
 import { RemoveAllGroupRoute } from './group/remove-all';
 import { SingleGroupRoute } from './group/single';
 import { UpdateGroupRoute } from './group/update';
+import { NamespaceActivateRoute } from './namespace/activate';
 import { CreateNamespaceRoute } from './namespace/create';
+import { NamespaceDeactivateRoute } from './namespace/deactivate';
 import { FetchNamespaceRoute } from './namespace/fetch';
 import { NamespaceFetchMemberRoute } from './namespace/member';
 import { SingleNamespaceRoute } from './namespace/single';
@@ -124,6 +128,8 @@ export const MintRoutes = [
     new SingleDecoratorRoute(),
     new UpdateDecoratorRoute(),
     new DecoratorFetchMemberRoute(),
+    new DecoratorActivateRoute(),
+    new DecoratorDeactivateRoute(),
 
     // Namespace
     new CreateNamespaceRoute(),
@@ -131,6 +137,8 @@ export const MintRoutes = [
     new SingleNamespaceRoute(),
     new UpdateNamespaceRoute(),
     new NamespaceFetchMemberRoute(),
+    new NamespaceActivateRoute(),
+    new NamespaceDeactivateRoute(),
 
     // Account
     new AddGroupRoute(),
