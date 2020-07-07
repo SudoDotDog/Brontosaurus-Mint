@@ -21,6 +21,18 @@ export type OrganizationFetchRouteBody = {
     readonly keyword: string;
 };
 
+export type OrganizationFetchElement = {
+
+    readonly active: boolean;
+    readonly name: string;
+    readonly owner: string;
+    readonly ownerNamespace: string;
+    readonly ownerActive: boolean;
+    readonly ownerDisplayName?: string;
+    readonly decorators: number;
+    readonly tags: number;
+};
+
 export class OrganizationFetchRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/organization/fetch';
@@ -58,12 +70,7 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
 
             const namespaceAgent: NamespaceCacheAgent = NamespaceCacheAgent.create();
 
-            const parsed: Array<{
-                name: string;
-                owner: string;
-                decorators: number;
-                tags: number;
-            }> = await _Mutate.asyncMap(organizations, async (organization: IOrganizationModel) => {
+            const parsed: OrganizationFetchElement[] = await _Mutate.asyncMap(organizations, async (organization: IOrganizationModel) => {
 
                 const ownerUser: IAccountModel | null = await AccountController.getAccountById(organization.owner);
 
@@ -78,6 +85,7 @@ export class OrganizationFetchRoute extends BrontosaurusRoute {
                 }
 
                 return {
+
                     active: organization.active,
                     name: organization.name,
                     owner: ownerUser.username,

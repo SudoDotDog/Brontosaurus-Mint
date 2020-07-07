@@ -20,6 +20,14 @@ export type FetchNamespaceBody = {
     readonly keyword: string;
 };
 
+export type FetchNamespaceElement = {
+
+    readonly active: boolean;
+    readonly namespace: string;
+    readonly domain: string;
+    readonly name?: string;
+};
+
 export class FetchNamespaceRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/namespace/fetch';
@@ -55,7 +63,9 @@ export class FetchNamespaceRoute extends BrontosaurusRoute {
             const pages: number = await NamespaceController.getSelectedNamespacePages(pageLimit, keyword);
             const namespaces: INamespaceModel[] = await NamespaceController.getSelectedNamespacesByPage(pageLimit, Math.floor(page), keyword);
 
-            const parsed = namespaces.map((namespace: INamespaceModel) => ({
+            const parsed: FetchNamespaceElement[] = namespaces.map((namespace: INamespaceModel) => ({
+
+                active: namespace.active,
                 name: namespace.name,
                 namespace: namespace.namespace,
                 domain: namespace.domain,

@@ -20,6 +20,13 @@ export type FetchTagBody = {
     readonly keyword: string;
 };
 
+export type FetchTagElement = {
+
+    readonly active: boolean;
+    readonly name: string;
+    readonly description?: string;
+};
+
 export class FetchTagRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/tag/fetch';
@@ -55,7 +62,9 @@ export class FetchTagRoute extends BrontosaurusRoute {
             const pages: number = await TagController.getSelectedTagPages(pageLimit, keyword);
             const tags: ITagModel[] = await TagController.getSelectedTagsByPage(pageLimit, Math.floor(page), keyword);
 
-            const parsed = tags.map((tag: ITagModel) => ({
+            const parsed: FetchTagElement[] = tags.map((tag: ITagModel) => ({
+
+                active: tag.active,
                 name: tag.name,
                 description: tag.description,
             }));
