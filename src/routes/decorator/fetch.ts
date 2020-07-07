@@ -20,6 +20,13 @@ export type FetchDecoratorBody = {
     readonly keyword: string;
 };
 
+export type FetchDecoratorElement = {
+
+    readonly active: boolean;
+    readonly name: string;
+    readonly description?: string;
+};
+
 export class FetchDecoratorRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/decorator/fetch';
@@ -55,7 +62,9 @@ export class FetchDecoratorRoute extends BrontosaurusRoute {
             const pages: number = await DecoratorController.getSelectedDecoratorPages(pageLimit, keyword);
             const decorators: IDecoratorModel[] = await DecoratorController.getSelectedDecoratorsByPage(pageLimit, Math.floor(page), keyword);
 
-            const parsed = decorators.map((decorator: IDecoratorModel) => ({
+            const parsed: FetchDecoratorElement[] = decorators.map((decorator: IDecoratorModel) => ({
+
+                active: decorator.active,
                 name: decorator.name,
                 description: decorator.description,
             }));

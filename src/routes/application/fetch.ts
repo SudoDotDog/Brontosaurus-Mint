@@ -4,7 +4,7 @@
  * @description Fetch
  */
 
-import { ApplicationController, IApplicationModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { ApplicationController, ApplicationRedirection, IApplicationModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -18,6 +18,22 @@ export type FetchApplicationBody = {
 
     readonly page: number;
     readonly keyword: string;
+};
+
+export type FetchApplicationElement = {
+
+    readonly active: boolean;
+    readonly expire: number;
+    readonly key: string;
+    readonly name: string;
+    readonly greenAccess: boolean;
+    readonly portalAccess: boolean;
+
+    readonly redirections: ApplicationRedirection[];
+    readonly iFrameProtocol: boolean;
+    readonly postProtocol: boolean;
+    readonly alertProtocol: boolean;
+    readonly noneProtocol: boolean;
 };
 
 export class FetchApplicationRoute extends BrontosaurusRoute {
@@ -52,10 +68,12 @@ export class FetchApplicationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const pages: number = await ApplicationController.getSelectedActiveApplicationPages(pageLimit, keyword);
-            const applications: IApplicationModel[] = await ApplicationController.getSelectedActiveApplicationsByPage(pageLimit, Math.floor(page), keyword);
+            const pages: number = await ApplicationController.getSelectedApplicationPages(pageLimit, keyword);
+            const applications: IApplicationModel[] = await ApplicationController.getSelectedApplicationsByPage(pageLimit, Math.floor(page), keyword);
 
-            const parsed = applications.map((application: IApplicationModel) => ({
+            const parsed: FetchApplicationElement[] = applications.map((application: IApplicationModel) => ({
+
+                active: application.active,
                 name: application.name,
                 key: application.key,
 

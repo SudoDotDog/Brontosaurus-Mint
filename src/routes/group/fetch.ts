@@ -60,7 +60,7 @@ export class FetchGroupRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const pages: number = await GroupController.getGroupPagesByKeyword(pageLimit, keyword);
+            const pages: number = await GroupController.getSelectedGroupPages(pageLimit, keyword);
             const groups: IGroupModel[] = await GroupController.getSelectedGroupsByPage(pageLimit, Math.floor(page), keyword);
 
             const parsed: GroupResponse[] = groups.map((group: IGroupModel) => ({

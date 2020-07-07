@@ -52,8 +52,8 @@ export class FetchTagRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const pages: number = await TagController.getSelectedActiveTagPages(pageLimit, keyword);
-            const tags: ITagModel[] = await TagController.getSelectedActiveTagsByPage(pageLimit, Math.floor(page), keyword);
+            const pages: number = await TagController.getSelectedTagPages(pageLimit, keyword);
+            const tags: ITagModel[] = await TagController.getSelectedTagsByPage(pageLimit, Math.floor(page), keyword);
 
             const parsed = tags.map((tag: ITagModel) => ({
                 name: tag.name,

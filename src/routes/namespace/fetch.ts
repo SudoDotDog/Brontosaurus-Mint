@@ -52,8 +52,8 @@ export class FetchNamespaceRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
             }
 
-            const pages: number = await NamespaceController.getSelectedActiveNamespacePages(pageLimit, keyword);
-            const namespaces: INamespaceModel[] = await NamespaceController.getSelectedActiveNamespacesByPage(pageLimit, Math.floor(page), keyword);
+            const pages: number = await NamespaceController.getSelectedNamespacePages(pageLimit, keyword);
+            const namespaces: INamespaceModel[] = await NamespaceController.getSelectedNamespacesByPage(pageLimit, Math.floor(page), keyword);
 
             const parsed = namespaces.map((namespace: INamespaceModel) => ({
                 name: namespace.name,
