@@ -1,10 +1,10 @@
 /**
  * @author WMXPY
- * @namespace Brontosaurus_Mint_Routes_Organization
+ * @namespace Brontosaurus_Mint_Routes_Application
  * @description Activate
  */
 
-import { INTERNAL_USER_GROUP, IOrganizationModel, OrganizationController } from "@brontosaurus/db";
+import { ApplicationController, IApplicationModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
@@ -14,19 +14,19 @@ import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler
 import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE, panic } from "../../util/error";
 
-export type OrganizationActivateRouteBody = {
+export type ApplicationActivateRouteBody = {
 
-    readonly organization: string;
+    readonly application: string;
 };
 
 export const bodyPattern: Pattern = createStrictMapPattern({
 
-    organization: createStringPattern(),
+    application: createStringPattern(),
 });
 
-export class OrganizationActivateRoute extends BrontosaurusRoute {
+export class ApplicationActivateRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/organization/activate';
+    public readonly path: string = '/application/activate';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
@@ -34,12 +34,12 @@ export class OrganizationActivateRoute extends BrontosaurusRoute {
         autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
         autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
-        autoHook.wrap(this._activateOrganizationHandler.bind(this), 'Activate Organization'),
+        autoHook.wrap(this._activateApplicationHandler.bind(this), 'Activate Application'),
     ];
 
-    private async _activateOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _activateApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: OrganizationActivateRouteBody = req.body;
+        const body: ApplicationActivateRouteBody = req.body;
 
         try {
 
@@ -53,20 +53,20 @@ export class OrganizationActivateRoute extends BrontosaurusRoute {
                 throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(body.organization);
+            const application: IApplicationModel | null = await ApplicationController.getApplicationByKey(body.application);
 
-            if (!organization) {
-                throw panic.code(ERROR_CODE.ORGANIZATION_NOT_FOUND, body.organization);
+            if (!application) {
+                throw panic.code(ERROR_CODE.APPLICATION_NOT_FOUND, body.application);
             }
 
-            if (organization.active) {
-                throw this._error(ERROR_CODE.ALREADY_ACTIVATED, body.organization);
+            if (application.active) {
+                throw this._error(ERROR_CODE.ALREADY_ACTIVATED, body.application);
             }
 
-            organization.active = true;
-            await organization.save();
+            application.active = true;
+            await application.save();
 
-            res.agent.add('activated', organization.name);
+            res.agent.add('activated', application.name);
         } catch (err) {
 
             res.agent.fail(HTTP_RESPONSE_CODE.BAD_REQUEST, err);
