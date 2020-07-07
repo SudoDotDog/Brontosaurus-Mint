@@ -35,9 +35,9 @@ export class FlatChangePasswordRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
-        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
-        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL]), 'GroupVerifyHandler'),
+        autoHook.wrap(createTokenHandler(), 'Token'),
+        autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SELF_CONTROL]), 'Group Verify'),
         autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._flatChangePasswordHandler.bind(this), 'Change Password'),
     ];

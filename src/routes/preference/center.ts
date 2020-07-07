@@ -17,8 +17,8 @@ export class CommandCenterPreferenceRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.GET;
 
     public readonly groups: SudooExpressHandler[] = [
-        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
-        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
+        autoHook.wrap(createTokenHandler(), 'Token'),
+        autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(this._preferenceGlobalHandler.bind(this), 'Command Center'),
     ];
 

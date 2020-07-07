@@ -34,9 +34,9 @@ export class AddGroupRoute extends BrontosaurusRoute {
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
-        autoHook.wrap(createTokenHandler(), 'TokenHandler'),
-        autoHook.wrap(createAuthenticateHandler(), 'AuthenticateHandler'),
-        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'GroupVerifyHandler'),
+        autoHook.wrap(createTokenHandler(), 'Token'),
+        autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
+        autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
         autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._addGroupHandler.bind(this), 'Add Group'),
     ];
