@@ -52,6 +52,8 @@ export class SingleTagRoute extends BrontosaurusRoute {
             }
 
             res.agent.migrate({
+
+                active: tag.active,
                 name: tag.name,
                 description: tag.description,
             });

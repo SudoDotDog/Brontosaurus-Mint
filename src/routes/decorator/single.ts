@@ -56,6 +56,7 @@ export class SingleDecoratorRoute extends BrontosaurusRoute {
             const addableGroups: string[] = await Throwable_MapGroups(decorator.addableGroups);
             const removableGroups: string[] = await Throwable_MapGroups(decorator.removableGroups);
 
+            res.agent.add('active', decorator.active);
             res.agent.migrate({
                 name: decorator.name,
                 addableGroups,

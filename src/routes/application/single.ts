@@ -4,7 +4,7 @@
  * @description Single
  */
 
-import { ApplicationController, IApplicationModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { ApplicationController, IApplicationModel, INTERNAL_USER_GROUP, ApplicationRedirection } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -18,6 +18,29 @@ import { ERROR_CODE } from "../../util/error";
 export type SingleApplicationBody = {
 
     readonly key: string;
+};
+
+export type SingleApplicationFetchResponse = {
+
+    readonly active: boolean;
+    readonly avatar?: string;
+    readonly favicon?: string;
+    readonly name: string;
+    readonly key: string;
+    readonly expire: number;
+    readonly groups: string[];
+
+    readonly redirections: ApplicationRedirection[];
+    readonly iFrameProtocol: boolean;
+    readonly postProtocol: boolean;
+    readonly alertProtocol: boolean;
+    readonly noneProtocol: boolean;
+
+    readonly requires: string[];
+    readonly green: string;
+    readonly greenAccess: boolean;
+    readonly portalAccess: boolean;
+    readonly publicKey: string;
 };
 
 export class SingleApplicationRoute extends BrontosaurusRoute {
@@ -56,7 +79,9 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
             const applicationGroups: string[] = await Throwable_MapGroups(application.groups);
             const applicationRequires: string[] = await Throwable_MapGroups(application.requires);
 
-            res.agent.add('application', {
+            const response: SingleApplicationFetchResponse = {
+
+                active: application.active,
                 name: application.name,
                 key: application.key,
 
@@ -76,7 +101,9 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
                 portalAccess: application.portalAccess,
                 publicKey: application.publicKey,
                 requires: applicationRequires,
-            });
+            };
+
+            res.agent.add('application', response);
         } catch (err) {
 
             res.agent.fail(HTTP_RESPONSE_CODE.BAD_REQUEST, err);

@@ -72,6 +72,7 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
             const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(members.map((each) => each.namespace));
 
             res.agent.migrate({
+
                 active: organization.active,
                 name: organization.name,
                 limit: organization.limit,

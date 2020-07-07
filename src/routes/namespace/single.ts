@@ -52,6 +52,8 @@ export class SingleNamespaceRoute extends BrontosaurusRoute {
             }
 
             res.agent.migrate({
+
+                active: namespaceInstance.active,
                 name: namespaceInstance.name,
                 namespace: namespaceInstance.namespace,
                 domain: namespaceInstance.domain,
