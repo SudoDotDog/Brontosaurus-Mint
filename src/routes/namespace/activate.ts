@@ -66,7 +66,7 @@ export class NamespaceActivateRoute extends BrontosaurusRoute {
             namespace.active = true;
             await namespace.save();
 
-            res.agent.add('activated', namespace.name);
+            res.agent.add('activated', namespace.namespace);
         } catch (err) {
 
             res.agent.fail(HTTP_RESPONSE_CODE.BAD_REQUEST, err);

@@ -1,10 +1,10 @@
 /**
  * @author WMXPY
- * @namespace Brontosaurus_Mint_Routes_Namespace
- * @description Deactivate
+ * @namespace Brontosaurus_Mint_Routes_Tag
+ * @description Activate
  */
 
-import { NamespaceController, INamespaceModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { TagController, ITagModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
@@ -14,19 +14,19 @@ import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler
 import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE, panic } from "../../util/error";
 
-export type NamespaceDeactivateRouteBody = {
+export type TagActivateRouteBody = {
 
-    readonly namespace: string;
+    readonly tag: string;
 };
 
 export const bodyPattern: Pattern = createStrictMapPattern({
 
-    namespace: createStringPattern(),
+    tag: createStringPattern(),
 });
 
-export class NamespaceDeactivateRoute extends BrontosaurusRoute {
+export class TagActivateRoute extends BrontosaurusRoute {
 
-    public readonly path: string = '/namespace/deactivate';
+    public readonly path: string = '/tag/activate';
     public readonly mode: ROUTE_MODE = ROUTE_MODE.POST;
 
     public readonly groups: SudooExpressHandler[] = [
@@ -34,12 +34,12 @@ export class NamespaceDeactivateRoute extends BrontosaurusRoute {
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
         autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
-        autoHook.wrap(this._deactivateNamespaceHandler.bind(this), 'Deactivate Namespace'),
+        autoHook.wrap(this._activateTagHandler.bind(this), 'Activate Tag'),
     ];
 
-    private async _deactivateNamespaceHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
+    private async _activateTagHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: NamespaceDeactivateRouteBody = req.body;
+        const body: TagActivateRouteBody = req.body;
 
         try {
 
@@ -53,20 +53,20 @@ export class NamespaceDeactivateRoute extends BrontosaurusRoute {
                 throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            const namespace: INamespaceModel | null = await NamespaceController.getNamespaceByNamespace(body.namespace);
+            const tag: ITagModel | null = await TagController.getTagByName(body.tag);
 
-            if (!namespace) {
-                throw panic.code(ERROR_CODE.NAMESPACE_NOT_FOUND, body.namespace);
+            if (!tag) {
+                throw panic.code(ERROR_CODE.TAG_NOT_FOUND, body.tag);
             }
 
-            if (!namespace.active) {
-                throw this._error(ERROR_CODE.ALREADY_DEACTIVATED, body.namespace);
+            if (tag.active) {
+                throw this._error(ERROR_CODE.ALREADY_ACTIVATED, body.tag);
             }
 
-            namespace.active = false;
-            await namespace.save();
+            tag.active = true;
+            await tag.save();
 
-            res.agent.add('deactivated', namespace.namespace);
+            res.agent.add('activated', tag.name);
         } catch (err) {
 
             res.agent.fail(HTTP_RESPONSE_CODE.BAD_REQUEST, err);
