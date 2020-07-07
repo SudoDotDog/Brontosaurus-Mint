@@ -25,7 +25,9 @@ import { AccountSuspendApplicationPasswordRoute } from './account/suspend-applic
 import { AccountSuspendTemporaryPasswordRoute } from './account/suspend-temp-password';
 import { VerifyPreviousPasswordRoute } from './account/verify-previous-password';
 import { WithdrawOrganizationRoute } from './account/withdraw-organization';
+import { ApplicationActivateRoute } from './application/activate';
 import { CreateApplicationRoute } from './application/create';
+import { ApplicationDeactivateRoute } from './application/deactivate';
 import { FetchApplicationRoute } from './application/fetch';
 import { RefreshGreenApplicationRoute } from './application/refresh-green';
 import { RefreshKeyApplicationRoute } from './application/refresh-key';
@@ -93,6 +95,8 @@ export const MintRoutes = [
     new FetchStandaloneAccountRoute(),
     new ToggleGreenAccessApplicationRoute(),
     new TogglePortalAccessApplicationRoute(),
+    new ApplicationActivateRoute(),
+    new ApplicationDeactivateRoute(),
 
     // Group
     new AllGroupRoute(),
