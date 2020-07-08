@@ -80,6 +80,7 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
                     username: owner.username,
                     namespace: ownerNamespace.namespace,
                     active: owner.active,
+                    namespaceActive: ownerNamespace.active,
                     displayName: owner.displayName,
                     phone: owner.phone,
                     email: owner.email,

@@ -29,6 +29,7 @@ export type FetchAccountResponse = {
     readonly attempts: number;
     readonly resets: number;
     readonly username: string;
+    readonly namespaceActive: boolean;
     readonly namespace: string;
     readonly displayName?: string;
     readonly email?: string;
@@ -107,6 +108,7 @@ export class FetchAccountRoute extends BrontosaurusRoute {
                     attempts,
                     resets,
                     username: account.username,
+                    namespaceActive: namespaceInstance.active,
                     namespace: namespaceInstance.namespace,
                     displayName: account.displayName,
                     email: account.email,
