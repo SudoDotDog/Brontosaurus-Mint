@@ -71,11 +71,13 @@ import { OrganizationSubRegisterRoute } from './organization/sub-register';
 import { UpdateOrganizationRoute } from './organization/update';
 import { CommandCenterPreferenceRoute } from './preference/center';
 import { GlobalPreferenceRoute } from './preference/global';
+import { GlobalBackgroundImagePreferenceRoute } from './preference/global-background-image';
 import { InfosPreferenceRoute } from './preference/infos';
 import { MailerSourcePreferenceRoute } from './preference/mailer-source';
 import { MailerTransportPreferenceRoute } from './preference/mailer-transport';
 import { NamePreferenceRoute } from './preference/names';
 import { ReadGlobalPreferenceRoute } from './preference/read-global';
+import { ReadGlobalBackgroundImagesPreferenceRoute } from './preference/read-global-background-image';
 import { ReadMailerSourcePreferenceRoute } from './preference/read-mailer-source';
 import { ReadMailerTransportPreferenceRoute } from './preference/read-mailer-transport';
 import { ReadNamesPreferenceRoute } from './preference/read-names';
@@ -167,8 +169,10 @@ export const MintRoutes = [
 
     // Preference
     new GlobalPreferenceRoute(),
+    new GlobalBackgroundImagePreferenceRoute(),
     new NamePreferenceRoute(),
     new ReadGlobalPreferenceRoute(),
+    new ReadGlobalBackgroundImagesPreferenceRoute(),
     new ReadNamesPreferenceRoute(),
     new InfosPreferenceRoute(),
     new CommandCenterPreferenceRoute(),
