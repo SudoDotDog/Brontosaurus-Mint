@@ -172,7 +172,28 @@ export const Throwable_GetGroupsByNames = async (groups: string[]): Promise<IGro
         const current: IGroupModel | null = await GroupController.getGroupByName(group);
 
         if (!current) {
-            throw createError(ERROR_CODE.GROUP_NOT_FOUND);
+            throw createError(ERROR_CODE.GROUP_NOT_FOUND, group);
+        }
+
+        result.push(current);
+    }
+
+    return result;
+};
+
+// eslint-disable-next-line camelcase
+export const Throwable_GetTagsByNames = async (tags: string[]): Promise<ITagModel[]> => {
+
+    const createError: ErrorCreationFunction = Connor.getErrorCreator(MODULE_NAME);
+
+    const result: ITagModel[] = [];
+
+    for (const tag of tags) {
+
+        const current: ITagModel | null = await TagController.getTagByName(tag);
+
+        if (!current) {
+            throw createError(ERROR_CODE.TAG_NOT_FOUND, tag);
         }
 
         result.push(current);

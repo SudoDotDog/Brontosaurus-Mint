@@ -4,7 +4,7 @@
  * @description Update
  */
 
-import { ApplicationController, ApplicationRedirection, IApplicationModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
+import { ApplicationController, ApplicationRedirection, IApplicationModel, IGroupModel, INTERNAL_USER_GROUP, ITagModel } from "@brontosaurus/db";
 import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeExtract } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
@@ -13,7 +13,7 @@ import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 // eslint-disable-next-line camelcase
-import { Throwable_GetGroupsByNames } from "../../util/auth";
+import { Throwable_GetGroupsByNames, Throwable_GetTagsByNames } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 
 export type ApplicationUpdatePattern = Partial<{
@@ -100,8 +100,8 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
 
             if (update.requireTags && Array.isArray(update.requireTags)) {
 
-                const applicationRequireTags: IGroupModel[] = await Throwable_GetGroupsByNames(update.requireTags);
-                const requireTagsGroups: ObjectID[] = applicationRequireTags.map((group: IGroupModel) => group._id);
+                const applicationRequireTags: ITagModel[] = await Throwable_GetTagsByNames(update.requireTags);
+                const requireTagsGroups: ObjectID[] = applicationRequireTags.map((tag: ITagModel) => tag._id);
 
                 application.requireTags = requireTagsGroups;
             }
