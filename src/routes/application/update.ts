@@ -22,13 +22,16 @@ export type ApplicationUpdatePattern = Partial<{
     readonly favicon: string;
     readonly name: string;
     readonly expire: number;
-    readonly groups: string[];
+
     readonly redirections: ApplicationRedirection[];
     readonly iFrameProtocol: boolean;
     readonly postProtocol: boolean;
     readonly alertProtocol: boolean;
     readonly noneProtocol: boolean;
+
+    readonly groups: string[];
     readonly requires: string[];
+    readonly requireTags: string[];
 }>;
 
 export type UpdateApplicationBody = {
@@ -71,14 +74,6 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
 
             const update: ApplicationUpdatePattern = body.direct('application');
 
-            if (update.groups && Array.isArray(update.groups)) {
-
-                const applicationGroups: IGroupModel[] = await Throwable_GetGroupsByNames(update.groups);
-                const idsGroups: ObjectID[] = applicationGroups.map((group: IGroupModel) => group._id);
-
-                application.groups = idsGroups;
-            }
-
             if (update.redirections && Array.isArray(update.redirections)) {
 
                 application.redirections = update.redirections.map((each: ApplicationRedirection) => ({
@@ -87,12 +82,28 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 }));
             }
 
+            if (update.groups && Array.isArray(update.groups)) {
+
+                const applicationGroups: IGroupModel[] = await Throwable_GetGroupsByNames(update.groups);
+                const idsGroups: ObjectID[] = applicationGroups.map((group: IGroupModel) => group._id);
+
+                application.groups = idsGroups;
+            }
+
             if (update.requires && Array.isArray(update.requires)) {
 
                 const applicationRequires: IGroupModel[] = await Throwable_GetGroupsByNames(update.requires);
                 const idsGroups: ObjectID[] = applicationRequires.map((group: IGroupModel) => group._id);
 
                 application.requires = idsGroups;
+            }
+
+            if (update.requireTags && Array.isArray(update.requireTags)) {
+
+                const applicationRequireTags: IGroupModel[] = await Throwable_GetGroupsByNames(update.requireTags);
+                const requireTagsGroups: ObjectID[] = applicationRequireTags.map((group: IGroupModel) => group._id);
+
+                application.requireTags = requireTagsGroups;
             }
 
             if (update.name && typeof update.name === 'string') {
