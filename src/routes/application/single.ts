@@ -28,7 +28,6 @@ export type SingleApplicationFetchResponse = {
     readonly name: string;
     readonly key: string;
     readonly expire: number;
-    readonly groups: string[];
 
     readonly redirections: ApplicationRedirection[];
     readonly iFrameProtocol: boolean;
@@ -36,11 +35,14 @@ export type SingleApplicationFetchResponse = {
     readonly alertProtocol: boolean;
     readonly noneProtocol: boolean;
 
-    readonly requires: string[];
     readonly green: string;
     readonly greenAccess: boolean;
     readonly portalAccess: boolean;
     readonly publicKey: string;
+
+    readonly groups: string[];
+    readonly requires: string[];
+    readonly requireTags: string[];
 };
 
 export class SingleApplicationRoute extends BrontosaurusRoute {
@@ -78,6 +80,7 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
 
             const applicationGroups: string[] = await Throwable_MapGroups(application.groups);
             const applicationRequires: string[] = await Throwable_MapGroups(application.requires);
+            const applicationRequireTags: string[] = await Throwable_MapGroups(application.requireTags);
 
             const response: SingleApplicationFetchResponse = {
 
@@ -88,7 +91,6 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
                 avatar: application.avatar,
                 favicon: application.favicon,
                 expire: application.expire,
-                groups: applicationGroups,
 
                 redirections: application.redirections,
                 iFrameProtocol: application.iFrameProtocol,
@@ -100,7 +102,10 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
                 greenAccess: application.greenAccess,
                 portalAccess: application.portalAccess,
                 publicKey: application.publicKey,
+
+                groups: applicationGroups,
                 requires: applicationRequires,
+                requireTags: applicationRequireTags,
             };
 
             res.agent.add('application', response);
