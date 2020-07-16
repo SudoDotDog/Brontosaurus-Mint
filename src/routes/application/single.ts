@@ -12,7 +12,7 @@ import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 // eslint-disable-next-line camelcase
-import { Throwable_MapGroups } from "../../util/auth";
+import { Throwable_MapGroups, Throwable_MapTags } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 
 export type SingleApplicationBody = {
@@ -80,7 +80,7 @@ export class SingleApplicationRoute extends BrontosaurusRoute {
 
             const applicationGroups: string[] = await Throwable_MapGroups(application.groups);
             const applicationRequires: string[] = await Throwable_MapGroups(application.requires);
-            const applicationRequireTags: string[] = await Throwable_MapGroups(application.requireTags);
+            const applicationRequireTags: string[] = await Throwable_MapTags(application.requireTags);
 
             const response: SingleApplicationFetchResponse = {
 
