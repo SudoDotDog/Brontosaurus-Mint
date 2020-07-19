@@ -8,14 +8,16 @@ import { AccountController, EMAIL_VALIDATE_RESPONSE, GroupController, IAccountMo
 import { getNamespaceByNamespace } from "@brontosaurus/db/controller/namespace";
 import { ITagModel } from "@brontosaurus/db/model/tag";
 import { Basics } from "@brontosaurus/definition";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createListPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { ObjectID } from "bson";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 import { ERROR_CODE, panic } from "../../util/error";
+import { createInfoPattern } from "../../util/pattern";
 import { jsonifyBasicRecords } from "../../util/token";
 
 export type RegisterRouteBody = {
@@ -34,6 +36,34 @@ export type RegisterRouteBody = {
     readonly organization?: string;
 };
 
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    displayName: createStringPattern({
+        optional: true,
+    }),
+    email: createStringPattern({
+        optional: true,
+    }),
+    phone: createStringPattern({
+        optional: true,
+    }),
+
+    username: createStringPattern(),
+    namespace: createStringPattern(),
+    password: createStringPattern(),
+    infos: createInfoPattern(),
+    tags: createListPattern(
+        createStringPattern(),
+    ),
+    groups: createListPattern(
+        createStringPattern(),
+    ),
+
+    organization: createStringPattern({
+        optional: true,
+    }),
+});
+
 export class RegisterRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/account/register';
@@ -43,12 +73,13 @@ export class RegisterRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._registerHandler.bind(this), 'Register'),
     ];
 
     private async _registerHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<RegisterRouteBody> = Safe.extract(req.body as RegisterRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: RegisterRouteBody = req.body;
 
         try {
 
@@ -56,34 +87,25 @@ export class RegisterRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const username: string = body.directEnsure('username');
-            const namespace: string = body.directEnsure('namespace');
-            const password: string = body.directEnsure('password');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const tags: string[] = body.direct('tags');
-            const groups: string[] = body.direct('groups');
-
-            if (!Array.isArray(tags)) {
-                throw panic.code(ERROR_CODE.INSUFFICIENT_INFORMATION, 'tags');
+            if (!verify.succeed) {
+                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            if (!Array.isArray(groups)) {
-                throw panic.code(ERROR_CODE.INSUFFICIENT_INFORMATION, 'groups');
-            }
-
-            const usernameValidationResult: USERNAME_VALIDATE_RESPONSE = validateUsername(username);
+            const usernameValidationResult: USERNAME_VALIDATE_RESPONSE = validateUsername(body.username);
 
             if (usernameValidationResult !== USERNAME_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_USERNAME, usernameValidationResult);
             }
 
-            const namespaceValidationResult: boolean = validateNamespace(namespace);
+            const namespaceValidationResult: boolean = validateNamespace(body.namespace);
 
             if (!namespaceValidationResult) {
                 throw this._error(ERROR_CODE.INVALID_NAMESPACE);
             }
 
-            const passwordValidationResult: PASSWORD_VALIDATE_RESPONSE = validatePassword(password);
+            const passwordValidationResult: PASSWORD_VALIDATE_RESPONSE = validatePassword(body.password);
 
             if (passwordValidationResult !== PASSWORD_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_PASSWORD, passwordValidationResult);
@@ -105,36 +127,41 @@ export class RegisterRoute extends BrontosaurusRoute {
                 }
             }
 
-            const namespaceInstance: INamespaceModel | null = await getNamespaceByNamespace(namespace);
+            const namespaceInstance: INamespaceModel | null = await getNamespaceByNamespace(body.namespace);
 
             if (!namespaceInstance) {
-                throw this._error(ERROR_CODE.NAMESPACE_NOT_FOUND, namespace);
+                throw this._error(ERROR_CODE.NAMESPACE_NOT_FOUND, body.namespace);
             }
 
-            const infoLine: Record<string, Basics> | string = body.direct('infos');
             const infos: Record<string, Basics> = jsonifyBasicRecords(
-                infoLine,
-                this._error(ERROR_CODE.INFO_LINE_FORMAT_ERROR, infoLine.toString()));
+                body.infos,
+                this._error(
+                    ERROR_CODE.INFO_LINE_FORMAT_ERROR,
+                    body.infos.toString(),
+                ));
 
-            const isDuplicated: boolean = await AccountController.isAccountDuplicatedByUsernameAndNamespace(username, namespaceInstance._id);
+            const isDuplicated: boolean = await AccountController.isAccountDuplicatedByUsernameAndNamespace(
+                body.username,
+                namespaceInstance._id,
+            );
 
             if (isDuplicated) {
-                throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
+                throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, body.username);
             }
 
             const account: IAccountModel = await this._createUnsavedAccount(
-                username,
-                password,
+                body.username,
+                body.password,
                 namespaceInstance._id,
-                req.body.displayName,
-                req.body.email,
-                req.body.phone,
+                body.displayName,
+                body.email,
+                body.phone,
                 infos,
-                req.body.organization,
+                body.organization,
             );
 
-            const parsedTags: ITagModel[] = await TagController.getTagByNames(tags);
-            const parsedGroups: IGroupModel[] = await GroupController.getGroupByNames(groups);
+            const parsedTags: ITagModel[] = await TagController.getTagByNames(body.tags);
+            const parsedGroups: IGroupModel[] = await GroupController.getGroupByNames(body.groups);
 
             account.tags = parsedTags.map((tag: ITagModel) => tag._id);
             account.groups = parsedGroups.map((group: IGroupModel) => group._id);
