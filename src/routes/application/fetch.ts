@@ -23,7 +23,9 @@ export type FetchApplicationBody = {
 
 const bodyPattern: Pattern = createStrictMapPattern({
 
-    page: createIntegerPattern(),
+    page: createIntegerPattern({
+        maximum: 0,
+    }),
     keyword: createStringPattern(),
 });
 
