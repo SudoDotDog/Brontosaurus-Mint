@@ -5,13 +5,14 @@
  */
 
 import { ApplicationController, COMMON_KEY_VALIDATE_RESPONSE, COMMON_NAME_VALIDATE_RESPONSE, IApplicationModel, INTERNAL_USER_GROUP, validateCommonKey, validateCommonName } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createIntegerPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type CreateApplicationRouteBody = {
 
@@ -19,6 +20,13 @@ export type CreateApplicationRouteBody = {
     readonly key: string;
     readonly expire: number;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    name: createStringPattern(),
+    key: createStringPattern(),
+    expire: createIntegerPattern(),
+});
 
 export class CreateApplicationRoute extends BrontosaurusRoute {
 
@@ -29,12 +37,13 @@ export class CreateApplicationRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._applicationCreateHandler.bind(this), 'Create'),
     ];
 
     private async _applicationCreateHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<CreateApplicationRouteBody> = Safe.extract(req.body as CreateApplicationRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: CreateApplicationRouteBody = req.body;
 
         try {
 
@@ -42,32 +51,34 @@ export class CreateApplicationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const key: string = body.direct('key');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const validateKeyResult: COMMON_KEY_VALIDATE_RESPONSE = validateCommonKey(key);
+            if (!verify.succeed) {
+                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
+            }
+
+            const validateKeyResult: COMMON_KEY_VALIDATE_RESPONSE = validateCommonKey(body.key);
 
             if (validateKeyResult !== COMMON_KEY_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_COMMON_KEY, validateKeyResult);
             }
 
-            const name: string = body.direct('name');
-
-            const validateNameResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(name);
+            const validateNameResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(body.name);
 
             if (validateNameResult !== COMMON_NAME_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_COMMON_NAME, validateNameResult);
             }
 
-            const isDuplicated: boolean = await ApplicationController.isApplicationDuplicatedByKey(key);
+            const isDuplicated: boolean = await ApplicationController.isApplicationDuplicatedByKey(body.key);
 
             if (isDuplicated) {
-                throw this._error(ERROR_CODE.DUPLICATE_APPLICATION, key);
+                throw this._error(ERROR_CODE.DUPLICATE_APPLICATION, body.key);
             }
 
             const application: IApplicationModel = ApplicationController.createUnsavedApplication(
-                name,
-                key,
-                body.direct('expire'),
+                body.name,
+                body.key,
+                body.expire,
                 {},
             );
             await application.save();
