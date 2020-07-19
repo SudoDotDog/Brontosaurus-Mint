@@ -25,7 +25,7 @@ export type GlobalPreferenceRouteBody = {
     readonly entryPage?: string;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     globalAvatar: createStringPattern({
         optional: true,

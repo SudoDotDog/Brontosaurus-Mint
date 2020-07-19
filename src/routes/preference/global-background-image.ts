@@ -20,7 +20,7 @@ export type GlobalBackgroundImagePreferenceRouteBody = {
     readonly globalBackgroundImages?: string[];
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     globalBackgroundImages: createListPattern(
         createStringPattern(),

@@ -34,7 +34,7 @@ export type AdminEditBody = {
     }>;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     username: createStringPattern(),
     namespace: createStringPattern(),

@@ -22,7 +22,7 @@ export type OrganizationFetchMemberBody = {
     readonly page: number;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     organization: createStringPattern(),
     page: createNumberPattern({

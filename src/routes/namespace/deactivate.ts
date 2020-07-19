@@ -19,7 +19,7 @@ export type NamespaceDeactivateRouteBody = {
     readonly namespace: string;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     namespace: createStringPattern(),
 });

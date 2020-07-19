@@ -19,7 +19,7 @@ export type ApplicationActivateRouteBody = {
     readonly application: string;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     application: createStringPattern(),
 });

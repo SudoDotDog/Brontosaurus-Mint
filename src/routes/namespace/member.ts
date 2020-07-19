@@ -21,7 +21,7 @@ export type NamespaceFetchMemberBody = {
     readonly page: number;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     namespace: createStringPattern(),
     page: createNumberPattern({

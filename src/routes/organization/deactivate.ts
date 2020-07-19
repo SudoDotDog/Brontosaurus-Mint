@@ -19,7 +19,7 @@ export type OrganizationDeactivateRouteBody = {
     readonly organization: string;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     organization: createStringPattern(),
 });

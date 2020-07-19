@@ -22,7 +22,7 @@ export type DecoratorFetchMemberBody = {
     readonly page: number;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     decorator: createStringPattern(),
     page: createNumberPattern({

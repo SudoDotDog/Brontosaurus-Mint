@@ -20,7 +20,7 @@ export type AccountDeactivateBody = {
     readonly namespace: string;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     username: createStringPattern(),
     namespace: createStringPattern(),

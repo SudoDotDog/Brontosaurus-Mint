@@ -22,7 +22,7 @@ export type GroupFetchMemberBody = {
     readonly page: number;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     group: createStringPattern(),
     page: createNumberPattern({

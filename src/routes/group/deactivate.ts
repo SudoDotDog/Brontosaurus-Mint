@@ -19,7 +19,7 @@ export type GroupDeactivateBody = {
     readonly group: string;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     group: createStringPattern(),
 });

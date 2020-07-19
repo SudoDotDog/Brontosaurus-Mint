@@ -19,7 +19,7 @@ export type TagDeactivateRouteBody = {
     readonly tag: string;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     tag: createStringPattern(),
 });

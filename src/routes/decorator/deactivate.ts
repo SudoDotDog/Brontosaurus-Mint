@@ -19,7 +19,7 @@ export type DecoratorDeactivateRouteBody = {
     readonly decorator: string;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     decorator: createStringPattern(),
 });

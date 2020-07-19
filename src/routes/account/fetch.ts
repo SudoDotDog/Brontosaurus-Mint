@@ -41,7 +41,7 @@ export type FetchAccountResponse = {
     readonly infos: Record<string, Basics>;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     page: createNumberPattern({
         integer: true,

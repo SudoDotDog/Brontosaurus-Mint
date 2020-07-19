@@ -19,7 +19,7 @@ export type ApplicationDeactivateRouteBody = {
     readonly application: string;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     application: createStringPattern(),
 });

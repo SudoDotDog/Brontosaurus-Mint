@@ -22,7 +22,7 @@ export type TagFetchMemberBody = {
     readonly page: number;
 };
 
-export const bodyPattern: Pattern = createStrictMapPattern({
+const bodyPattern: Pattern = createStrictMapPattern({
 
     tag: createStringPattern(),
     page: createNumberPattern({
