@@ -5,13 +5,14 @@
  */
 
 import { GroupController, IAccountModel, IGroupModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type RemoveGroupBody = {
 
@@ -19,6 +20,13 @@ export type RemoveGroupBody = {
     readonly namespace: string;
     readonly group: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    username: createStringPattern(),
+    namespace: createStringPattern(),
+    group: createStringPattern(),
+});
 
 export class RemoveGroupRoute extends BrontosaurusRoute {
 
@@ -29,12 +37,13 @@ export class RemoveGroupRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._removeGroupHandler.bind(this), 'Remove Group'),
     ];
 
     private async _removeGroupHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<RemoveGroupBody> = Safe.extract(req.body as RemoveGroupBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: RemoveGroupBody = req.body;
 
         try {
 
@@ -42,19 +51,21 @@ export class RemoveGroupRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const username: string = body.directEnsure('username');
-            const namespace: string = body.directEnsure('namespace');
-            const groupName: string = body.directEnsure('group');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(username, namespace);
-            const group: IGroupModel | null = await GroupController.getGroupByName(groupName);
+            if (!verify.succeed) {
+                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
+            }
+
+            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(body.username, body.namespace);
+            const group: IGroupModel | null = await GroupController.getGroupByName(body.group);
 
             if (!account) {
-                throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
+                throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, body.username);
             }
 
             if (!group) {
-                throw this._error(ERROR_CODE.GROUP_NOT_FOUND, groupName);
+                throw this._error(ERROR_CODE.GROUP_NOT_FOUND, body.group);
             }
 
             account.removeGroup(group._id);
