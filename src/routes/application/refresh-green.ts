@@ -53,10 +53,6 @@ export class RefreshGreenApplicationRoute extends BrontosaurusRoute {
                 throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            if (typeof body.key !== 'string') {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'key', 'string', body.key);
-            }
-
             const application: IApplicationModel | null = await ApplicationController.getApplicationByKey(body.key);
 
             if (!application) {
