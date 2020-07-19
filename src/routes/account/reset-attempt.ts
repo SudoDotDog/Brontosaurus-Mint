@@ -5,19 +5,26 @@
  */
 
 import { IAccountModel, INTERNAL_USER_GROUP, MatchController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type ResetAttemptBody = {
 
     readonly username: string;
     readonly namespace: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    username: createStringPattern(),
+    namespace: createStringPattern(),
+});
 
 export class ResetAttemptRoute extends BrontosaurusRoute {
 
@@ -28,12 +35,13 @@ export class ResetAttemptRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._resetAttemptHandler.bind(this), 'Reset Attempt'),
     ];
 
     private async _resetAttemptHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<ResetAttemptBody> = Safe.extract(req.body as ResetAttemptBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: ResetAttemptBody = req.body;
 
         try {
 
@@ -41,13 +49,16 @@ export class ResetAttemptRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const username: string = body.directEnsure('username');
-            const namespace: string = body.directEnsure('namespace');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(username, namespace);
+            if (!verify.succeed) {
+                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
+            }
+
+            const account: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(body.username, body.namespace);
 
             if (!account) {
-                throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
+                throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, body.username);
             }
 
             account.resetAttempt();

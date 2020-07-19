@@ -5,9 +5,10 @@
  */
 
 import { AccountNamespaceMatch, ApplicationCacheAgent, IAccountModel, IApplicationModel, INTERNAL_USER_GROUP, IResetModel, MatchController, ResetController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from "@sudoo/extract";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createIntegerPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
@@ -21,6 +22,16 @@ export type FetchAccountResetsBody = {
 
     readonly page: number;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    username: createStringPattern(),
+    namespace: createStringPattern(),
+
+    page: createIntegerPattern({
+        maximum: 0,
+    }),
+});
 
 export type AccountResetElement = {
 
@@ -47,12 +58,13 @@ export class FetchAccountResetsRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._fetchAccountResetsHandler.bind(this), 'Account Resets'),
     ];
 
     private async _fetchAccountResetsHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<FetchAccountResetsBody> = Safe.extract(req.body as FetchAccountResetsBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: FetchAccountResetsBody = req.body;
 
         try {
 
@@ -60,32 +72,22 @@ export class FetchAccountResetsRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const username: string = body.directEnsure('username');
-            const namespace: string = body.directEnsure('namespace');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const page: number = body.direct('page');
-            if (typeof page !== 'number' || page < 0) {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'page', 'number', (page as any).toString());
+            if (!verify.succeed) {
+                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            if (typeof username !== 'string') {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'username', 'string', (username as any).toString());
-            }
-
-            if (typeof namespace !== 'string') {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'namespace', 'string', (namespace as any).toString());
-            }
-
-            const decoded: string = decodeURIComponent(username);
-            const matchResult: AccountNamespaceMatch = await MatchController.getAccountNamespaceMatchByUsernameAndNamespace(decoded, namespace);
+            const decoded: string = decodeURIComponent(body.username);
+            const matchResult: AccountNamespaceMatch = await MatchController.getAccountNamespaceMatchByUsernameAndNamespace(decoded, body.namespace);
             if (matchResult.succeed === false) {
-                throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, username);
+                throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, decoded);
             }
 
             const account: IAccountModel = matchResult.account;
 
             const pages: number = await ResetController.getSelectedAccountResetPages(account._id, pageLimit);
-            const resets: IResetModel[] = await ResetController.getResetsByAccountAndPage(account._id, pageLimit, Math.floor(page));
+            const resets: IResetModel[] = await ResetController.getResetsByAccountAndPage(account._id, pageLimit, body.page);
 
             const results: AccountResetElement[] = [];
 
