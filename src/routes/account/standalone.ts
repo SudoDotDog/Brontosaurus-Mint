@@ -5,21 +5,30 @@
  */
 
 import { AccountController, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from "@sudoo/extract";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createIntegerPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { getNamespaceMapByNamespaceIds } from "../../data/namespace";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 import { pageLimit } from "../../util/conf";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type FetchStandaloneAccountBody = {
 
     readonly page: number;
     readonly keyword: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    keyword: createStringPattern(),
+    page: createIntegerPattern({
+        maximum: 0,
+    }),
+});
 
 export class FetchStandaloneAccountRoute extends BrontosaurusRoute {
 
@@ -30,12 +39,13 @@ export class FetchStandaloneAccountRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._fetchStandaloneAccountHandler.bind(this), 'Standalone Fetch'),
     ];
 
     private async _fetchStandaloneAccountHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<FetchStandaloneAccountBody> = Safe.extract(req.body as FetchStandaloneAccountBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: FetchStandaloneAccountBody = req.body;
 
         try {
 
@@ -43,18 +53,21 @@ export class FetchStandaloneAccountRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const page: number = body.direct('page');
-            if (typeof page !== 'number' || page < 0) {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'page', 'number', (page as any).toString());
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
+
+            if (!verify.succeed) {
+                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            const keyword: string = body.direct('keyword');
-            if (typeof keyword !== 'string') {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
-            }
-
-            const pages: number = await AccountController.getStandaloneAcitveAccountPagesByKeyword(pageLimit, keyword);
-            const accounts: IAccountModel[] = await AccountController.getStandaloneActiveAccountsByPage(keyword, pageLimit, Math.floor(page));
+            const pages: number = await AccountController.getStandaloneAcitveAccountPagesByKeyword(
+                pageLimit,
+                body.keyword,
+            );
+            const accounts: IAccountModel[] = await AccountController.getStandaloneActiveAccountsByPage(
+                body.keyword,
+                pageLimit,
+                body.page,
+            );
 
             const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(accounts.map((each) => each.namespace));
 
