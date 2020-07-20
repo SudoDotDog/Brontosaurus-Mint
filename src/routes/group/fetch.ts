@@ -5,20 +5,29 @@
  */
 
 import { GroupController, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from "@sudoo/extract";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createIntegerPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 import { pageLimit } from "../../util/conf";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type FetchGroupBody = {
 
     readonly page: number;
     readonly keyword: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    page: createIntegerPattern({
+        minimum: 0,
+    }),
+    keyword: createStringPattern(),
+});
 
 export type GroupResponse = {
 
@@ -37,12 +46,13 @@ export class FetchGroupRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._fetchGroupHandler.bind(this), 'Fetch Group'),
     ];
 
     private async _fetchGroupHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<FetchGroupBody> = Safe.extract(req.body as FetchGroupBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: FetchGroupBody = req.body;
 
         try {
 
@@ -50,18 +60,24 @@ export class FetchGroupRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const page: number = body.direct('page');
-            if (typeof page !== 'number' || page < 0) {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'page', 'number', (page as any).toString());
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
+
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
-            const keyword: string = body.direct('keyword');
-            if (typeof keyword !== 'string') {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'keyword', 'string', (keyword as any).toString());
-            }
-
-            const pages: number = await GroupController.getSelectedGroupPages(pageLimit, keyword);
-            const groups: IGroupModel[] = await GroupController.getSelectedGroupsByPage(pageLimit, Math.floor(page), keyword);
+            const pages: number = await GroupController.getSelectedGroupPages(
+                pageLimit,
+                body.keyword,
+            );
+            const groups: IGroupModel[] = await GroupController.getSelectedGroupsByPage(
+                pageLimit,
+                body.page,
+                body.keyword,
+            );
 
             const parsed: GroupResponse[] = groups.map((group: IGroupModel) => ({
                 active: group.active,
