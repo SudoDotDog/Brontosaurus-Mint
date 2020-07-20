@@ -5,13 +5,14 @@
  */
 
 import { DecoratorController, GroupController, IDecoratorModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createListPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type UpdateDecoratorBody = {
 
@@ -20,6 +21,20 @@ export type UpdateDecoratorBody = {
     readonly addableGroups: string[];
     readonly removableGroups: string[];
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    name: createStringPattern(),
+    description: createStringPattern({
+        optional: true,
+    }),
+    addableGroups: createListPattern(
+        createStringPattern(),
+    ),
+    removableGroups: createListPattern(
+        createStringPattern(),
+    ),
+});
 
 export class UpdateDecoratorRoute extends BrontosaurusRoute {
 
@@ -30,12 +45,13 @@ export class UpdateDecoratorRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._updateDecoratorHandler.bind(this), 'Update Decorator'),
     ];
 
     private async _updateDecoratorHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<UpdateDecoratorBody> = Safe.extract(req.body as UpdateDecoratorBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: UpdateDecoratorBody = req.body;
 
         try {
 
@@ -43,20 +59,25 @@ export class UpdateDecoratorRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const name: string = body.directEnsure('name');
-            const addable: string[] = body.direct('addableGroups');
-            const removable: string[] = body.direct('removableGroups');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const decorator: IDecoratorModel | null = await DecoratorController.getDecoratorByName(name);
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
+            }
+
+            const decorator: IDecoratorModel | null = await DecoratorController.getDecoratorByName(body.name);
 
             if (!decorator) {
                 throw this._error(ERROR_CODE.DECORATOR_NOT_FOUND, name);
             }
 
-            const addableGroups: IGroupModel[] = await GroupController.getGroupByNames(addable);
-            const removableGroups: IGroupModel[] = await GroupController.getGroupByNames(removable);
+            const addableGroups: IGroupModel[] = await GroupController.getGroupByNames(body.addableGroups);
+            const removableGroups: IGroupModel[] = await GroupController.getGroupByNames(body.removableGroups);
 
-            const description: any = req.body.description;
+            const description: any = body.description;
 
             if (typeof description === 'string') {
                 decorator.description = description;
