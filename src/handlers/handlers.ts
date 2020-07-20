@@ -9,7 +9,6 @@ import { IBrontosaurusBody } from "@brontosaurus/definition";
 import { SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { Safe, SafeValue } from "@sudoo/extract";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
-// eslint-disable-next-line camelcase
 import { compareGroups, getPrincipleFromToken, parseBearerAuthorization, Throwable_GetBody, Throwable_MapGroups, Throwable_ValidateToken } from "../util/auth";
 
 export const createTokenHandler = (): SudooExpressHandler =>

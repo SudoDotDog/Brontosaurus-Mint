@@ -12,7 +12,6 @@ import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-// eslint-disable-next-line camelcase
 import { Throwable_MapDecorators, Throwable_MapGroups, Throwable_MapTags } from "../../util/auth";
 import { ERROR_CODE, panic } from "../../util/error";
 

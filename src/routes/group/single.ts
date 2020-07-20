@@ -13,7 +13,6 @@ import { getNamespaceMapByNamespaceIds } from "../../data/namespace";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-// eslint-disable-next-line camelcase
 import { Throwable_MapDecorators } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 

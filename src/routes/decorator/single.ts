@@ -11,7 +11,6 @@ import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-// eslint-disable-next-line camelcase
 import { Throwable_MapGroups } from "../../util/auth";
 import { ERROR_CODE } from "../../util/error";
 
