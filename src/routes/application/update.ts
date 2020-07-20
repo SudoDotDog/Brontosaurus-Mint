@@ -7,7 +7,7 @@
 import { ApplicationController, ApplicationRedirection, IApplicationModel, IGroupModel, INTERNAL_USER_GROUP, ITagModel } from "@brontosaurus/db";
 import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
-import { createBooleanPattern, createListPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { createBooleanPattern, createIntegerPattern, createListPattern, createMapPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
 import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { ObjectID } from "bson";
 import { BrontosaurusRoute } from "../../handlers/basic";
@@ -44,7 +44,7 @@ export type UpdateApplicationBody = {
 const bodyPattern: Pattern = createStrictMapPattern({
 
     key: createStringPattern(),
-    application: createStrictMapPattern({
+    application: createMapPattern({
         avatar: createStringPattern({
             optional: true,
         }),
@@ -54,8 +54,8 @@ const bodyPattern: Pattern = createStrictMapPattern({
         name: createStringPattern({
             optional: true,
         }),
-        expire: createStringPattern({
-            optional: true,
+        expire: createIntegerPattern({
+            minimum: 0,
         }),
 
         redirections: createListPattern(
