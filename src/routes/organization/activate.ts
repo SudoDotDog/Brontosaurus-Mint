@@ -50,7 +50,10 @@ export class OrganizationActivateRoute extends BrontosaurusRoute {
             const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
             if (!verify.succeed) {
-                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
             const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(body.organization);

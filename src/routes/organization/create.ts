@@ -5,13 +5,14 @@
  */
 
 import { COMMON_NAME_VALIDATE_RESPONSE, IAccountModel, INTERNAL_USER_GROUP, IOrganizationModel, MatchController, OrganizationController, validateCommonName } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type OrganizationCreateRouteBody = {
 
@@ -19,6 +20,13 @@ export type OrganizationCreateRouteBody = {
     readonly owner: string;
     readonly ownerNamespace: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    name: createStringPattern(),
+    owner: createStringPattern(),
+    ownerNamespace: createStringPattern(),
+});
 
 export class OrganizationCreateRoute extends BrontosaurusRoute {
 
@@ -29,12 +37,13 @@ export class OrganizationCreateRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._createOrganizationHandler.bind(this), 'Create Organization'),
     ];
 
     private async _createOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<OrganizationCreateRouteBody> = Safe.extract(req.body as OrganizationCreateRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: OrganizationCreateRouteBody = req.body;
 
         try {
 
@@ -42,26 +51,40 @@ export class OrganizationCreateRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const name: string = body.directEnsure('name');
-            const owner: string = body.directEnsure('owner');
-            const ownerNamespace: string = body.directEnsure('ownerNamespace');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(name);
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
+            }
+
+            const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(body.name);
 
             if (validateResult !== COMMON_NAME_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_COMMON_NAME, validateResult);
             }
 
-            const isDuplicated: boolean = await OrganizationController.isOrganizationDuplicatedByName(name);
+            const isDuplicated: boolean = await OrganizationController.isOrganizationDuplicatedByName(body.name);
 
             if (isDuplicated) {
-                throw this._error(ERROR_CODE.DUPLICATE_ORGANIZATION, name);
+                throw this._error(
+                    ERROR_CODE.DUPLICATE_ORGANIZATION,
+                    body.name,
+                );
             }
 
-            const ownerUser: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(owner, ownerNamespace);
+            const ownerUser: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(
+                body.owner,
+                body.ownerNamespace,
+            );
 
             if (!ownerUser) {
-                throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, owner);
+                throw this._error(
+                    ERROR_CODE.ACCOUNT_NOT_FOUND,
+                    body.owner,
+                );
             }
 
             if (ownerUser.organization) {
@@ -76,7 +99,7 @@ export class OrganizationCreateRoute extends BrontosaurusRoute {
             }
 
 
-            const organization: IOrganizationModel = OrganizationController.createUnsavedOrganization(name, ownerUser._id);
+            const organization: IOrganizationModel = OrganizationController.createUnsavedOrganization(body.name, ownerUser._id);
             ownerUser.organization = organization._id;
 
             await ownerUser.save();
