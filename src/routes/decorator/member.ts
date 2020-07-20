@@ -7,7 +7,7 @@
 import { AccountController, DecoratorController, IAccount, IDecoratorModel, INamespaceModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
 import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
-import { createNumberPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { createIntegerPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
 import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { getNamespaceMapByNamespaceIds } from "../../data/namespace";
 import { BrontosaurusRoute } from "../../handlers/basic";
@@ -25,8 +25,7 @@ export type DecoratorFetchMemberBody = {
 const bodyPattern: Pattern = createStrictMapPattern({
 
     decorator: createStringPattern(),
-    page: createNumberPattern({
-        integer: true,
+    page: createIntegerPattern({
         minimum: 0,
     }),
 });
