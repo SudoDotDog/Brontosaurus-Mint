@@ -5,18 +5,24 @@
  */
 
 import { INTERNAL_USER_GROUP, ITagModel, TagController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from "@sudoo/extract";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type SingleTagBody = {
 
     readonly name: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    name: createStringPattern(),
+});
 
 export class SingleTagRoute extends BrontosaurusRoute {
 
@@ -27,12 +33,13 @@ export class SingleTagRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._singleTagHandler.bind(this), 'Fetch Single Tag'),
     ];
 
     private async _singleTagHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<SingleTagBody> = Safe.extract(req.body as SingleTagBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: SingleTagBody = req.body;
 
         try {
 
@@ -40,15 +47,19 @@ export class SingleTagRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const name: string = body.direct('name');
-            if (typeof name !== 'string') {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'name', 'string', (name as any).toString());
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
+
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
-            const decoded: string = decodeURIComponent(name);
+            const decoded: string = decodeURIComponent(body.name);
             const tag: ITagModel | null = await TagController.getTagByName(decoded);
             if (!tag) {
-                throw this._error(ERROR_CODE.TAG_NOT_FOUND, name);
+                throw this._error(ERROR_CODE.TAG_NOT_FOUND, decoded);
             }
 
             res.agent.migrate({

@@ -5,19 +5,28 @@
  */
 
 import { INTERNAL_USER_GROUP, ITagModel, TagController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type UpdateTagBody = {
 
     readonly name: string;
     readonly description?: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    name: createStringPattern(),
+    description: createStringPattern({
+        optional: true,
+    }),
+});
 
 export class UpdateTagRoute extends BrontosaurusRoute {
 
@@ -28,12 +37,13 @@ export class UpdateTagRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._updateTagHandler.bind(this), 'Update Tag'),
     ];
 
     private async _updateTagHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<UpdateTagBody> = Safe.extract(req.body as UpdateTagBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: UpdateTagBody = req.body;
 
         try {
 
@@ -41,16 +51,22 @@ export class UpdateTagRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const name: string = body.directEnsure('name');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const tag: ITagModel | null = await TagController.getTagByName(name);
-
-            if (!tag) {
-                throw this._error(ERROR_CODE.TAG_NOT_FOUND, name);
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
-            const description: any = req.body.description;
+            const tag: ITagModel | null = await TagController.getTagByName(body.name);
 
+            if (!tag) {
+                throw this._error(ERROR_CODE.TAG_NOT_FOUND, body.name);
+            }
+
+            const description: string | undefined = body.description;
             if (typeof description === 'string') {
                 tag.description = description;
             }
