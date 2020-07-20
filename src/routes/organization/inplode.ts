@@ -6,14 +6,16 @@
 
 import { AccountController, COMMON_NAME_VALIDATE_RESPONSE, EMAIL_VALIDATE_RESPONSE, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, ITagModel, NamespaceController, OrganizationController, PHONE_VALIDATE_RESPONSE, TagController, USERNAME_VALIDATE_RESPONSE, validateCommonName, validateEmail, validateNamespace, validatePhone, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createListPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 import { createRandomTempPassword } from "../../util/auth";
 import { ERROR_CODE, panic } from "../../util/error";
+import { createInfoPattern } from "../../util/pattern";
 import { jsonifyBasicRecords } from "../../util/token";
 
 export type OrganizationInplodeRouteBody = {
@@ -29,6 +31,27 @@ export type OrganizationInplodeRouteBody = {
     readonly phone?: string;
 };
 
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    name: createStringPattern(),
+    username: createStringPattern(),
+    namespace: createStringPattern(),
+    tags: createListPattern(
+        createStringPattern(),
+    ),
+    infos: createInfoPattern(),
+
+    displayName: createStringPattern({
+        optional: true,
+    }),
+    email: createStringPattern({
+        optional: true,
+    }),
+    phone: createStringPattern({
+        optional: true,
+    }),
+});
+
 export class OrganizationInplodeRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/organization/inplode';
@@ -38,12 +61,13 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._inplodeOrganizationHandler.bind(this), 'Inplode Organization'),
     ];
 
     private async _inplodeOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<OrganizationInplodeRouteBody> = Safe.extract(req.body as OrganizationInplodeRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: OrganizationInplodeRouteBody = req.body;
 
         try {
 
@@ -51,28 +75,28 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const username: string = body.directEnsure('username');
-            const namespace: string = body.directEnsure('namespace');
-            const name: string = body.directEnsure('name');
-            const tags: string[] = body.direct('tags');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            if (!Array.isArray(tags)) {
-                throw this._error(ERROR_CODE.INSUFFICIENT_INFORMATION, tags as any);
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
-            const usernameValidationResult: USERNAME_VALIDATE_RESPONSE = validateUsername(username);
+            const usernameValidationResult: USERNAME_VALIDATE_RESPONSE = validateUsername(body.username);
 
             if (usernameValidationResult !== USERNAME_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_USERNAME, usernameValidationResult);
             }
 
-            const namespaceValidationResult: boolean = validateNamespace(namespace);
+            const namespaceValidationResult: boolean = validateNamespace(body.namespace);
 
             if (!namespaceValidationResult) {
                 throw this._error(ERROR_CODE.INVALID_NAMESPACE, usernameValidationResult);
             }
 
-            const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(name);
+            const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(body.name);
 
             if (validateResult !== COMMON_NAME_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_COMMON_NAME, validateResult);
@@ -101,45 +125,63 @@ export class OrganizationInplodeRoute extends BrontosaurusRoute {
                 }
             }
 
-            const infoLine: Record<string, Basics> | string = body.direct('infos');
             const infos: Record<string, Basics> = jsonifyBasicRecords(
-                infoLine,
-                this._error(ERROR_CODE.INFO_LINE_FORMAT_ERROR, infoLine.toString()));
+                body.infos,
+                this._error(
+                    ERROR_CODE.INFO_LINE_FORMAT_ERROR,
+                    body.infos.toString(),
+                ));
 
-            const namespaceInstance: INamespaceModel | null = await NamespaceController.getNamespaceByNamespace(namespace);
+            const namespaceInstance: INamespaceModel | null = await NamespaceController.getNamespaceByNamespace(body.namespace);
 
             if (!namespaceInstance) {
-                throw panic.code(ERROR_CODE.NAMESPACE_NOT_FOUND, namespace);
+                throw panic.code(
+                    ERROR_CODE.NAMESPACE_NOT_FOUND,
+                    body.namespace,
+                );
             }
 
-            const isAccountDuplicated: boolean = await AccountController.isAccountDuplicatedByUsernameAndNamespace(username, namespaceInstance._id);
+            const isAccountDuplicated: boolean = await AccountController.isAccountDuplicatedByUsernameAndNamespace(
+                body.username,
+                namespaceInstance._id,
+            );
 
             if (isAccountDuplicated) {
-                throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
+                throw this._error(
+                    ERROR_CODE.DUPLICATE_ACCOUNT,
+                    body.username,
+                );
             }
 
-            const isOrganizationDuplicated: boolean = await OrganizationController.isOrganizationDuplicatedByName(name);
+            const isOrganizationDuplicated: boolean = await OrganizationController.isOrganizationDuplicatedByName(body.name);
 
             if (isOrganizationDuplicated) {
-                throw this._error(ERROR_CODE.DUPLICATE_ORGANIZATION, name);
+
+                throw this._error(
+                    ERROR_CODE.DUPLICATE_ORGANIZATION,
+                    body.name,
+                );
             }
 
             const tempPassword: string = createRandomTempPassword();
 
             const account: IAccountModel = AccountController.createOnLimboUnsavedAccount(
-                username,
+                body.username,
                 tempPassword,
                 namespaceInstance._id,
-                req.body.displayName,
-                req.body.email,
-                req.body.phone,
+                body.displayName,
+                body.email,
+                body.phone,
                 undefined,
                 [],
                 infos,
             );
-            const organization: IOrganizationModel = OrganizationController.createUnsavedOrganization(name, account._id);
+            const organization: IOrganizationModel = OrganizationController.createUnsavedOrganization(
+                body.name,
+                account._id,
+            );
 
-            const parsedTags: ITagModel[] = await TagController.getTagByNames(tags);
+            const parsedTags: ITagModel[] = await TagController.getTagByNames(body.tags);
 
             organization.tags = parsedTags.map((tag: ITagModel) => tag._id);
             account.organization = organization._id;
