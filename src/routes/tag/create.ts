@@ -5,19 +5,28 @@
  */
 
 import { COMMON_NAME_VALIDATE_RESPONSE, INTERNAL_USER_GROUP, ITagModel, TagController, validateCommonName } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type CreateTagRouteBody = {
 
     readonly name: string;
     readonly description?: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    name: createStringPattern(),
+    description: createStringPattern({
+        optional: true,
+    }),
+});
 
 export class CreateTagRoute extends BrontosaurusRoute {
 
@@ -28,12 +37,13 @@ export class CreateTagRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._tagCreateHandler.bind(this), 'Create Tag'),
     ];
 
     private async _tagCreateHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<CreateTagRouteBody> = Safe.extract(req.body as CreateTagRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: CreateTagRouteBody = req.body;
 
         try {
 
@@ -41,23 +51,34 @@ export class CreateTagRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const name: string = body.direct('name');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(name);
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
+            }
+
+            const validateResult: COMMON_NAME_VALIDATE_RESPONSE = validateCommonName(body.name);
 
             if (validateResult !== COMMON_NAME_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_COMMON_NAME, validateResult);
             }
 
-            const description: string | undefined = req.body.description;
-
-            const isDuplicated: boolean = await TagController.isTagDuplicatedByName(name);
+            const isDuplicated: boolean = await TagController.isTagDuplicatedByName(body.name);
 
             if (isDuplicated) {
-                throw this._error(ERROR_CODE.DUPLICATE_TAG, name);
+                throw this._error(
+                    ERROR_CODE.DUPLICATE_TAG,
+                    body.name,
+                );
             }
 
-            const tag: ITagModel = TagController.createUnsavedTag(name, description);
+            const tag: ITagModel = TagController.createUnsavedTag(
+                body.name,
+                body.description,
+            );
             await tag.save();
 
             res.agent.add('tag', tag.name);
