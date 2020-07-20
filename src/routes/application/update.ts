@@ -5,39 +5,98 @@
  */
 
 import { ApplicationController, ApplicationRedirection, IApplicationModel, IGroupModel, INTERNAL_USER_GROUP, ITagModel } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from "@sudoo/extract";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createBooleanPattern, createListPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { ObjectID } from "bson";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 import { Throwable_GetGroupsByNames, Throwable_GetTagsByNames } from "../../util/auth";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
+import { createRedirectionPattern } from "../../util/pattern";
 
-export type ApplicationUpdatePattern = Partial<{
+export type ApplicationUpdatePattern = {
 
-    readonly avatar: string;
-    readonly favicon: string;
-    readonly name: string;
-    readonly expire: number;
+    readonly avatar?: string;
+    readonly favicon?: string;
+    readonly name?: string;
+    readonly expire?: number;
 
-    readonly redirections: ApplicationRedirection[];
-    readonly iFrameProtocol: boolean;
-    readonly postProtocol: boolean;
-    readonly alertProtocol: boolean;
-    readonly noneProtocol: boolean;
+    readonly redirections?: ApplicationRedirection[];
+    readonly iFrameProtocol?: boolean;
+    readonly postProtocol?: boolean;
+    readonly alertProtocol?: boolean;
+    readonly noneProtocol?: boolean;
 
-    readonly groups: string[];
-    readonly requires: string[];
-    readonly requireTags: string[];
-}>;
+    readonly groups?: string[];
+    readonly requires?: string[];
+    readonly requireTags?: string[];
+};
 
 export type UpdateApplicationBody = {
 
     readonly key: string;
     readonly application: ApplicationUpdatePattern;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    key: createStringPattern(),
+    application: createStrictMapPattern({
+        avatar: createStringPattern({
+            optional: true,
+        }),
+        favicon: createStringPattern({
+            optional: true,
+        }),
+        name: createStringPattern({
+            optional: true,
+        }),
+        expire: createStringPattern({
+            optional: true,
+        }),
+
+        redirections: createListPattern(
+            createRedirectionPattern(),
+            {
+                optional: true,
+            },
+        ),
+        iFrameProtocol: createBooleanPattern({
+            optional: true,
+        }),
+        postProtocol: createBooleanPattern({
+            optional: true,
+        }),
+        alertProtocol: createBooleanPattern({
+            optional: true,
+        }),
+        noneProtocol: createBooleanPattern({
+            optional: true,
+        }),
+
+        groups: createListPattern(
+            createStringPattern(),
+            {
+                optional: true,
+            },
+        ),
+        requires: createListPattern(
+            createStringPattern(),
+            {
+                optional: true,
+            },
+        ),
+        requireTags: createListPattern(
+            createStringPattern(),
+            {
+                optional: true,
+            },
+        ),
+    }),
+});
 
 export class UpdateApplicationRoute extends BrontosaurusRoute {
 
@@ -48,12 +107,13 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._updateApplicationHandler.bind(this), 'Update Application'),
     ];
 
     private async _updateApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<UpdateApplicationBody> = Safe.extract(req.body as UpdateApplicationBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: UpdateApplicationBody = req.body;
 
         try {
 
@@ -61,27 +121,31 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const key: string = body.direct('key');
-            if (typeof key !== 'string') {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'key', 'string', (key as any).toString());
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
+
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
-            const application: IApplicationModel | null = await ApplicationController.getApplicationByKey(key);
+            const application: IApplicationModel | null = await ApplicationController.getApplicationByKey(body.key);
             if (!application) {
-                throw this._error(ERROR_CODE.APPLICATION_KEY_NOT_FOUND, key);
+                throw this._error(ERROR_CODE.APPLICATION_KEY_NOT_FOUND, body.key);
             }
 
-            const update: ApplicationUpdatePattern = body.direct('application');
+            const update: ApplicationUpdatePattern = body.application;
 
-            if (update.redirections && Array.isArray(update.redirections)) {
+            if (update.redirections) {
 
-                application.redirections = update.redirections.map((each: ApplicationRedirection) => ({
+                application.redirections = update.redirections.map((each: ApplicationRedirection): ApplicationRedirection => ({
                     name: each.name,
                     regexp: each.regexp,
                 }));
             }
 
-            if (update.groups && Array.isArray(update.groups)) {
+            if (update.groups) {
 
                 const applicationGroups: IGroupModel[] = await Throwable_GetGroupsByNames(update.groups);
                 const idsGroups: ObjectID[] = applicationGroups.map((group: IGroupModel) => group._id);
@@ -89,7 +153,7 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 application.groups = idsGroups;
             }
 
-            if (update.requires && Array.isArray(update.requires)) {
+            if (update.requires) {
 
                 const applicationRequires: IGroupModel[] = await Throwable_GetGroupsByNames(update.requires);
                 const idsGroups: ObjectID[] = applicationRequires.map((group: IGroupModel) => group._id);
@@ -97,7 +161,7 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 application.requires = idsGroups;
             }
 
-            if (update.requireTags && Array.isArray(update.requireTags)) {
+            if (update.requireTags) {
 
                 const applicationRequireTags: ITagModel[] = await Throwable_GetTagsByNames(update.requireTags);
                 const requireTagsGroups: ObjectID[] = applicationRequireTags.map((tag: ITagModel) => tag._id);
@@ -105,16 +169,16 @@ export class UpdateApplicationRoute extends BrontosaurusRoute {
                 application.requireTags = requireTagsGroups;
             }
 
-            if (update.name && typeof update.name === 'string') {
+            if (update.name) {
                 application.name = update.name;
             }
-            if (update.expire && typeof update.expire === 'number') {
+            if (update.expire) {
                 application.expire = Math.ceil(update.expire);
             }
-            if (update.avatar && typeof update.avatar === 'string') {
+            if (update.avatar) {
                 application.avatar = update.avatar;
             }
-            if (update.favicon && typeof update.favicon === 'string') {
+            if (update.favicon) {
                 application.favicon = update.favicon;
             }
 

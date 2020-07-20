@@ -5,18 +5,24 @@
  */
 
 import { ApplicationController, IApplicationModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from "@sudoo/extract";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type TogglePortalAccessApplicationBody = {
 
     readonly key: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    key: createStringPattern(),
+});
 
 export class TogglePortalAccessApplicationRoute extends BrontosaurusRoute {
 
@@ -27,12 +33,13 @@ export class TogglePortalAccessApplicationRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._togglePortalAccessApplicationHandler.bind(this), 'Toggle Portal Access'),
     ];
 
     private async _togglePortalAccessApplicationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<TogglePortalAccessApplicationBody> = Safe.extract(req.body as TogglePortalAccessApplicationBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: TogglePortalAccessApplicationBody = req.body;
 
         try {
 
@@ -40,16 +47,19 @@ export class TogglePortalAccessApplicationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const key: string = body.direct('key');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            if (typeof key !== 'string') {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'key', 'string', (key as any).toString());
+            if (!verify.succeed) {
+                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
             }
 
-            const application: IApplicationModel | null = await ApplicationController.getApplicationByKey(key);
+            const application: IApplicationModel | null = await ApplicationController.getApplicationByKey(body.key);
 
             if (!application) {
-                throw this._error(ERROR_CODE.APPLICATION_KEY_NOT_FOUND, key);
+                throw this._error(
+                    ERROR_CODE.APPLICATION_KEY_NOT_FOUND,
+                    body.key,
+                );
             }
 
             application.togglePortalAccess();
