@@ -5,13 +5,14 @@
  */
 
 import { DecoratorController, IDecoratorModel, INTERNAL_USER_GROUP, IOrganizationModel, ITagModel, OrganizationController, TagController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createIntegerPattern, createListPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type UpdateOrganizationBody = {
 
@@ -20,6 +21,20 @@ export type UpdateOrganizationBody = {
     readonly tags: string[];
     readonly decorators: string[];
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    name: createStringPattern(),
+    limit: createIntegerPattern({
+        minimum: 1,
+    }),
+    tags: createListPattern(
+        createStringPattern(),
+    ),
+    decorators: createListPattern(
+        createStringPattern(),
+    ),
+});
 
 export class UpdateOrganizationRoute extends BrontosaurusRoute {
 
@@ -30,12 +45,13 @@ export class UpdateOrganizationRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._updateOrganizationHandler.bind(this), 'Update Organization'),
     ];
 
     private async _updateOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<UpdateOrganizationBody> = Safe.extract(req.body as UpdateOrganizationBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: UpdateOrganizationBody = req.body;
 
         try {
 
@@ -43,30 +59,26 @@ export class UpdateOrganizationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const name: string = body.directEnsure('name');
-            const limit: number = body.direct('limit');
-            const decoratorsNames: string[] = body.direct('decorators');
-            const tagNames: string[] = body.direct('tags');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            if (!Array.isArray(tagNames)) {
-                throw this._error(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, 'tags');
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
-            if (!Array.isArray(decoratorsNames)) {
-                throw this._error(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, 'decorators');
-            }
-
-            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(name);
+            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(body.name);
 
             if (!organization) {
-                throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, name);
+                throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, body.name);
             }
 
-            const decorators: IDecoratorModel[] = await DecoratorController.getDecoratorByNames(decoratorsNames);
-            const tags: ITagModel[] = await TagController.getTagByNames(tagNames);
+            const decorators: IDecoratorModel[] = await DecoratorController.getDecoratorByNames(body.decorators);
+            const tags: ITagModel[] = await TagController.getTagByNames(body.tags);
 
-            if (typeof limit === 'number' && limit >= 1) {
-                organization.limit = limit;
+            if (typeof body.limit === 'number') {
+                organization.limit = body.limit;
             }
 
             organization.decorators = decorators.map((decorator: IDecoratorModel) => decorator._id);

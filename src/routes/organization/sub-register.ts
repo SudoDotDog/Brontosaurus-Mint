@@ -6,14 +6,16 @@
 
 import { AccountController, EMAIL_VALIDATE_RESPONSE, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, NamespaceController, OrganizationController, PHONE_VALIDATE_RESPONSE, USERNAME_VALIDATE_RESPONSE, validateEmail, validateNamespace, validatePhone, validateUsername } from "@brontosaurus/db";
 import { Basics } from "@brontosaurus/definition";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 import { createRandomTempPassword } from "../../util/auth";
 import { ERROR_CODE, panic } from "../../util/error";
+import { createInfoPattern } from "../../util/pattern";
 import { jsonifyBasicRecords } from "../../util/token";
 
 export type OrganizationSubRegisterRouteBody = {
@@ -28,6 +30,24 @@ export type OrganizationSubRegisterRouteBody = {
     readonly phone?: string;
 };
 
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    organization: createStringPattern(),
+    username: createStringPattern(),
+    namespace: createStringPattern(),
+    infos: createInfoPattern(),
+
+    displayName: createStringPattern({
+        optional: true,
+    }),
+    email: createStringPattern({
+        optional: true,
+    }),
+    phone: createStringPattern({
+        optional: true,
+    }),
+});
+
 export class OrganizationSubRegisterRoute extends BrontosaurusRoute {
 
     public readonly path: string = '/organization/sub-register';
@@ -37,12 +57,13 @@ export class OrganizationSubRegisterRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._organizationCreateSubHandler.bind(this), 'Register Sub Account'),
     ];
 
     private async _organizationCreateSubHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<OrganizationSubRegisterRouteBody> = Safe.extract(req.body as OrganizationSubRegisterRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: OrganizationSubRegisterRouteBody = req.body;
 
         try {
 
@@ -50,16 +71,22 @@ export class OrganizationSubRegisterRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const username: string = body.directEnsure('username');
-            const namespace: string = body.directEnsure('namespace');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const usernameValidationResult: USERNAME_VALIDATE_RESPONSE = validateUsername(username);
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
+            }
+
+            const usernameValidationResult: USERNAME_VALIDATE_RESPONSE = validateUsername(body.username);
 
             if (usernameValidationResult !== USERNAME_VALIDATE_RESPONSE.OK) {
                 throw this._error(ERROR_CODE.INVALID_USERNAME, usernameValidationResult);
             }
 
-            const namespaceValidationResult: boolean = validateNamespace(namespace);
+            const namespaceValidationResult: boolean = validateNamespace(body.namespace);
 
             if (!namespaceValidationResult) {
                 throw this._error(ERROR_CODE.INVALID_NAMESPACE, usernameValidationResult);
@@ -81,39 +108,43 @@ export class OrganizationSubRegisterRoute extends BrontosaurusRoute {
                 }
             }
 
-            const infoLine: Record<string, Basics> | string = body.direct('infos');
             const infos: Record<string, Basics> = jsonifyBasicRecords(
-                infoLine,
-                this._error(ERROR_CODE.INFO_LINE_FORMAT_ERROR, infoLine.toString()));
+                body.infos,
+                this._error(
+                    ERROR_CODE.INFO_LINE_FORMAT_ERROR,
+                    body.infos.toString(),
+                ));
 
-            const namespaceInstance: INamespaceModel | null = await NamespaceController.getNamespaceByNamespace(namespace);
+            const namespaceInstance: INamespaceModel | null = await NamespaceController.getNamespaceByNamespace(body.namespace);
 
             if (!namespaceInstance) {
-                throw panic.code(ERROR_CODE.NAMESPACE_NOT_FOUND, namespace);
+                throw panic.code(ERROR_CODE.NAMESPACE_NOT_FOUND, body.namespace);
             }
 
-            const isAccountDuplicated: boolean = await AccountController.isAccountDuplicatedByUsernameAndNamespace(username, namespaceInstance._id);
+            const isAccountDuplicated: boolean = await AccountController.isAccountDuplicatedByUsernameAndNamespace(body.username, namespaceInstance._id);
 
             if (isAccountDuplicated) {
-                throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, username);
+                throw this._error(ERROR_CODE.DUPLICATE_ACCOUNT, body.username);
             }
 
-            const organizationName: string = body.directEnsure('organization');
-            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(organizationName);
+            const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(body.organization);
 
             if (!organization) {
-                throw panic.code(ERROR_CODE.ORGANIZATION_NOT_FOUND, organizationName);
+                throw panic.code(
+                    ERROR_CODE.ORGANIZATION_NOT_FOUND,
+                    body.organization,
+                );
             }
 
             const tempPassword: string = createRandomTempPassword();
 
             const account: IAccountModel = AccountController.createOnLimboUnsavedAccount(
-                username,
+                body.username,
                 tempPassword,
                 namespaceInstance._id,
-                req.body.displayName,
-                req.body.email,
-                req.body.phone,
+                body.displayName,
+                body.email,
+                body.phone,
                 organization._id,
                 [],
                 infos,
