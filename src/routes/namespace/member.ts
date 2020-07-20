@@ -7,7 +7,7 @@
 import { AccountController, IAccount, INamespaceModel, INTERNAL_USER_GROUP, NamespaceController } from "@brontosaurus/db";
 import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
-import { createNumberPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { createIntegerPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
 import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
@@ -24,8 +24,7 @@ export type NamespaceFetchMemberBody = {
 const bodyPattern: Pattern = createStrictMapPattern({
 
     namespace: createStringPattern(),
-    page: createNumberPattern({
-        integer: true,
+    page: createIntegerPattern({
         minimum: 0,
     }),
 });

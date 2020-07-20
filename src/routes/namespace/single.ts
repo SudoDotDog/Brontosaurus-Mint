@@ -5,18 +5,24 @@
  */
 
 import { INamespaceModel, INTERNAL_USER_GROUP, NamespaceController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from "@sudoo/extract";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type SingleNamespaceBody = {
 
     readonly namespace: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    namespace: createStringPattern(),
+});
 
 export class SingleNamespaceRoute extends BrontosaurusRoute {
 
@@ -27,12 +33,13 @@ export class SingleNamespaceRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._singleNamespaceHandler.bind(this), 'Namespace Single'),
     ];
 
     private async _singleNamespaceHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<SingleNamespaceBody> = Safe.extract(req.body as SingleNamespaceBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: SingleNamespaceBody = req.body;
 
         try {
 
@@ -40,15 +47,19 @@ export class SingleNamespaceRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const namespace: string = body.direct('namespace');
-            if (typeof namespace !== 'string') {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'namespace', 'string', (namespace as any).toString());
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
+
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
-            const decoded: string = decodeURIComponent(namespace);
+            const decoded: string = decodeURIComponent(body.namespace);
             const namespaceInstance: INamespaceModel | null = await NamespaceController.getNamespaceByNamespace(decoded);
             if (!namespaceInstance) {
-                throw this._error(ERROR_CODE.NAMESPACE_NOT_FOUND, namespace);
+                throw this._error(ERROR_CODE.NAMESPACE_NOT_FOUND, decoded);
             }
 
             res.agent.migrate({
