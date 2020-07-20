@@ -5,20 +5,26 @@
  */
 
 import { AccountController, IAccountModel, INamespaceModel, INTERNAL_USER_GROUP, IOrganizationModel, NamespaceController, OrganizationController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from "@sudoo/extract";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { getNamespaceMapByNamespaceIds } from "../../data/namespace";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
 import { Throwable_MapDecorators, Throwable_MapTags } from "../../util/auth";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type SingleOrganizationBody = {
 
     readonly name: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    name: createStringPattern(),
+});
 
 export class SingleOrganizationRoute extends BrontosaurusRoute {
 
@@ -29,12 +35,13 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._singleOrganizationHandler.bind(this), 'Single Organization'),
     ];
 
     private async _singleOrganizationHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<SingleOrganizationBody> = Safe.extract(req.body as SingleOrganizationBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: SingleOrganizationBody = req.body;
 
         try {
 
@@ -42,15 +49,19 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const name: string = body.direct('name');
-            if (typeof name !== 'string') {
-                throw this._error(ERROR_CODE.REQUEST_FORMAT_ERROR, 'name', 'string', (name as any).toString());
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
+
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
-            const decoded: string = decodeURIComponent(name);
+            const decoded: string = decodeURIComponent(body.name);
             const organization: IOrganizationModel | null = await OrganizationController.getOrganizationByName(decoded);
             if (!organization) {
-                throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, name);
+                throw this._error(ERROR_CODE.ORGANIZATION_NOT_FOUND, body.name);
             }
 
             const owner: IAccountModel | null = await AccountController.getAccountById(organization.owner);
@@ -68,7 +79,7 @@ export class SingleOrganizationRoute extends BrontosaurusRoute {
             const decorators: string[] = await Throwable_MapDecorators(organization.decorators);
             const tags: string[] = await Throwable_MapTags(organization.tags);
 
-            const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(members.map((each) => each.namespace));
+            const namespaceMap: Map<string, INamespaceModel> = await getNamespaceMapByNamespaceIds(members.map((each: IAccountModel) => each.namespace));
 
             res.agent.migrate({
 
