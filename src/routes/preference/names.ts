@@ -5,12 +5,14 @@
  */
 
 import { INTERNAL_USER_GROUP, PreferenceController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type NamePreferenceBody = {
 
@@ -18,6 +20,19 @@ export type NamePreferenceBody = {
     readonly accountName?: string;
     readonly commandCenterName?: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    systemName: createStringPattern({
+        optional: true,
+    }),
+    accountName: createStringPattern({
+        optional: true,
+    }),
+    commandCenterName: createStringPattern({
+        optional: true,
+    }),
+});
 
 export class NamePreferenceRoute extends BrontosaurusRoute {
 
@@ -28,6 +43,7 @@ export class NamePreferenceRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._preferenceNamesHandler.bind(this), 'Preference Names'),
     ];
 
@@ -39,6 +55,15 @@ export class NamePreferenceRoute extends BrontosaurusRoute {
 
             if (!req.valid) {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
+            }
+
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
+
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
             const systemName: string | undefined = body.systemName;

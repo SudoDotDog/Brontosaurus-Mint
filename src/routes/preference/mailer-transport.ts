@@ -5,18 +5,24 @@
  */
 
 import { INTERNAL_USER_GROUP, PreferenceController } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from "@sudoo/extract";
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type MailerTransportPreferenceRouteBody = {
 
     readonly config: string;
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    config: createStringPattern(),
+});
 
 export class MailerTransportPreferenceRoute extends BrontosaurusRoute {
 
@@ -27,12 +33,13 @@ export class MailerTransportPreferenceRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._preferenceGlobalHandler.bind(this), 'Global Mailer Transport'),
     ];
 
     private async _preferenceGlobalHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<MailerTransportPreferenceRouteBody> = Safe.extract(req.body as MailerTransportPreferenceRouteBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: MailerTransportPreferenceRouteBody = req.body;
 
         try {
 
@@ -40,7 +47,16 @@ export class MailerTransportPreferenceRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const config: string = body.directEnsure('config');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
+
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
+            }
+
+            const config: string = body.config
             const parsed: string = JSON.parse(config);
 
             await PreferenceController.setSinglePreference('mailerTransport', parsed);
