@@ -66,8 +66,6 @@ export class CreateDecoratorRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.INVALID_COMMON_NAME, validateResult);
             }
 
-            const description: string | undefined = req.body.description;
-
             const isDuplicated: boolean = await DecoratorController.isDecoratorDuplicatedByName(body.name);
 
             if (isDuplicated) {
@@ -79,7 +77,7 @@ export class CreateDecoratorRoute extends BrontosaurusRoute {
 
             const decorator: IDecoratorModel = DecoratorController.createUnsavedDecorator(
                 body.name,
-                description,
+                body.description,
             );
 
             await decorator.save();

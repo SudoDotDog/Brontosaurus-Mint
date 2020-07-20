@@ -50,7 +50,10 @@ export class GroupActivateRoute extends BrontosaurusRoute {
             const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
             if (!verify.succeed) {
-                throw panic.code(ERROR_CODE.REQUEST_DOES_MATCH_PATTERN, verify.invalids[0]);
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
             const group: IGroupModel | null = await GroupController.getGroupByName(body.group);
