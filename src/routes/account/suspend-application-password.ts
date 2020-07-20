@@ -67,7 +67,10 @@ export class AccountSuspendApplicationPasswordRoute extends BrontosaurusRoute {
             const requestUsername: string = token.body.directEnsure('username');
             const requestNamespace: string = token.body.directEnsure('namespace');
 
-            const requestAccount: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(requestUsername, requestNamespace);
+            const requestAccount: IAccountModel | null = await MatchController.getAccountByUsernameAndNamespaceName(
+                requestUsername,
+                requestNamespace,
+            );
 
             if (!requestAccount) {
                 throw this._error(ERROR_CODE.ACCOUNT_NOT_FOUND, requestUsername);
