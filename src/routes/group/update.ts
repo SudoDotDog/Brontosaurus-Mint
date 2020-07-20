@@ -5,13 +5,14 @@
  */
 
 import { DecoratorController, GroupController, IDecoratorModel, IGroupModel, INTERNAL_USER_GROUP } from "@brontosaurus/db";
-import { ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
-import { Safe, SafeExtract } from '@sudoo/extract';
+import { createStringedBodyVerifyHandler, ROUTE_MODE, SudooExpressHandler, SudooExpressNextFunction, SudooExpressRequest, SudooExpressResponse } from "@sudoo/express";
 import { HTTP_RESPONSE_CODE } from "@sudoo/magic";
+import { createListPattern, createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
+import { fillStringedResult, StringedResult } from "@sudoo/verify";
 import { BrontosaurusRoute } from "../../handlers/basic";
 import { createAuthenticateHandler, createGroupVerifyHandler, createTokenHandler } from "../../handlers/handlers";
 import { autoHook } from "../../handlers/hook";
-import { ERROR_CODE } from "../../util/error";
+import { ERROR_CODE, panic } from "../../util/error";
 
 export type UpdateGroupBody = {
 
@@ -19,6 +20,17 @@ export type UpdateGroupBody = {
     readonly description?: string;
     readonly decorators: string[];
 };
+
+const bodyPattern: Pattern = createStrictMapPattern({
+
+    name: createStringPattern(),
+    description: createStringPattern({
+        optional: true,
+    }),
+    decorators: createListPattern(
+        createStringPattern(),
+    ),
+});
 
 export class UpdateGroupRoute extends BrontosaurusRoute {
 
@@ -29,12 +41,13 @@ export class UpdateGroupRoute extends BrontosaurusRoute {
         autoHook.wrap(createTokenHandler(), 'Token'),
         autoHook.wrap(createAuthenticateHandler(), 'Authenticate'),
         autoHook.wrap(createGroupVerifyHandler([INTERNAL_USER_GROUP.SUPER_ADMIN]), 'Group Verify'),
+        autoHook.wrap(createStringedBodyVerifyHandler(bodyPattern), 'Body Verify'),
         autoHook.wrap(this._updateGroupHandler.bind(this), 'Update Group'),
     ];
 
     private async _updateGroupHandler(req: SudooExpressRequest, res: SudooExpressResponse, next: SudooExpressNextFunction): Promise<void> {
 
-        const body: SafeExtract<UpdateGroupBody> = Safe.extract(req.body as UpdateGroupBody, this._error(ERROR_CODE.INSUFFICIENT_INFORMATION));
+        const body: UpdateGroupBody = req.body;
 
         try {
 
@@ -42,21 +55,25 @@ export class UpdateGroupRoute extends BrontosaurusRoute {
                 throw this._error(ERROR_CODE.TOKEN_INVALID);
             }
 
-            const name: string = body.directEnsure('name');
-            const decoratorsNames: string[] = body.direct('decorators');
+            const verify: StringedResult = fillStringedResult(req.stringedBodyVerify);
 
-            const group: IGroupModel | null = await GroupController.getGroupByName(name);
-
-            if (!group) {
-                throw this._error(ERROR_CODE.GROUP_NOT_FOUND, name);
+            if (!verify.succeed) {
+                throw panic.code(
+                    ERROR_CODE.REQUEST_DOES_MATCH_PATTERN,
+                    verify.invalids[0],
+                );
             }
 
-            const decorators: IDecoratorModel[] = await DecoratorController.getDecoratorByNames(decoratorsNames);
+            const group: IGroupModel | null = await GroupController.getGroupByName(body.name);
 
-            const description: any = req.body.description;
+            if (!group) {
+                throw this._error(ERROR_CODE.GROUP_NOT_FOUND, body.name);
+            }
 
-            if (typeof description === 'string') {
-                group.description = description;
+            const decorators: IDecoratorModel[] = await DecoratorController.getDecoratorByNames(body.decorators);
+
+            if (typeof body.description === 'string') {
+                group.description = body.description;
             }
 
             group.decorators = decorators.map((decorator: IDecoratorModel) => decorator._id);
