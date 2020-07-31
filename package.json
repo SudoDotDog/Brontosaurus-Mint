@@ -33,7 +33,7 @@
   "devDependencies": {
     "@sudoo/triforce": "^2.7.9",
     "@sudoo/triforce-mongoose-dev": "^1.4.3",
-    "@types/qrcode": "^1.3.4"
+    "@types/qrcode": "^1.3.5"
   },
   "nyc": {
     "extension": [
