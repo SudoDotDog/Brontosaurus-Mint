@@ -56,7 +56,7 @@ export class MailerTransportPreferenceRoute extends BrontosaurusRoute {
                 );
             }
 
-            const config: string = body.config
+            const config: string = body.config;
             const parsed: string = JSON.parse(config);
 
             await PreferenceController.setSinglePreference('mailerTransport', parsed);
