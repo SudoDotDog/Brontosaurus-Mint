@@ -63,6 +63,12 @@ outdated: install
 	@echo "[INFO] Checking Outdated Dependencies"
 	@yarn outdated
 
+remove-lockfile:
+	@echo "[INFO] Removing Lockfile"
+	@rm yarn.lock
+
+refresh-install: remove-lockfile install
+
 clean-linux:
 	@echo "[INFO] Cleaning dist files"
 	@rm -rf dist
