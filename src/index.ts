@@ -49,7 +49,9 @@ app.expressStatic(Path.join(__dirname, '..', 'public', 'red'), {
 });
 
 // Health
-app.health('/health');
+app.health('/health', () => {
+    return connection.readyState >= 1;
+});
 
 // Mint
 app.routeList(MintRoutes);
