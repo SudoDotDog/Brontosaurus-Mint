@@ -31,7 +31,7 @@
     "qrcode": "^1.4.4"
   },
   "devDependencies": {
-    "@sudoo/triforce": "^2.9.18",
+    "@sudoo/triforce": "^2.9.20",
     "@sudoo/triforce-mongoose-dev": "^1.4.4",
     "@types/qrcode": "^1.4.0"
   },
