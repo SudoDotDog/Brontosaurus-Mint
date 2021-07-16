@@ -22,7 +22,7 @@
     "@sudoo/express": "^2.11.1",
     "@sudoo/extract": "^1.4.2",
     "@sudoo/io": "^1.8.0",
-    "@sudoo/log": "^1.5.1",
+    "@sudoo/log": "^1.6.0",
     "@sudoo/magic": "^1.8.0",
     "@sudoo/pattern": "^1.6.1",
     "@sudoo/random": "^2.2.0",
