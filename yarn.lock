@@ -577,10 +577,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.34.tgz#3b0b6a50ff797280b8d000c6281d229f9c538cef"
   integrity sha512-XImEz7XwTvDBtzlTnm8YvMqGW/ErMWBsKZ+hMTvnDIjGCKxwK5Xpc+c/oQjOauwq8M4OS11hEkpjX8rrI/eEgA==
 
-"@types/qrcode@^1.4.3":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@types/qrcode/-/qrcode-1.4.3.tgz#f456303a42cb227ee0ab6d80f0790e8804976024"
-  integrity sha512-Kg3+t/609IWo7ufK+NQ3sm7ulZacK5PgxEHuvbU7zRw4i6aRj3aBqIIOw8ukFsrUWMHUxDRmgcoVumQ0szjyDA==
+"@types/qrcode@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@types/qrcode/-/qrcode-1.5.0.tgz#6a98fe9a9a7b2a9a3167b6dde17eff999eabe40b"
+  integrity sha512-x5ilHXRxUPIMfjtM+1vf/GPTRWZ81nqscursm5gMznJeK9M0YnZ1c3bEvRLQ0zSSgedLx1J6MGL231ObQGGhaA==
   dependencies:
     "@types/node" "*"
 
