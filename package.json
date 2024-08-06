@@ -28,7 +28,7 @@
     "@sudoo/random": "^2.2.0",
     "@sudoo/verify": "^1.19.0",
     "connor": "^2.7.0",
-    "qrcode": "^1.5.3"
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "@sudoo/triforce": "^3.12.0",
